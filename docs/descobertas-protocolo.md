@@ -51,11 +51,35 @@ escuta do `232C_TX` da porta `CB902` (nada mais dessa porta).
 
 | Pergunta | Resposta | Captura |
 |---|---|---|
-| Velocidade do relógio, borda em que o dado vale, ordem dos bits | | |
-| Tamanho dos quadros e se o `/CS` sobe entre bytes | | |
-| O microcontrolador manda **letras ou pontos**? | | |
-| Como os ícones (grades 13 e 14) são acesos: play, pause e os modos | | |
-| De quanto em quanto tempo o display é reescrito | | |
+| Velocidade do relógio, borda em que o dado vale, ordem dos bits | 62 kHz (6 µs alto, 10 µs baixo); dado lido na subida; **bit menos significativo primeiro** | `02-tocando` |
+| Tamanho dos quadros e se o `/CS` sobe entre bytes | Um quadro por comando, com os dados dele (8 a 104 bits); o `/CS` só sobe no fim do quadro | `02-tocando` |
+| O microcontrolador manda **letras ou pontos**? | **Letras, em ASCII.** Os ícones são dois caracteres desenhados por ele (abaixo) | `02-tocando` |
+| Como os ícones (grades 13 e 14) são acesos: play, pause e os modos | As posições 13 e 14 mostram os caracteres especiais 0 e 1; os pontos deles são os ícones. Falta saber qual bit é qual ícone | `02-tocando` |
+| De quanto em quanto tempo o display é reescrito | Ciclo de ~38 ms, em três grupos a 12,7 ms um do outro | `02-tocando` |
 | O que o `DIMMER` manda | | |
 | O controle remoto: NEC, endereço 79/86, os tempos de verdade | | |
 | A porta RS-232 fala algo sozinha? | | |
+
+## O protocolo (captura `02-tocando`, 2026-11-16)
+
+Captura a 1 MHz, 200 ms, com o disco tocando a faixa 1 em 0:07. Os bytes abaixo estão com o bit menos significativo
+primeiro, já como o vidro os lê. O ciclo se repete a cada ~38 ms:
+
+| Grupo | Quadro | Leitura |
+|---|---|---|
+| 1 | `20` + `00 00 00 00 00` `08 04 00 00 00` | Desenha os caracteres especiais 0 e 1 (5 bytes cada). São os ícones |
+| 2 | `10` + `20 20 31 20 20 20 20 30 3A 30 37 20` | Escreve o texto a partir da posição 0: `"  1    0:07 "` (faixa 1, tempo 0:07) |
+| 3 | `63` | Configuração (provavelmente o número de grades) |
+| 3 | `50 A0` | Configuração (provavelmente o brilho; o `DIMMER` deve mudar este) |
+| 3 | `70` | Configuração (provavelmente "display aceso") |
+| 3 | `1C 00 01` | Escreve a partir da posição 12 os caracteres 0 e 1: as duas grades de ícones |
+
+Os códigos lembram os controladores de VFD da Princeton (PT6302 e parecidos): o comando no nibble de cima, o endereço
+no de baixo. Não confirmado: a folha de dados do vidro não está no manual.
+
+O que isso quer dizer para o leitor de telas:
+
+- O texto vem pronto, em ASCII: não precisa de tabela de fonte.
+- O estado (play, pause, modos) está nos 10 bytes dos caracteres especiais. Falta o mapa bit → ícone, a levantar com
+  o Pico dentro do aparelho, registrando cada mudança enquanto as teclas são apertadas: mais fácil que capturas de
+  200 ms.
