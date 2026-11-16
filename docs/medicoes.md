@@ -37,3 +37,8 @@ se o `D+5` aguenta o Pico e em qual solda do `CB701` vai cada fio (`docs/plano.m
 ## Registro
 
 As leituras na ordem em que foram feitas, com data e hora.
+
+- **2026-11-16, 16h:** passo do flat de 15 vias medido por foto, com uma fita métrica encostada no `CB304` (fotos
+  `20261116_160859.jpg` e `20261116_160947.jpg`, fora do repositório): do 1º ao 15º contato, 17,4 e 18,1 mm, ou seja
+  passo de **1,25 mm** (com 1,0 mm seriam 14 mm). Confere com os conectores `52044`/`52045` do esquema. O cabo de
+  câmera do Raspberry Pi (15 vias, 1,0 mm) não serve.
