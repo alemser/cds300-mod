@@ -42,17 +42,18 @@ capturas usam os mesmos fios, sem garras).
 
 | Fio | Onde | Para quê |
 |---|---|---|
-| `DGND` | Solda do `CB701` (via 1 ou 9) | Terra comum |
-| `FL_/CS` | Solda do `CB701` | Ler o display |
-| `FL_CLK` | Solda do `CB701` | Ler o display |
-| `FL_DATA` | Solda do `CB701` | Ler o display |
-| `FL_/RST` | Solda do `CB701` | Saber quando o display é reiniciado |
+| `DGND` | `CB701`, cima 5ª (via 9) | Terra comum |
+| `FL_/CS` | `CB701`, cima 8ª (via 15) | Ler o display |
+| `FL_CLK` | `CB701`, cima 7ª (via 13) | Ler o display |
+| `FL_DATA` | `CB701`, baixo 7ª (via 14) | Ler o display |
+| `FL_/RST` | `CB701`, baixo 6ª (via 12) | Saber quando o display é reiniciado |
 | `IR` | Perna `OUT` do `U701` | Mandar as teclas. O Pico só puxa para 0, contra o resistor interno do receptor, como no SP103: sem resistor em série |
 | `D+5` e `DGND` | `CB301`, placa principal | Alimentar o Pico. Só quando o Pico for instalado |
 
 Qual solda do `CB701` é qual via: a serigrafia atrás da placa frontal dá o mapa (as vias ímpares na fileira de cima,
 as pares na de baixo, da esquerda para a direita), e três bips desde as janelas do `CB304` o confirmam
-(`docs/guia-medicoes.html`). Marcar com caneta antes de soldar. Desfazer: dessoldar os fios.
+(`docs/guia-medicoes.html`). As posições contam as soldas da esquerda para a direita, olhando a placa frontal por
+trás com o conector `W702` à esquerda: 8 soldas na fileira de cima, 7 na de baixo. Marcar com caneta antes de soldar. Desfazer: dessoldar os fios.
 
 O que comprar: fio fino (30 AWG, tipo kynar), uma barra de pinos de 2,54 mm para o conector, solda fina e fluxo.
 
