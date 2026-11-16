@@ -197,7 +197,7 @@ figure.zoomable { flex-direction: column; gap: 6px; cursor: zoom-in; }
 <script>
 (() => {
   // ------------------------------------------------------------------ the photos (marks in a 2000 x 1500 grid)
-  const IMG = { geral: "guia/20261116_111202.jpg", cb701: "guia/20261116_111519.jpg", u701: "guia/20261116_111503.jpg", cb304: "guia/20261116_084644.jpg" };
+  const IMG = { solda: "guia/20261116_175957.jpg", soldaIR: "guia/20261116_180004.jpg", geral: "guia/20261116_111202.jpg", cb701: "guia/20261116_111519.jpg", u701: "guia/20261116_111503.jpg", cb304: "guia/20261116_084644.jpg" };
 
   // CB701 pelas soldas (foto 111519). Dedução: a serigrafia lista as vias 1 a 15 da esquerda para a direita; as ímpares
   // na fileira de cima (8 soldas), as pares na de baixo (7). A confirmar com o bip (cartão 2).
@@ -211,6 +211,27 @@ figure.zoomable { flex-direction: column; gap: 6px; cursor: zoom-in; }
 
   function photo(key, inner, label) {
     return `<svg viewBox="0 0 2000 1500" role="img" aria-label="${label}"><image href="${IMG[key]}" width="2000" height="1500"/>${inner}</svg>`;
+  }
+
+  function photoP(key, inner, label) {   // fotos em pé, 843 x 1125
+    return `<svg viewBox="0 0 843 1125" role="img" aria-label="${label}"><image href="${IMG[key]}" width="843" height="1125"/>${inner}</svg>`;
+  }
+  function drawSolda() {
+    let b = "";
+    const lab = (x, y, t, cls = "") => b += `<text x="${x}" y="${y}" class="o-t sm${cls}" style="font-size:26px;stroke-width:6px">${t}</text>`;
+    b += `<ellipse cx="250" cy="480" rx="62" ry="105" class="o-ring hot" style="stroke-width:5"/>`; lab(20, 300, "1: solda grande, sobe até a ilha de cima", " hot");
+    b += `<circle cx="600" cy="560" r="42" class="o-ring hot" style="stroke-width:5"/>`; lab(430, 790, "2: fiozinhos soltos", " hot");
+    b += `<circle cx="618" cy="392" r="26" class="o-ring hot" style="stroke-width:5"/>`;
+    b += `<circle cx="365" cy="520" r="34" class="o-ring gnd" style="stroke-width:4"/>`; lab(300, 470, "cima 6ª (3,3 V)", " wht");
+    return photoP("solda", b, "Os fios soldados no CB701");
+  }
+  function drawSoldaIR() {
+    let b = "";
+    const lab = (x, y, t, cls = "") => b += `<text x="${x}" y="${y}" class="o-t sm${cls}" style="font-size:28px;stroke-width:6px">${t}</text>`;
+    b += `<circle cx="365" cy="540" r="45" class="o-ring hot" style="stroke-width:5"/>`; lab(430, 470, "3: cobre perto da perna B (terra)", " hot");
+    b += `<ellipse cx="330" cy="695" rx="110" ry="55" class="o-ring hot" style="stroke-width:5"/>`; lab(430, 760, "4: perna C e a ilha à esquerda", " hot");
+    b += `<circle cx="310" cy="420" r="34" class="o-ring" style="stroke-width:4"/>`; lab(355, 395, "A");
+    return photoP("soldaIR", b, "O fio do controle na perna C do U701");
   }
 
   function drawGeral() {
@@ -285,6 +306,11 @@ figure.zoomable { flex-direction: column; gap: 6px; cursor: zoom-in; }
   const sel = (key, opts) => `<select id="f_${key}" data-key="${key}"><option value=""></option>${opts.map(o => `<option>${o}</option>`).join("")}</select>`;
   const inp = (key, ph = "0,00") => `<input id="f_${key}" data-key="${key}" type="text" inputmode="decimal" placeholder="${ph}" autocomplete="off">`;
   const fld = (key, label, control) => `<div class="field"><label for="f_${key}">${label}</label>${control}</div>`;
+  const W = { P: "preto (terra)", C: "cinza (/CS)", L: "laranja (CLK)", V: "verde-azulado (DATA)", A: "amarelo (/RST)", R: "roxo (controle)" };
+  const PAIRS = [];
+  const WK = Object.keys(W);
+  WK.forEach((a, i) => WK.slice(i + 1).forEach(b => PAIRS.push([W[a], W[b], "x_" + a + b])));
+  WK.forEach(a => PAIRS.push([W[a], "cima 6ª (3,3 V)", "x_" + a + "T"]));
   const POS = { 9: "cima 5ª", 10: "baixo 5ª", 11: "cima 6ª", 12: "baixo 6ª", 13: "cima 7ª", 14: "baixo 7ª", 15: "cima 8ª" };
   const VOLTS = [[11, "D+3.3V", 3.4], [15, "FL_/CS", 3.3], [12, "FL_/RST", 3.3], [10, "REM", 3.4]];
   const TOL = 0.25, LIMIT = 3.4;
@@ -317,6 +343,12 @@ figure.zoomable { flex-direction: column; gap: 6px; cursor: zoom-in; }
       body: `<div class="fields">${fld("d5", "D+5 (V)", inp("d5"))}${fld("ic801", "Dissipador depois de 30 min", sel("ic801", ["frio", "morno", "quente, dá para segurar", "quente, não dá para segurar"]))}</div>
         <p class="note"><b>Só se estiver quente demais para segurar:</b> meça também o 9º pino, contando do mesmo lado (<code>+B2</code>, perto de 12 V). ${inp("b2")}</p>`,
       ref: "Esperado: D+5 entre <b>4,75 e 5,25</b>. Se der perto de −5, você está no 2º pino (A-5): conte de novo. O dissipador só diz algo depois de 30 minutos tocando." },
+    { id: "6", title: "Conferir a solda antes de ligar", fig: drawSolda(), fig2: drawSoldaIR(), sec: "Depois de soldar: aparelho fora da tomada",
+      steps: ["<b>Aparelho fora da tomada</b> e nada ligado na outra ponta dos fios. Multímetro no bip.", "Encoste as duas pontas nas <b>pontas soltas</b> de cada par de fios da tabela (é mais fácil que nas soldas).", "Um <b>bip curto que para sozinho</b> é normal: são capacitores carregando. Um <b>bip que não para</b> é curto: não ligue, me mande qual par foi.", "Os círculos vermelhos nas fotos são os lugares mais prováveis de um curto: fiozinhos soltos da malha ou solda grande demais."],
+      body: `<div class="table-wrap"><table><thead><tr><th>Entre</th><th>E</th><th>Bip</th></tr></thead><tbody>
+        ${PAIRS.map(([a, b2, k]) => `<tr><td>${a}</td><td>${b2}</td><td>${sel(k, ["não bipa", "curto e para", "sem parar"])}</td></tr>`).join("")}
+        </tbody></table></div>`,
+      ref: "Cores como eu li nas fotos: preto = terra, cinza = FL_/CS (cima 8ª), laranja = FL_CLK, verde-azulado = FL_DATA, amarelo = FL_/RST, roxo = controle. Se for diferente, diga nas observações." },
   ];
 
   const host = document.getElementById("cards");
@@ -402,6 +434,13 @@ figure.zoomable { flex-direction: column; gap: 6px; cursor: zoom-in; }
     if (Number.isFinite(b2)) { row("+B2", fmt(b2) + " V", "~12", b2 > 9 && b2 < 17 ? ["st-ok", "ok"] : ["st-bad", "diferente"]); pl.push(`+B2=${get("b2")} V`); }
     if (pl.length) lines.push("Alimentação: " + pl.join(", "));
 
+    const done = PAIRS.filter(([, , k]) => get(k));
+    if (done.length) {
+      const bad = done.filter(([, , k]) => get(k) === "sem parar");
+      row("Conferência da solda", `${done.length} de ${PAIRS.length} pares`, "nenhum curto", bad.length ? ["st-stop", `curto em ${bad.length}`] : ["st-ok", "ok"]);
+      lines.push(`Conferência da solda: ${done.length} de ${PAIRS.length} pares, ` + (bad.length ? "CURTO (bip sem parar) em: " + bad.map(([a, b2]) => `${a} × ${b2}`).join("; ") : "nenhum curto")
+        + (done.some(([, , k]) => get(k) === "curto e para") ? ". Bip curto em: " + done.filter(([, , k]) => get(k) === "curto e para").map(([a, b2]) => `${a} × ${b2}`).join("; ") : ""));
+    }
     if (get("notas")) lines.push("Observações: " + get("notas"));
     if (!rows.length) rows.push(`<tr><td colspan="4" class="ref">Nada medido ainda. As linhas aparecem aqui conforme você preenche os cartões.</td></tr>`);
     tbody.innerHTML = rows.join("");
