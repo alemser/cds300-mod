@@ -18,11 +18,69 @@ Runs the same in MicroPython (Pico) and CPython (tools/test_vfd.py).
 """
 
 MARKER = 0xFFFFFFFF
+
+# Icon dots ("grid.byte.bit", see Screen.lit), mapped on the device on 2026-11-16 with the panel keys:
+ICON_PLAY = "13.0.3"
+ICON_PAUSE = "13.1.3"
+ICON_DISC = "13.1.2"            # lit while a disc is in; off with the tray open
 TEXT_LEN = 12
 ICON_POS = (12, 13)
 RAM_LEN = 16
 CHANGES_KEPT = 4                # text changes every second while playing: keep only the latest
 ICON_CHANGES_KEPT = 16          # icon changes are rare: enough for a mapping session (docs/descobertas-protocolo.md)
+
+
+def _clock(s):
+    """"61:37" -> seconds, or None."""
+    m, sep, sec = s.partition(":")
+    if sep and m.isdigit() and sec.isdigit() and len(sec) == 2:
+        return int(m) * 60 + int(sec)
+    return None
+
+
+class Player:
+    """What the display means, in CD mode (mapped on the device on 2026-11-16). Call update() on every change.
+
+    transport: "playing", "paused", "stopped", "loading", "open" (tray), or None when unknown.
+    The display shows "track  elapsed" while playing or paused ("  1    0:07 "), "tracks  total" when stopped with a
+    disc (" 12   61:37 "), and "track  0:00" when a track is picked while stopped. The disc's track count and total time
+    are remembered from the stopped display, until the tray opens. Anything else (messages, USB mode) stays in text.
+    """
+
+    def __init__(self):
+        self.disc = None                    # (tracks, total seconds) of the disc in the tray
+        self.state = self._blank()
+
+    @staticmethod
+    def _blank():
+        return {"transport": None, "track": None, "elapsed_s": None, "tracks": None, "total_s": None}
+
+    def update(self, text, lit):
+        words = text.split()
+        clock = _clock(words[-1]) if words else None
+        number = int(words[0]) if len(words) == 2 and words[0].isdigit() and clock is not None else None
+        out = self._blank()
+        if text.strip() == "LOADING":
+            out["transport"] = "loading"
+            self.disc = None
+        elif ICON_PLAY in lit or ICON_PAUSE in lit:
+            out["transport"] = "playing" if ICON_PLAY in lit else "paused"
+            # Right after play the display still shows the disc's totals for a moment: not a track.
+            if number is not None and (number, clock) != self.disc:
+                out["track"], out["elapsed_s"] = number, clock
+        elif ICON_DISC in lit:
+            out["transport"] = "stopped"
+            if number is not None and clock:
+                self.disc = (number, clock)
+            elif number is not None:
+                out["track"] = number            # picked with next/previous while stopped
+        elif not lit:
+            out["transport"] = "open"
+            self.disc = None
+        if self.disc:
+            out["tracks"], out["total_s"] = self.disc
+        self.state = out
+        return out
 
 
 def byte_of(word):

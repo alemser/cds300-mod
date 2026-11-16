@@ -14,6 +14,7 @@ import device
 import ota
 from control import Control
 from ir import Remote
+from vfd import Player
 from web import Publisher
 from wifi import Wifi
 
@@ -24,13 +25,19 @@ class State:
     def __init__(self):
         self.version = 0
         self.display = None
+        self.player = Player()
 
     def to_dict(self):
+        """api 2 proposal (docs/plano.md, "O protocolo comum"): transport, media and disc groups."""
         d = {"power": None, "lcd": [], "updated_at": time.ticks_ms(), "version": self.version}
         if self.display is not None and self.display.alive():
+            p = self.player.state
             d["power"] = "on"
             d["lcd"] = [self.display.screen.text()]
             d["icons"] = self.display.screen.icons().hex()
+            d["transport"] = p["transport"]
+            d["media"] = {"track": p["track"], "elapsed_s": p["elapsed_s"]}
+            d["disc"] = {"tracks": p["tracks"], "total_s": p["total_s"]}
         return d
 
 
@@ -50,6 +57,8 @@ def wifi_result(ok, info):
 
 
 def display_changed():
+    s = state.display.screen
+    state.player.update(s.text(), s.lit())
     state.version += 1
     if pub is not None:
         pub.changed()

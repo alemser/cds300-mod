@@ -83,3 +83,22 @@ O que isso quer dizer para o leitor de telas:
 - O estado (play, pause, modos) está nos 10 bytes dos caracteres especiais. Falta o mapa bit → ícone, a levantar com
   o Pico dentro do aparelho, registrando cada mudança enquanto as teclas são apertadas: mais fácil que capturas de
   200 ms.
+
+## Icon map and state (on the device, 2026-11-16)
+
+Mapped with the panel keys while the Pico logged every icon change (`GET /display`, `icon_changes`). Dots are
+named `grid.byte.bit` (`vfd.Screen.lit`):
+
+| Dot | Meaning |
+|---|---|
+| `13.0.3` | Play (lit while playing) |
+| `13.1.3` | Pause |
+| `13.1.2` | Disc in the tray (off with the tray open; back on at `LOADING`) |
+
+Text: `track  elapsed` while playing or paused, `tracks  total` when stopped with a disc, `track  0:00` when a track
+is picked while stopped, `LOADING` after closing the tray. Next and previous change only the text.
+
+`vfd.Player` turns this into `/state`: `transport` (playing, paused, stopped, loading, open), `media` (track,
+elapsed) and `disc` (tracks, total, remembered from the stopped display until the tray opens).
+
+Still to map, with the remote: repeat, random, A-B, program, USB mode, Pure Direct, dimmer.

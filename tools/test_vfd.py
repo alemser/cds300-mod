@@ -80,6 +80,25 @@ def main():
     check(size < 1024 and len(s.icon_changes) == 12 and len(s.changes) == vfd.CHANGES_KEPT,
           "debug view small: %d bytes, %d icon changes" % (size, len(s.icon_changes)))
 
+    # The panel-key session on the device (2026-11-16), as the reader logged it: (text, lit dots) -> expected state.
+    P, Z, D = vfd.ICON_PLAY, vfd.ICON_PAUSE, vfd.ICON_DISC
+    session = [
+        ((" 12   61:37 ", [D]), {"transport": "stopped", "tracks": 12, "total_s": 3697, "track": None}),
+        ((" 12   61:37 ", [P, D]), {"transport": "playing", "track": None, "tracks": 12}),   # play, totals still shown
+        (("  1    0:00 ", [P, D]), {"transport": "playing", "track": 1, "elapsed_s": 0}),
+        (("  1    0:07 ", [P, D]), {"transport": "playing", "track": 1, "elapsed_s": 7, "total_s": 3697}),
+        (("  1    0:09 ", [D, Z]), {"transport": "paused", "track": 1, "elapsed_s": 9}),
+        ((" 12   61:37 ", [D]), {"transport": "stopped", "tracks": 12, "track": None}),
+        ((" 12   61:37 ", []), {"transport": "open", "tracks": None}),
+        ((" LOADING    ", [D]), {"transport": "loading", "tracks": None}),
+        ((" 12   61:37 ", [D]), {"transport": "stopped", "tracks": 12}),
+        (("  2    0:00 ", [D]), {"transport": "stopped", "track": 2, "tracks": 12}),          # next while stopped
+    ]
+    p = vfd.Player()
+    for (text, lit), want in session:
+        got = p.update(text, lit)
+        check(all(got[k] == v for k, v in want.items()), "%r %s -> %s" % (text, lit, got))
+
     print("all good" if not failures else "%d failure(s)" % len(failures))
     sys.exit(1 if failures else 0)
 
