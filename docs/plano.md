@@ -100,8 +100,9 @@ Com o aparelho ligado, contra o `DGND` (via 1 ou 9 do flat):
    fora da tomada.
 2. As vias que o Pico usa (`D+3.3V`, `FL_/CS`, `FL_/RST`, `REM`) e a saída do `U701` em repouso. Qualquer valor
    acima de 3,4 V para tudo.
-3. O `D+5` no `CB301` da placa principal, ao lado do flat: a tensão, e a temperatura do dissipador do `IC801` (na
-   fonte) depois de meia hora tocando. O Pico vai pedir mais uns 50 a 100 mA dessa linha.
+3. O `D+5` no `CB301` da placa principal, ao lado do flat: a tensão. A temperatura do dissipador do `IC801` (na
+   fonte) fica para o primeiro teste com o Pico ligado no `D+5`, depois de meia hora tocando: é com a carga do Pico
+   (mais uns 50 a 100 mA) que ela diz algo. Tocar só com o aparelho fora da tomada.
 4. O `+B2`, no mesmo conector: alternativa para alimentar o Pico por um regulador próprio, se o `D+5` não tiver
    folga.
 
