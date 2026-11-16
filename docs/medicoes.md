@@ -53,3 +53,6 @@ As leituras na ordem em que foram feitas, com data e hora.
 - **2026-11-16, 18h:** seis fios soldados (fotos `20261116_175957.jpg` e `20261116_180004.jpg`, cópias em
   `docs/guia/`). Conferência com o bip pelas pontas soltas, aparelho fora da tomada: **nenhum curto**.
 
+- **2026-11-16, 19h:** Pico (o antigo do MR 780, chip `D85E`) com o programa da ponte, alimentado pelo `D+5` no VSYS
+  (pino 39), terra pelo pino 3. Na rede de casa como `CDS300-D85E`. Linha do controle em repouso alta; o `play`
+  mandado pelo Wi-Fi pôs o disco a tocar.
