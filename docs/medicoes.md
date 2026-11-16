@@ -5,6 +5,10 @@ do esquema do manual (`docs/pesquisa.md`), as outras ficam em branco até a banc
 
 Regra geral: qualquer via do flat acima de **3,4 V** para tudo, antes de ligar o Pico.
 
+Para medir, usar a página guiada (`docs/guia-medicoes.html`, publicada em
+https://claude.ai/artifact/1Gud8oKmZ5HQ2eygCHr3Kf): um cartão por medição, com desenho, e um botão que copia tudo para
+o chat. As tabelas abaixo recebem o resultado.
+
 ## Antes de ligar na tomada
 
 1. Fotos que faltam: a traseira inteira (porta `CB902`), a placa principal na região do `IC305` e do `IC4`, e o flat
