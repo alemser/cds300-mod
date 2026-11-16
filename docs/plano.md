@@ -229,7 +229,13 @@ escreviam no display (o título da faixa, um relógio com o aparelho parado) sa�
 
 ## Registro dos fios
 
-Cada fio soldado no aparelho, onde e quando. Para desfazer, dessoldar na ordem inversa. Vazio até agora.
+Cada fio soldado no aparelho, onde e quando. Para desfazer, dessoldar na ordem inversa.
 
 | Data | Fio | Onde | Observação |
 |---|---|---|---|
+| 2026-11-16 | Preto | `CB701`, cima 5ª (`DGND`) | Conferido com o bip: sem curto |
+| 2026-11-16 | Cinza | `CB701`, cima 8ª (`FL_/CS`) | Idem |
+| 2026-11-16 | Laranja | `CB701`, cima 7ª (`FL_CLK`) | Idem |
+| 2026-11-16 | Verde-azulado | `CB701`, baixo 7ª (`FL_DATA`) | Idem |
+| 2026-11-16 | Amarelo | `CB701`, baixo 6ª (`FL_/RST`) | Idem |
+| 2026-11-16 | Roxo | `U701`, perna C (saída) | Idem |

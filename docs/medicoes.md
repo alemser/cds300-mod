@@ -50,4 +50,6 @@ As leituras na ordem em que foram feitas, com data e hora.
     escrita do display), `FL_/RST` 3,27 V, `REM` 3,28 V, saída do `U701` 3,0 V. Nada acima de 3,4 V.
   - `D+5` **5,05 V** e `+B2` **12,00 V** (no `CB301`). O dissipador do `IC801` não foi medido (o "frio" do texto
     copiado é o campo que ficou preenchido); a temperatura fica para o primeiro teste com o Pico ligado.
+- **2026-11-16, 18h:** seis fios soldados (fotos `20261116_175957.jpg` e `20261116_180004.jpg`, cópias em
+  `docs/guia/`). Conferência com o bip pelas pontas soltas, aparelho fora da tomada: **nenhum curto**.
 
