@@ -69,6 +69,30 @@ Entre o conector e o vidro, cada via do display tem um resistor em série (10 a 
   (`20261116_084609.jpg`). Para soldar o fio do controle remoto ali, ela precisa ser levantada.
 - Os chips conferem com o manual: `IC2` LC786922, `IC7` LC87F1HC, e os dois NJM2068 na placa de saída analógica.
 
+### Com a frente do gabinete tirada (fotos de 2026-11-16, 11h)
+
+Sem a frente de alumínio, a placa frontal (`YA984-1`, mais as pequenas `YA984-3` do USB e a do PURE DIRECT) fica de pé,
+com o lado das soldas virado para dentro do aparelho e alcançável de cima. Tudo o que o Pico precisa está nesse lado.
+
+- **O receptor de IR (`U701`)** tem as 3 pernas soldadas atrás da placa, ao lado da porta `IC702` (5 pernas, SOT-23)
+  e dos `C717`/`C719` (`20261116_111503.jpg`). É ali que entra o fio do controle remoto. Qual das três pernas é a saída
+  (`OUT`) se confirma com o multímetro: é a que tem continuidade com as pernas 1 e 2 do `IC702` (as duas entradas da
+  porta). O esquema põe as pernas na ordem `OUT`, `G`, `VCC`.
+- **Os resistores do display** (`R701` a `R704`) ficam entre as soldas do `CB701` e o vidro, numa fileira só, com os
+  códigos `100` (10 Ω, o do `FL_/RST`) e `101` (100 Ω) visíveis (`20261116_111509.jpg`, `20261116_111519.jpg`). Os
+  dois lados de cada um são bons pontos para as pontas do analisador lógico.
+- **Os fios perigosos ficam a uns 2 cm:** o `W702` (`FLGND`, `ACFL1`, `ACFL2`, `-27`) está à esquerda do `CB701`, do
+  mesmo lado da placa (`20261116_111519.jpg`). As trilhas dele descem para o filamento, longe dos resistores do
+  display.
+- **O display** (`20261116_111148.jpg`): além dos 12 caracteres e dos ícones já conhecidos, o vidro tem os círculos
+  de 1 a 5 (de trocador de discos, que o CD-S300 não usa) e o "15". As pernas ficam todas na borda de cima.
+- A placa do USB (`YA984-3`) e a do PURE DIRECT têm os LEDs `D751` (USB, duas cores) e `D702`, as teclas `SW708`
+  (USB) e `SW703` (PURE DIRECT), e recebem os fios `W751`, `W703` e `W701A` da placa frontal
+  (`20261116_111152.jpg`, `20261116_111455.jpg`).
+- O chassi tem o carimbo **18 AUG 2017** (`20261116_111202.jpg`): este aparelho foi fabricado oito anos depois do
+  manual (2009). Até aqui, toda serigrafia conferida bate com o manual, mas uma revisão do firmware ou da placa é
+  possível. Mais um motivo para conferir com o multímetro antes de soldar.
+
 ### As teclas do painel (página 30)
 
 Cada via `KEY_x` é uma entrada analógica do microcontrolador, com 10 kΩ para 3,3 V. Cada tecla liga a via ao terra
