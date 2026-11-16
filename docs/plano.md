@@ -155,8 +155,9 @@ do vidro; o leitor de telas sai do que ele mostrar.
 2. O `/device` do CD-S300. **Escrito em 2026-11-16**, com `kind` e `keys`, que são a proposta do `api` 2.
 3. O envio dos códigos do controle remoto, e o `/control`. **Escrito em 2026-11-16**: as 30 teclas da tabela do
    manual, em NEC 79/86, conferidas bit a bit com o modelo do `groove-rig`. O PIO que move a linha é o do SP103.
-   Falta: rodar num Pico, com o fio na saída do receptor, e ver o aparelho obedecer. Os tempos são os do padrão
-   NEC, não medidos neste aparelho.
+   **Funcionando no aparelho em 2026-11-16**: o Pico alimentado pelo `D+5`, na rede de casa (`CDS300-D85E`), e o
+   `POST /control?target=key&name=play` pôs o disco a tocar. O fio do controle está no GP6 (não no GP15 do SP103),
+   para o mesmo chicote servir ao analisador. Os tempos são os do padrão NEC, não medidos neste aparelho.
 4. O sniffer do display (PIO) e o leitor das telas, testados no Mac com as capturas reais.
 
 Os arquivos de Wi-Fi, servidor e atualização saíram do `mr780-mod` e agora ficam num lugar só: a **base comum**, no

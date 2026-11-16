@@ -197,7 +197,7 @@ figure.zoomable { flex-direction: column; gap: 6px; cursor: zoom-in; }
 <script>
 (() => {
   // ------------------------------------------------------------------ the photos (marks in a 2000 x 1500 grid)
-  const IMG = { solda: "guia/20261116_175957.jpg", soldaIR: "guia/20261116_180004.jpg", geral: "guia/20261116_111202.jpg", cb701: "guia/20261116_111519.jpg", u701: "guia/20261116_111503.jpg", cb304: "guia/20261116_084644.jpg" };
+  const IMG = { cb301: "guia/cb301-pernas.jpg", solda: "guia/20261116_175957.jpg", soldaIR: "guia/20261116_180004.jpg", geral: "guia/20261116_111202.jpg", cb701: "guia/20261116_111519.jpg", u701: "guia/20261116_111503.jpg", cb304: "guia/20261116_084644.jpg" };
 
   // CB701 pelas soldas (foto 111519). Dedução: a serigrafia lista as vias 1 a 15 da esquerda para a direita; as ímpares
   // na fileira de cima (8 soldas), as pares na de baixo (7). A confirmar com o bip (cartão 2).
@@ -232,6 +232,21 @@ figure.zoomable { flex-direction: column; gap: 6px; cursor: zoom-in; }
     b += `<ellipse cx="330" cy="695" rx="110" ry="55" class="o-ring hot" style="stroke-width:5"/>`; lab(430, 760, "4: perna C e a ilha à esquerda", " hot");
     b += `<circle cx="310" cy="420" r="34" class="o-ring" style="stroke-width:4"/>`; lab(355, 395, "A");
     return photoP("soldaIR", b, "O fio do controle na perna C do U701");
+  }
+
+  function drawPernas() {
+    // CB301 de frente: 10 pernas nuas acima do conector branco, o capacitor grande à direita.
+    const LEGS = [47, 213, 380, 547, 713, 873, 1040, 1200, 1367, 1533];
+    let b = "";
+    LEGS.forEach((x, i) => {
+      const n = i + 1, hot = n === 5, gnd = n === 6;
+      b += `<text x="${x}" y="800" class="o-t sm${hot ? " hot" : gnd ? " wht" : ""}" text-anchor="middle">${n}</text>`;
+      if (hot || gnd) b += `<rect x="${x - 34}" y="70" width="68" height="200" rx="14" class="o-ring${hot ? " hot" : " gnd"}"/>`;
+    });
+    b += `<text x="560" y="380" class="o-t hot">5ª: D+5 (solde aqui, na perna nua)</text>`;
+    b += `<text x="900" y="460" class="o-t wht sm">6ª: terra (DGND)</text>`;
+    b += `<text x="1640" y="1000" class="o-t sm">capacitor grande</text><text x="1640" y="1040" class="o-t sm">(lado direito)</text>`;
+    return photo("cb301", b, "As pernas do CB301, com o D+5 e o terra");
   }
 
   function drawGeral() {
@@ -349,6 +364,11 @@ figure.zoomable { flex-direction: column; gap: 6px; cursor: zoom-in; }
         ${PAIRS.map(([a, b2, k]) => `<tr><td>${a}</td><td>${b2}</td><td>${sel(k, ["não bipa", "curto e para", "sem parar"])}</td></tr>`).join("")}
         </tbody></table></div>`,
       ref: "Cores como eu li nas fotos: preto = terra, cinza = FL_/CS (cima 8ª), laranja = FL_CLK, verde-azulado = FL_DATA, amarelo = FL_/RST, roxo = controle. Se for diferente, diga nas observações." },
+    { id: "7", title: "Soldar a alimentação do Pico", fig: drawPernas(), sec: "A alimentação: aparelho fora da tomada",
+      steps: ["<b>CD fora da tomada e Pico fora do USB.</b>", "No <code>CB301</code> (placa principal), cada pino tem uma <b>perna de metal nua</b> acima do conector branco. Conte da esquerda, com o capacitor grande à sua direita: a <b>5ª</b> é o <code>D+5</code>, a <b>6ª</b> é o terra.", "Solde um fio na <b>parte de cima da perna 5</b>, longe do plástico branco: estanhe a ponta do fio antes, encoste e esquente pouco. Faça o mesmo na perna 6 com outro fio (ou use o terra que já vai ao pino 3 do Pico e pule este).", "Bip entre os dois fios novos: um bip curto que para é normal (capacitores); um bip que não para é curto.", "No Pico: o fio do <code>D+5</code> no <b>VSYS, pino 39</b> (fileira da direita, 2º a partir do USB). O terra no <b>GND, pino 38</b> (logo abaixo, ilha quadrada)."],
+      body: `<div class="fields">${fld("p_solda", "Soldado nas pernas 5 e 6?", sel("p_solda", ["sim", "só a 5 (terra pelo pino 3)"]))}${fld("p_bip", "Bip entre os fios novos", sel("p_bip", ["não bipa", "curto e para", "sem parar"]))}</div>
+        <p class="note stop"><b>Depois de ligado o D+5:</b> nunca ponha o Pico no USB do Mac com este fio conectado. O USB alimentaria o CD por trás. A primeira instalação do programa pelo cabo se faz antes de ligar este fio; depois, tudo é pelo Wi-Fi.</p>`,
+      ref: "Você já mediu 5,05 V na perna 5 e 12,00 V na 9 (+B2): é o mesmo mapa. As pernas ficam mais afastadas que as soldas do CB701." },
   ];
 
   const host = document.getElementById("cards");
@@ -440,6 +460,11 @@ figure.zoomable { flex-direction: column; gap: 6px; cursor: zoom-in; }
       row("Conferência da solda", `${done.length} de ${PAIRS.length} pares`, "nenhum curto", bad.length ? ["st-stop", `curto em ${bad.length}`] : ["st-ok", "ok"]);
       lines.push(`Conferência da solda: ${done.length} de ${PAIRS.length} pares, ` + (bad.length ? "CURTO (bip sem parar) em: " + bad.map(([a, b2]) => `${a} × ${b2}`).join("; ") : "nenhum curto")
         + (done.some(([, , k]) => get(k) === "curto e para") ? ". Bip curto em: " + done.filter(([, , k]) => get(k) === "curto e para").map(([a, b2]) => `${a} × ${b2}`).join("; ") : ""));
+    }
+    if (get("p_solda") || get("p_bip")) {
+      const pb = get("p_bip");
+      row("Alimentação soldada", get("p_solda") || "—", "sem curto", pb === "sem parar" ? ["st-stop", "CURTO"] : pb ? ["st-ok", "ok"] : ["", ""]);
+      lines.push(`Alimentação: soldado=${get("p_solda") || "?"}, bip entre os fios=${pb || "?"}`);
     }
     if (get("notas")) lines.push("Observações: " + get("notas"));
     if (!rows.length) rows.push(`<tr><td colspan="4" class="ref">Nada medido ainda. As linhas aparecem aqui conforme você preenche os cartões.</td></tr>`);

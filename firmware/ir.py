@@ -1,13 +1,14 @@
 """Manda as teclas do controle remoto ao CD-S300 pela linha do IR, por fio.
 
-Ligação prevista (ainda não feita nem testada no aparelho; docs/plano.md):
+Ligação (testada em 2026-11-16: o "play" mandado pelo Wi-Fi pôs o disco a tocar; docs/plano.md):
 
-    GP15 = saída do receptor de IR (U701), antes da porta IC702
+    GP6 = saída do receptor de IR (U701, perna C), antes da porta IC702. Soldado em 2026-11-16 (docs/plano.md). O GP6,
+    e não o GP15 do SP103, para o mesmo chicote servir ao analisador lógico (canal 5) e à ponte.
 
 Não serve a via REM do cabo flat: ela sai de uma porta lógica que a empurra para 3,3 V, e o Pico brigaria com ela
 (docs/pesquisa.md, "O receptor").
 
-REGRA DE SEGURANÇA (a mesma do SP103): o GP15 NUNCA vai a 1. O valor de saída fica em 0 e só a direção muda, na força
+REGRA DE SEGURANÇA (a mesma do SP103): o GP6 NUNCA vai a 1. O valor de saída fica em 0 e só a direção muda, na força
 mínima (2 mA). A linha sobe pelo resistor de dentro do receptor.
 
 O PIO só segura a linha em 0 durante um tempo já contado. Enquanto espera o próximo tempo, ela fica solta: se o DMA
@@ -27,7 +28,7 @@ from machine import Pin, mem32
 
 import ir_codes
 
-IR_PIN = 15
+IR_PIN = 6
 _PADS_BANK0 = 0x40038000
 _DRIVE_MASK = 0x3 << 4
 _PIO_BASE = (0x50200000, 0x50300000, 0x50400000)
