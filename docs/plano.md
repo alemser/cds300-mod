@@ -55,10 +55,11 @@ CD/USB e o PURE DIRECT) e lê o disco sozinho?
 **Feito em 2026-11-16**: dezesseis fotos e o manual de serviço. As fotos de perto já mostraram o flat nas duas
 pontas, os nomes das vias nas duas placas e o conector da fonte (`docs/pesquisa.md`).
 
+Com a frente do gabinete tirada, as fotos mostraram também as pernas do receptor `U701` e os resistores do display:
+os pontos onde o fio do IR e o analisador lógico se ligam.
+
 Fotos que ainda ajudam:
 
-- A placa frontal na região do receptor `U701` e da porta `IC702`, com a folha de plástico levantada, para achar
-  onde soldar o fio do controle remoto.
 - A traseira inteira, para achar a porta de gravação `CB902`.
 - A placa principal na região do `IC305` e do `IC4` (S/PDIF).
 - O flat com uma régua ao lado, para confirmar o passo de 1,25 mm.
@@ -117,16 +118,19 @@ Documentar em `docs/descobertas-protocolo.md`, com as capturas em `captures/`.
 
 ## Passo 4: o programa
 
-1. **A base da ponte**, copiada do `mr780-mod` (`ponte.py`, `wifi.py`, `web.py`, `ota.py`, `udp.py`, `listeners.py`,
-   `main.py`, `tools/enviar.py`): Wi-Fi sem cabo pela rede `AmpLink-CDS300-XXXX`, descoberta e atualização pelo Wi-Fi.
-   Dá para fazer antes das capturas, com o `/state` todo `null`.
-2. O `/device` do CD-S300, com as capacidades novas (ver "O protocolo comum").
-3. O sniffer do display (PIO) e o leitor das telas, testados no Mac com as capturas reais.
-4. O envio dos códigos do controle remoto, e o `/control`.
+1. **A base da ponte**: Wi-Fi sem cabo pela rede `AmpLink-CDS300-XXXX`, descoberta e atualização pelo Wi-Fi, com o
+   `/state` todo `null`. **Escrita em 2026-11-16**, testada só no computador.
+2. O `/device` do CD-S300. **Escrito em 2026-11-16**, com `kind` e `keys`, que são a proposta do `api` 2.
+3. O envio dos códigos do controle remoto, e o `/control`. **Escrito em 2026-11-16**: as 30 teclas da tabela do
+   manual, em NEC 79/86, conferidas bit a bit com o modelo do `groove-rig`. O PIO que move a linha é o do SP103.
+   Falta: rodar num Pico, ligar o fio na saída do receptor e ver o aparelho obedecer. Os tempos são os do padrão
+   NEC, não medidos neste aparelho.
+4. O sniffer do display (PIO) e o leitor das telas, testados no Mac com as capturas reais.
 
-Esta é a terceira cópia dos mesmos arquivos de Wi-Fi e atualização. **Antes de copiar, vale tirá-los para um lugar
-só** (uma pasta `firmware-base/` no `amp-link`), com um script que os copia para cada projeto. Uma correção passa a
-valer para os três.
+Os arquivos de Wi-Fi, servidor e atualização saíram do `mr780-mod` e agora ficam num lugar só: a **base comum**, no
+repositório `amp-link`, pasta `firmware-base/`. Cada projeto recebe uma cópia igual, feita pelo `copiar.py` de lá. O
+`mr780-mod` e este projeto usam a base; o `sp103-display-proxy` ainda não (o `web.py` e o `main.py` dele têm partes
+próprias).
 
 As lições do SP103 continuam valendo: sem página web no Pico, sem respostas grandes, uma conexão `/events` por
 cliente, e copiar cada parte só quando for usada.

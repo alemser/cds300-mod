@@ -11,7 +11,7 @@ são achados na rede e cada um diz o que é e o que sabe fazer (`docs/plano.md`,
 
 Início. Nada medido, nada soldado. O que existe:
 
-- Dezesseis fotos do aparelho aberto (`docs/images/`), oito delas de perto.
+- Vinte e quatro fotos do aparelho aberto (`docs/images/`), oito delas sem a frente do gabinete.
 - O **manual de serviço** (57 páginas, com esquema), na cópia local em `docs/manual/`. Ele respondeu quase tudo o que
   no MR 780 precisou de multímetro: a pinagem do cabo do display, as tensões, a fonte e os códigos do controle remoto
   (`docs/pesquisa.md`).
@@ -29,8 +29,14 @@ O que o manual já decidiu:
 O último item muda o projeto: com o aparelho desligado, o Pico também está desligado. As saídas possíveis estão em
 `docs/plano.md`, "Ligar e desligar".
 
-Próximo passo: conferir as tensões do flat com o multímetro e capturar o display e o controle remoto com o analisador
-lógico (`docs/plano.md`, passos 2 e 3).
+Sem o aparelho na bancada, começou o firmware: a **base da ponte** (`firmware/ponte.py`), que configura o Wi-Fi sem
+cabo pela rede `AmpLink-CDS300-XXXX`, é achada pela app Amp Link sem IP digitado, se atualiza pelo Wi-Fi e manda as
+30 teclas do controle remoto (`POST /control?target=key&name=play`). O `/state` ainda vem todo `null`. **Nada disso
+rodou num Pico ainda**: só os testes no computador. As teclas só chegam ao aparelho depois que o fio do IR for
+ligado.
+
+Próximo passo: conferir as tensões do flat com o multímetro e capturar o display com o analisador lógico
+(`docs/plano.md`, passos 2 e 3).
 
 ## Documentos
 
@@ -61,9 +67,44 @@ O manual de serviço fica só na cópia local, em `docs/manual/` (tem direitos a
 | `20261116_084629.jpg` | Placa principal: o `IC2` (LC786922) e o conector do leitor óptico |
 | `20261116_084644.jpg` | Placa principal: o conector da fonte `CB301` com os nomes, o `IC7`, o `IC303` e o `CB304` com os nomes das vias |
 | `20261116_084657.jpg` | A placa de saída analógica (os dois NJM2068) |
+| `20261116_111148.jpg` | O display aceso, sem a frente do gabinete: os 12 caracteres, os ícones e as pernas do vidro |
+| `20261116_111152.jpg` | As plaquinhas do USB e do PURE DIRECT, com os LEDs e as teclas |
+| `20261116_111202.jpg` | Visão geral sem a frente do gabinete (carimbo 18 AUG 2017 no chassi) |
+| `20261116_111455.jpg` | Atrás da plaquinha do PURE DIRECT: `W701A`, `W703`, `D702` |
+| `20261116_111459.jpg` | Atrás do display: as trilhas que saem do vidro |
+| `20261116_111503.jpg` | Atrás do receptor de IR: as 3 pernas do `U701`, a porta `IC702` |
+| `20261116_111509.jpg` | Atrás do `CB701`: os resistores do display `R701` a `R704` |
+| `20261116_111519.jpg` | Atrás do `CB701` com as legendas, o `W702` (tensão alta) ao lado, e o `CB301` da placa principal |
 
-## Pastas (a criar quando forem usadas)
+## Pastas
 
-- `firmware/`: o programa do Pico (MicroPython), a partir da base da ponte do `mr780-mod`.
-- `tools/`: testes no computador e o `enviar.py`.
-- `captures/`: capturas do analisador lógico.
+- `firmware/`: o programa do Pico (MicroPython).
+  - Deste projeto: `ponte.py` (o programa), `device.py` (o `/device`), `ir_codes.py` (os códigos do controle),
+    `ir.py` (a linha do IR) e `control.py` (as rotas `/control` e `/ir`).
+  - **Cópias da base comum** (repositório `amp-link`, pasta `firmware-base/`): `wifi.py`, `web.py`, `ota.py`,
+    `udp.py`, `listeners.py` e `main.py`. Mudar lá e copiar com `python3 ../amp-link/firmware-base/copiar.py`,
+    nunca aqui.
+  - `main.py` (o porteiro das atualizações) e `secrets.py` (a senha das atualizações, fora do git) só vão ao Pico
+    pelo cabo; o resto vai pelo Wi-Fi com `python3 tools/enviar.py`.
+- `tools/`: os testes no computador e o `enviar.py`. O `enviar.py`, o `test_wifi.py` e o `test_listeners.py` também
+  vêm da base.
+- `captures/`: capturas do analisador lógico (a criar).
+
+## Testar no computador
+
+```sh
+for t in wifi listeners device ir control; do python3 tools/test_$t.py; done
+python3 ../amp-link/firmware-base/copiar.py --conferir    # as cópias da base estão em dia?
+```
+
+O `test_ir.py` compara os códigos com o modelo do `groove-rig` (`~/Projects/groove-rig`).
+
+## Instalar no Pico (pelo cabo, uma vez)
+
+```sh
+cp firmware/secrets.example.py firmware/secrets.py    # e preencher UPDATE_PASSWORD
+mpremote fs cp firmware/*.py : + reset
+```
+
+Sem rede salva, o Pico abre a rede `AmpLink-CDS300-XXXX`: na app Amp Link, "Set up the amp's Wi-Fi". Daí em diante,
+atualizações só pelo Wi-Fi: `python3 tools/enviar.py`.
