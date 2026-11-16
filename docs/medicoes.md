@@ -48,5 +48,5 @@ As leituras na ordem em que foram feitas, com data e hora.
   - Saída do `U701`: **perna C** (a de baixo, na foto `20261116_111503.jpg`).
   - Ligado, parado, sem disco, preta na cima 5ª (`DGND`): `D+3.3V` 3,28 V, `FL_/CS` 2,92 V (média: cai a 0 a cada
     escrita do display), `FL_/RST` 3,27 V, `REM` 3,28 V, saída do `U701` 3,0 V. Nada acima de 3,4 V.
-  - Dissipador do `IC801`: frio (falta confirmar que foi depois de 30 min tocando). `D+5` ainda não medido.
+  - `D+5` e o dissipador do `IC801` ainda não medidos (o "frio" do texto copiado foi engano).
 
