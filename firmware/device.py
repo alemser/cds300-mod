@@ -1,39 +1,64 @@
-"""GET /device: quem é esta ponte e o que ela sabe fazer.
+"""GET /device: who this bridge is and what it can do, in the DeviceLink contract api 2 (amp-link docs/contract-v2.md).
 
-O contrato está no repositório amp-link (docs/contrato.md). Tudo aqui é fixo enquanto o programa roda: o cliente lê
-uma vez ao conectar. A versão é a mesma do GET /update.
+The app builds the CD-S300's screen from this: the state fields to show, the remote in groups, and the settings (none
+here). Nothing changes while the bridge runs, so the JSON is built once, on the first request, and served as stored
+bytes afterwards (a Pico should not rebuild 1 KB of JSON per request).
 
-Por enquanto (2026-11-16) a ponte do CD-S300 sabe se atualizar, configurar o Wi-Fi e mandar as teclas do controle
-remoto. O estado do aparelho depende das capturas do display (docs/plano.md, passo 3). Cada capacidade nova entra em
-FEATURES quando existir de verdade.
-
-"kind" e "keys" ainda não estão no contrato (api 1): são a proposta do api 2 (docs/plano.md, "O protocolo comum"). Um
-cliente de hoje ignora o que não conhece. Um CD player não tem entradas, volume nem tom, então esses campos não vêm.
-
-describe() roda igual no MicroPython (Pico) e no Python do computador (tools/test_device.py).
+describe() runs the same in MicroPython (Pico) and CPython (tools/test_device.py).
 """
+
+import json
 
 import ir_codes
 
-API = 1                         # só muda quando algo deixa de ser compatível
-NAME = "cds300"                 # o nome na descoberta e na rede (cds300.local, AmpLink-CDS300-XXXX); o enviar.py lê
+API = 2
+NAME = "cds300"                 # the discovery and network name (cds300.local, AmpLink-CDS300-XXXX); enviar.py reads it
 KIND = "cd_player"
 MODEL = "Yamaha CD-S300"
-COLUMNS, ROWS = 12, 1           # o VFD: 1 linha de 12 caracteres, mais os ícones (docs/pesquisa.md)
-FEATURES = ("update", "wifi_setup", "control")
+FIRMWARE = "alemser/cds300-mod"  # the GitHub repository whose releases carry this firmware (enviar.py --publish)
+FEATURES = ("control", "update", "wifi_setup")
+
+STATE = (
+    {"id": "transport", "type": "enum", "values": ["playing", "paused", "stopped", "loading", "open"]},
+    {"id": "media.track", "type": "int", "label": "Track"},
+    {"id": "media.elapsed_s", "type": "duration", "label": "Time"},
+    {"id": "disc.tracks", "type": "int", "label": "Tracks"},
+    {"id": "disc.total_s", "type": "duration", "label": "Total"},
+    {"id": "lcd", "type": "lines", "label": "Display"},
+)
+
+CONTROLS = (
+    ("transport", ("previous", "rewind", "play", "pause", "stop", "fast_forward", "next", "eject")),
+    ("modes", ("repeat", "shuffle", "repeat_a_b", "program", "display", "dimmer")),
+    ("numbers", ("digit_1", "digit_2", "digit_3", "digit_4", "digit_5", "digit_6", "digit_7", "digit_8", "digit_9",
+                 "digit_0", "enter", "clear")),
+    ("source", ("cd_usb", "pure_direct", "folder_down", "folder_up")),
+)
+
+_cached = None
 
 
-def describe(version):
-    return {"api": API, "kind": KIND, "model": MODEL, "bridge_version": version,
-            "display": {"columns": COLUMNS, "rows": ROWS},
-            "keys": list(ir_codes.KEYS),
-            "features": list(FEATURES)}
+def describe(version, name):
+    controls = [{"group": g, "keys": list(keys)} for g, keys in CONTROLS]
+    return {"api": API, "kind": KIND, "model": MODEL, "name": name, "bridge_version": version,
+            "firmware": FIRMWARE, "features": list(FEATURES), "state": list(STATE), "controls": controls,
+            "settings": []}
+
+
+def check():
+    """Every key in the remote is one the IR sender knows (tools/test_device.py)."""
+    listed = [k for _, keys in CONTROLS for k in keys]
+    return sorted(set(listed) - set(ir_codes.KEYS)), sorted(set(ir_codes.KEYS) - set(listed))
 
 
 async def handle(req, writer):
-    """Rota /device (ver web.Publisher)."""
+    """Route /device (see web.Publisher)."""
+    global _cached
     import ota
-    from web import reply, reply_json
+    from web import reply
     if req.path != "/device":
         return await reply(writer, "404 Not Found", "text/plain", b"not found\n")
-    await reply_json(writer, describe(await ota.current_version()))
+    if _cached is None:
+        from ponte import net
+        _cached = json.dumps(describe(await ota.current_version(), net.name)).encode()
+    await reply(writer, "200 OK", "application/json", _cached)

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Testa no computador a descrição da ponte (firmware/device.py).
+"""Checks the bridge's description (firmware/device.py) against the DeviceLink contract api 2.
 
     python3 tools/test_device.py
 """
@@ -13,17 +13,20 @@ sys.path.insert(0, os.path.join(HERE, "..", "firmware"))
 
 import device   # noqa: E402
 
-d = json.loads(json.dumps(device.describe("abcd1234")))
-assert d["api"] == 1
-assert d["kind"] == "cd_player"
-assert d["model"] == "Yamaha CD-S300"
-assert d["bridge_version"] == "abcd1234"
-assert d["display"] == {"columns": 12, "rows": 1}
-assert d["features"] == ["update", "wifi_setup", "control"]
-assert len(d["keys"]) == 30 and len(set(d["keys"])) == 30
-assert d["keys"][:4] == ["cd_usb", "pure_direct", "eject", "play"]
-assert "power_toggle" not in d["keys"]                  # o controle do CD-S300 não tem tecla de ligar
-# Um CD player não tem entradas, volume nem tom: a app esconde o que falta.
-assert "inputs" not in d and "volume_db" not in d and "tone_db" not in d
-assert device.NAME == "cds300"                          # o tools/enviar.py e a descoberta usam este nome
-print("tudo certo")
+raw = json.dumps(device.describe("abcd1234", "CDS300-D85E"))
+d = json.loads(raw)
+assert d["api"] == 2 and d["kind"] == "cd_player" and d["model"] == "Yamaha CD-S300"
+assert d["name"] == "CDS300-D85E" and d["bridge_version"] == "abcd1234"
+assert d["firmware"] == "alemser/cds300-mod"
+assert d["features"] == ["control", "update", "wifi_setup"]
+assert [s["id"] for s in d["state"]] == ["transport", "media.track", "media.elapsed_s", "disc.tracks", "disc.total_s",
+                                         "lcd"]
+assert [c["group"] for c in d["controls"]] == ["transport", "modes", "numbers", "source"]
+assert d["controls"][0]["keys"][:3] == ["previous", "rewind", "play"]
+assert d["settings"] == []
+# The remote holds exactly the keys the IR sender can send: none missing, none unknown.
+assert device.check() == ([], []), device.check()
+# Small enough to serve from a Pico in one go (contract: under 1.5 KB).
+assert len(raw) < 1500, len(raw)
+assert device.NAME == "cds300"      # tools/enviar.py and discovery use this name
+print("all good (%d bytes)" % len(raw))
