@@ -1,6 +1,6 @@
 """Listens to the CD-S300's VFD bus with the PIO, never driving it, and keeps vfd.Screen up to date.
 
-Wiring (soldered 2026-11-16 on the CB701 joints, docs/plano.md; the same harness the logic analyzer used):
+Wiring (soldered 2026-11-16 on the CB701 joints, docs/plan.md; the same harness the logic analyzer used):
 
     GP2 = FL_/CS    GP3 = FL_CLK    GP4 = FL_DATA    GP5 = FL_/RST (not used yet)
 

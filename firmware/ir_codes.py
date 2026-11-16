@@ -1,20 +1,19 @@
-"""Os códigos do controle remoto do CD-S300, como pulsos na linha do IR.
+"""The CD-S300's remote codes, as pulses on the IR line.
 
-Formato NEC: início longo, o endereço 79, o inverso dele (86), o comando e o inverso do comando, sempre com o bit
-menos significativo primeiro, e um pulso final. Os comandos são os da tabela do manual de serviço (página 56,
-docs/pesquisa.md). Os nomes são os do groove-rig (internal/catalog/models/yamaha_cd_s300.yaml), e o
-tools/test_ir.py confere os bits contra aquele arquivo.
+NEC format: a long leader, the address 79, its inverse (86), the command and its inverse, each LSB first, and a final
+pulse. The commands are the service manual's table (page 56, docs/research.md). The names are groove-rig's
+(internal/catalog/models/yamaha_cd_s300.yaml), and tools/test_ir.py checks the bits against that file.
 
-O controle do CD-S300 não tem tecla de ligar: o aparelho não tem standby (docs/plano.md, "Ligar e desligar").
+The CD-S300's remote has no power key: the device has no standby (docs/plan.md, "Power on and off").
 
-Os tempos são os do padrão NEC, não medidos neste aparelho: ainda não houve captura da linha do IR.
+The timings are the NEC standard's, not measured on this device.
 
-frame() roda igual no MicroPython (Pico) e no Python do computador.
+frame() runs the same in MicroPython (Pico) and in the computer's Python.
 """
 
 ADDRESS = 0x79
 
-# Na ordem do controle: modo, transporte, modos de tocar, tela, números, pastas.
+# In the remote's order: mode, transport, play modes, display, numbers, folders.
 KEYS = ("cd_usb", "pure_direct", "eject",
         "play", "pause", "stop", "previous", "next", "rewind", "fast_forward",
         "repeat", "shuffle", "program", "repeat_a_b",
@@ -33,11 +32,11 @@ COMMANDS = {"cd_usb": 0x6F, "pure_direct": 0x6E, "eject": 0x01,
 
 LEADER_MARK, LEADER_SPACE = 9000, 4500      # µs
 MARK, SPACE_0, SPACE_1 = 560, 560, 1690
-END_SPACE = 40000       # silêncio depois do código: o receptor precisa dele para separar duas teclas seguidas
+END_SPACE = 40000       # silence after the code: the receiver needs it to tell two keys in a row apart
 
 
 def frame(key):
-    """Os tempos em µs de uma tecla: linha em 0, linha solta, linha em 0, e assim por diante. Termina em espaço."""
+    """A key's times in µs: line at 0, line released, line at 0, and so on. Ends with a space."""
     command = COMMANDS[key]
     words = [LEADER_MARK, LEADER_SPACE]
     for byte in (ADDRESS, ADDRESS ^ 0xFF, command, command ^ 0xFF):

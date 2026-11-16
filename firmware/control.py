@@ -1,23 +1,22 @@
-"""Comandos ao CD-S300 pela rede (contrato do amp-link, "control").
+"""Commands to the CD-S300 over the network (the contract's "control" group).
 
-    POST /control?target=key&name=play     uma tecla do controle (ir_codes.KEYS); responde com o estado
-    POST /ir/send?cmd=play                 a mesma tecla; responde com o estado da linha do IR
-    GET  /ir                               o estado da linha do IR e a lista de teclas
+    POST /control?target=key&name=play     one remote key (ir_codes.KEYS); answers with the state
+    POST /ir/send?cmd=play                 the same key; answers with the IR line's status
+    GET  /ir                               the IR line's status and the list of keys
 
-Por enquanto só existe o alvo "key": os outros alvos do contrato (volume, tom) são de amplificador. Pedir o resultado
-("vá para a faixa 5") em vez da tecla depende de ler o display, e vem depois das capturas.
+Only the "key" target exists: the contract's other targets (volume, tone) belong to amplifiers.
 
-Um pedido por vez: enquanto uma tecla está saindo, a seguinte recebe "busy". Uma tecla leva uns 110 ms, com o
-silêncio do fim.
+One request at a time: while a key is going out, the next one gets "busy". A key takes about 110 ms, with the
+silence at the end.
 
-check() roda igual no MicroPython (Pico) e no Python do computador (tools/test_control.py).
+check() runs the same in MicroPython (Pico) and in the computer's Python (tools/test_control.py).
 """
 
 import ir_codes
 
 
 def check(key, sending):
-    """O texto do erro para mostrar ao usuário (em inglês, como no contrato), ou None se a tecla pode sair."""
+    """The error text to show the person (in English, as in the contract), or None if the key can go out."""
     if key not in ir_codes.COMMANDS:
         return "unknown key"
     if sending:
@@ -37,7 +36,7 @@ class Control:
         return error
 
     async def handle(self, req, writer):
-        """Rotas /control e /ir (ver web.Publisher)."""
+        """Routes /control and /ir (see web.Publisher)."""
         from web import reply, reply_json
         if req.path == "/ir" and req.method == "GET":
             return await reply_json(writer, self.remote.status())

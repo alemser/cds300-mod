@@ -1,6 +1,6 @@
 """Parser for the CD-S300 front-panel VFD bus, as seen by the Pico's sniffer (display.py).
 
-The protocol comes from the logic-analyzer capture captures/02-tocando.lac (docs/descobertas-protocolo.md):
+The protocol comes from the logic-analyzer capture captures/02-tocando.lac (docs/protocol.md):
 
 - One frame per command: /CS low, a command byte, then its data bytes, LSB first, data valid on the rising clock.
 - The command's high nibble is the command, the low nibble an address (Princeton PT6302-style controller):
@@ -27,7 +27,7 @@ TEXT_LEN = 12
 ICON_POS = (12, 13)
 RAM_LEN = 16
 CHANGES_KEPT = 4                # text changes every second while playing: keep only the latest
-ICON_CHANGES_KEPT = 16          # icon changes are rare: enough for a mapping session (docs/descobertas-protocolo.md)
+ICON_CHANGES_KEPT = 16          # icon changes are rare: enough for a mapping session (docs/protocol.md)
 
 
 def _clock(s):

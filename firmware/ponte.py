@@ -2,7 +2,7 @@
 
 Wi-Fi without a cable (wifi.py), updates over Wi-Fi (ota.py), /device, the remote-control keys (control.py, ir.py) and,
 since 2026-11-16, the display reader (display.py, vfd.py): /state carries the 12 characters on the display and the
-raw icon bits; /display shows the reader's full view, for mapping which bit is which icon (docs/plano.md).
+raw icon bits; /display shows the reader's full view, for mapping which bit is which icon (docs/plan.md).
 
 Run from the computer:  .venv/bin/mpremote run firmware/ponte.py   (or install and reset: see README)
 """
@@ -28,7 +28,7 @@ class State:
         self.player = Player()
 
     def to_dict(self):
-        """api 2 proposal (docs/plano.md, "O protocolo comum"): transport, media and disc groups."""
+        """api 2 proposal (amp-link docs/contract-v2.md): transport, media and disc groups."""
         d = {"power": None, "lcd": [], "updated_at": time.ticks_ms(), "version": self.version}
         if self.display is not None and self.display.alive():
             p = self.player.state

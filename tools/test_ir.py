@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
-"""Confere firmware/ir_codes.py: o formato NEC, a tabela do manual e os códigos do groove-rig.
+"""Checks firmware/ir_codes.py: the NEC format, the manual's table and groove-rig's codes.
 
     python3 tools/test_ir.py
 
-A comparação com o groove-rig usa o arquivo de ~/Projects/groove-rig; sem ele, essa parte é pulada e o teste avisa.
+The groove-rig comparison uses the file in ~/Projects/groove-rig; without it, that part is skipped with a warning.
 """
 
 import base64
@@ -18,9 +18,9 @@ import ir_codes   # noqa: E402
 
 MODEL = os.path.expanduser("~/Projects/groove-rig/internal/catalog/models/yamaha_cd_s300.yaml")
 TICK_US = 269 / 8.192           # unidade de tempo do Broadlink
-LONG_US = 1000                  # acima disto, o espaço é um bit 1
+LONG_US = 1000                  # above this, the space is a 1 bit
 
-# A tabela do manual de serviço, página 56 (docs/pesquisa.md), copiada à parte para pegar erro de digitação.
+# The service manual's table, page 56 (docs/research.md), copied separately to catch typos.
 MANUAL = {"cd_usb": 0x6F, "pure_direct": 0x6E, "eject": 0x01, "program": 0x0C, "repeat": 0x08, "shuffle": 0x1B,
           "dimmer": 0x54, "repeat_a_b": 0x09, "display": 0x0A, "digit_1": 0x11, "digit_2": 0x12, "digit_3": 0x13,
           "digit_4": 0x14, "digit_5": 0x15, "digit_6": 0x16, "digit_7": 0x17, "digit_8": 0x18, "digit_9": 0x19,
@@ -29,7 +29,7 @@ MANUAL = {"cd_usb": 0x6F, "pure_direct": 0x6E, "eject": 0x01, "program": 0x0C, "
 
 
 def decode(words):
-    """Os 4 bytes de um código NEC, a partir dos tempos (linha em 0, linha solta, ...)."""
+    """The 4 bytes of a NEC code, from its times (line at 0, line released, ...)."""
     out = [0, 0, 0, 0]
     for i in range(32):
         if words[2 + 2 * i + 1] > LONG_US:
@@ -38,7 +38,7 @@ def decode(words):
 
 
 def captured(body):
-    """Os tempos em µs de um código no formato do Broadlink."""
+    """The times in µs of a code in Broadlink's format."""
     data = base64.b64decode(body)
     payload = data[4:4 + (data[2] | data[3] << 8)]
     times, i = [], 0
@@ -62,18 +62,18 @@ for key, command in ir_codes.COMMANDS.items():
     assert len(words) == 2 + 64 + 2, key
     assert words[0] == 9000 and words[1] == 4500, key
     assert all(w == 560 for w in words[2:-1:2]), key    # todo pulso de linha em 0 tem o mesmo tamanho
-    assert words[-1] >= 40000, key                      # o silêncio que separa duas teclas
+    assert words[-1] >= 40000, key                      # the silence between two keys
     assert decode(words) == [0x79, 0x86, command, command ^ 0xFF], key
 
 if os.path.exists(MODEL):
     with open(MODEL) as f:
         codes = dict(re.findall(r"^  (\w+):.*\n\s+format: broadlink_ir\n\s+body: (\S+)", f.read(), re.M))
-    # O groove-rig traz o power_toggle da família; o controle do CD-S300 não tem essa tecla.
+    # groove-rig carries the family's power_toggle; the CD-S300's remote has no such key.
     assert set(codes) - {"power_toggle"} == set(ir_codes.COMMANDS), set(codes) ^ set(ir_codes.COMMANDS)
     for key in ir_codes.COMMANDS:
         want = captured(codes[key])
         assert decode(want) == decode(ir_codes.frame(key)), key
 else:
-    print("aviso: sem %s, não comparei com o groove-rig" % MODEL)
+    print("warning: no %s, didn't compare with groove-rig" % MODEL)
 
-print("tudo certo")
+print("all good")

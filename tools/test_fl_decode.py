@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
-"""Confere o tools/fl_decode.py com uma captura inventada: um quadro de display e uma tecla NEC.
+"""Checks tools/fl_decode.py against a made-up capture: display frames and one NEC key.
 
     python3 tools/test_fl_decode.py
 
-A captura é montada aqui, no formato do .lac, e apagada no fim. Não substitui as capturas reais: só garante que o
-decodificador corta os quadros, lê os bits na borda certa e decodifica o NEC do jeito que o firmware/ir_codes.py manda.
+The capture is built here, in the .lac format, and deleted at the end. It doesn't replace real captures: it only makes
+sure the decoder cuts the frames, reads the bits on the right edge and decodes NEC as firmware/ir_codes.py sends it.
 """
 
 import base64
@@ -29,12 +29,12 @@ failures = []
 def check(cond, msg):
     if not cond:
         failures.append(msg)
-        print("FALHOU:", msg)
+        print("FAILED:", msg)
 
 
 def display_signals(payload_frames, half=4, gap=40):
-    """/CS, CLK e DATA: relógio parado em 1, dado trocado com o relógio em 0 e lido na subida, bit menos significativo
-    primeiro. half = amostras por meio período."""
+    """/CS, CLK and DATA: clock idle at 1, data changed with the clock at 0 and read on the rise, LSB first.
+    half = samples per half period."""
     cs, clk, data = [1] * 20, [1] * 20, [0] * 20
     for frame in payload_frames:
         cs += [0] * half
@@ -88,18 +88,18 @@ def main():
         got = [fl_decode.to_bytes(f["bits"], msb_first=False) for f in frs]
         check(got == sent, f"bytes LSB primeiro: {got}")
         msb = fl_decode.to_bytes(frs[0]["bits"], msb_first=True)
-        check(msb == [0x02], f"0x40 lido com o MSB primeiro vira 0x02: {msb}")
+        check(msb == [0x02], f"0x40 read MSB first becomes 0x02: {msb}")
 
         wrong = [fl_decode.to_bytes(f["bits"], False) for f in fl_decode.frames(sig["CS"], sig["CLK"], sig["DATA"],
                                                                                  "falling")]
-        check(wrong != sent, "na borda errada os bytes não podem sair iguais")
+        check(wrong != sent, "on the wrong edge the bytes must not come out the same")
 
         high, low, _ = fl_decode.clock_stats(sig["CLK"], sig["CS"], freq)
         check(high == 2.0 and low == 2.0, f"relógio de 2 µs alto e 2 µs baixo: {high}, {low}")
-        check(len(fl_decode.groups(frs, freq)) == 1, "três quadros com 20 µs entre eles são um grupo só")
+        check(len(fl_decode.groups(frs, freq)) == 1, "three frames 20 µs apart are one group")
 
         rp = fl_decode.pulses_low(sig["RST"], freq)
-        check(len(rp) == 1 and rp[0][1] == 10.0, f"/RST: um pulso de 10 µs: {rp}")
+        check(len(rp) == 1 and rp[0][1] == 10.0, f"/RST: one 10 µs pulse: {rp}")
 
         keys = fl_decode.nec(sig["REM"], freq)
         check(len(keys) == 1 and keys[0]["key"] == "play" and keys[0]["bytes"] == [0x79, 0x86, 0x02, 0xFD],
@@ -108,9 +108,9 @@ def main():
         with contextlib.redirect_stdout(io.StringIO()) as out:
             fl_decode.report(path, show_bits=True)
         text = out.getvalue()
-        check("LSB: C0 12 A5 FF" in text and "79 86 02 FD  play" in text, "relatório:\n" + text)
+        check("LSB: C0 12 A5 FF" in text and "79 86 02 FD  play" in text, "report:\n" + text)
 
-    print("tudo certo" if not failures else f"{len(failures)} falha(s)")
+    print("all good" if not failures else f"{len(failures)} failure(s)")
     sys.exit(1 if failures else 0)
 
 

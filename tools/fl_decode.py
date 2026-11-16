@@ -1,25 +1,23 @@
 #!/usr/bin/env python3
-"""Lê uma captura do LogicAnalyzer (gusmanb, arquivo .lac) feita no cabo flat do CD-S300 e mostra o que passou.
+"""Reads a LogicAnalyzer capture (gusmanb, .lac file) taken on the CD-S300's flat cable and shows what went by.
 
-    python3 tools/fl_decode.py captures/01-liga.lac
-    python3 tools/fl_decode.py captures/01-liga.lac --bits          # os bits crus de cada quadro
-    python3 tools/fl_decode.py captures/01-liga.lac --edge falling  # dados lidos na descida do relógio
+    python3 tools/fl_decode.py captures/02-tocando.lac
+    python3 tools/fl_decode.py captures/02-tocando.lac --bits          # each frame's raw bits
+    python3 tools/fl_decode.py captures/02-tocando.lac --edge falling  # data read on the falling clock edge
 
-Escrito em 2026-11-16, antes de qualquer captura. Ele NÃO sabe o protocolo do vidro (docs/plano.md, passo 3): só
-corta a conversa em quadros e mede, para que as perguntas do plano tenham resposta:
+Written on 2026-11-16, before any capture, so it assumes nothing about the glass's protocol: it cuts the traffic into
+frames and measures it (docs/protocol.md has what it showed):
 
-- Display (`FL_/CS`, `FL_CLK`, `FL_DATA`, `FL_/RST`): cada quadro é um trecho com o `FL_/CS` em 0. Dentro dele, um
-  bit por borda do relógio (subida, por padrão). Os bytes saem nas duas ordens (o bit mais significativo primeiro e o
-  menos significativo primeiro), porque a ordem ainda não se sabe. Mostra também a velocidade do relógio, quantos
-  bits tem cada quadro, os grupos de quadros (separados por silêncio) e de quanto em quanto tempo um grupo volta.
-- Controle remoto (`REM`, ou a saída do `U701`): decodifica NEC, que já se sabe ser o formato (docs/pesquisa.md), e dá
-  o nome da tecla pelo firmware/ir_codes.py.
+- Display (`FL_/CS`, `FL_CLK`, `FL_DATA`, `FL_/RST`): each frame is a stretch with `FL_/CS` at 0. Inside it, one bit
+  per clock edge (rising by default). The bytes come out in both bit orders (MSB first and LSB first). It also shows
+  the clock speed, the bits in each frame, the groups of frames (split by silence) and how often a group comes back.
+- Remote (`REM`, or the `U701` output): decodes NEC (docs/research.md) and names the key from firmware/ir_codes.py.
 
-Ligação padrão (canal do analisador → via do flat), a mesma de docs/descobertas-protocolo.md:
+Default wiring (analyzer channel → flat line), as in docs/protocol.md:
 
     CH1 = FL_/CS   CH2 = FL_CLK   CH3 = FL_DATA   CH4 = FL_/RST   CH5 = REM
 
-Se os canais tiverem nome no programa (CS, CLK, DATA, RST, REM), os nomes valem mais que os números.
+Channel names set in the analyzer program (CS, CLK, DATA, RST, REM) take precedence over the numbers.
 """
 
 import argparse
@@ -37,7 +35,7 @@ DEFAULT_MAP = {"CS": 1, "CLK": 2, "DATA": 3, "RST": 4, "REM": 5}
 ALIASES = {"FL_/CS": "CS", "FL_CS": "CS", "/CS": "CS", "FL_CLK": "CLK", "FL_DATA": "DATA", "DA": "DATA",
            "FL_/RST": "RST", "FL_RST": "RST", "RESET": "RST", "IR": "REM", "U701": "REM"}
 
-GROUP_GAP_US = 1000             # silêncio maior que isto entre quadros separa dois grupos (uma "escrita" da tela)
+GROUP_GAP_US = 1000             # a silence longer than this between frames splits two groups (one "write" of the screen)
 
 
 # ---------------------------------------------------------------------------
@@ -45,7 +43,7 @@ GROUP_GAP_US = 1000             # silêncio maior que isto entre quadros separa 
 # ---------------------------------------------------------------------------
 
 def load_lac(path):
-    """O .lac é o JSON do File > Save. Devolve a frequência e as amostras de cada sinal (bytes de 0 e 1)."""
+    """A .lac is the JSON of File > Save. Returns the frequency and each signal's samples (bytes of 0 and 1)."""
     with open(path, encoding="utf-8-sig") as f:
         settings = json.load(f)["Settings"]
     by_number, by_name = {}, {}
@@ -68,7 +66,7 @@ def load_lac(path):
 
 
 def edges(samples):
-    """(índice, valor novo) de cada troca de nível."""
+    """(index, new value) of each level change."""
     out = []
     prev = samples[0] if samples else 0
     for i in range(1, len(samples)):
@@ -84,7 +82,7 @@ def edges(samples):
 # ---------------------------------------------------------------------------
 
 def frames(cs, clk, data, edge="rising"):
-    """Os quadros do display: cada trecho com /CS em 0. Devolve dicts com início, fim (em amostras) e os bits."""
+    """The display's frames: each stretch with /CS at 0. Returns dicts with start, end (in samples) and the bits."""
     want = 1 if edge == "rising" else 0
     out = []
     start = None
@@ -111,7 +109,7 @@ def to_bytes(bits, msb_first):
 
 
 def clock_stats(clk, cs, freq):
-    """Duração típica (mediana) das partes alta e baixa do relógio, em µs, só com /CS em 0."""
+    """Typical (median) length of the clock's high and low parts, in µs, only with /CS at 0."""
     highs, lows = [], []
     last = None
     for i, v in edges(clk):
@@ -123,7 +121,7 @@ def clock_stats(clk, cs, freq):
 
 
 def groups(frs, freq, gap_us=GROUP_GAP_US):
-    """Junta os quadros separados por menos de gap_us: uma escrita da tela costuma ser vários quadros seguidos."""
+    """Joins frames less than gap_us apart: one write of the screen is usually several frames in a row."""
     out = []
     for fr in frs:
         if out and (fr["start"] - out[-1][-1]["end"]) * 1e6 / freq < gap_us:
@@ -134,7 +132,7 @@ def groups(frs, freq, gap_us=GROUP_GAP_US):
 
 
 def pulses_low(samples, freq):
-    """(início em ms, duração em µs) de cada trecho em 0, para o /RST."""
+    """(start in ms, length in µs) of each stretch at 0, for /RST."""
     out = []
     start = None
     for i, v in edges(samples):
@@ -151,8 +149,8 @@ def pulses_low(samples, freq):
 # ---------------------------------------------------------------------------
 
 def nec(rem, freq):
-    """As teclas NEC na linha: dicts com o tempo (ms), os 4 bytes e o nome. Repetições (tecla segurada) também."""
-    runs = []                   # (nível, início, duração em µs)
+    """The NEC keys on the line: dicts with the time (ms), the 4 bytes and the name. Repeats (key held) too."""
+    runs = []                   # (level, start, length in µs)
     prev_i, prev_v = 0, rem[0] if rem else 1
     for i, v in edges(rem):
         runs.append((prev_v, prev_i, (i - prev_i) * 1e6 / freq))
@@ -199,57 +197,57 @@ def hexs(bs):
 def report(path, edge="rising", show_bits=False, limit=40):
     freq, sig = load_lac(path)
     n = max((len(s) for s in sig.values()), default=0)
-    print(f"{path}: {n} amostras a {freq / 1e6:g} MHz ({n * 1e3 / freq:.1f} ms). Sinais: {', '.join(sorted(sig))}")
+    print(f"{path}: {n} samples at {freq / 1e6:g} MHz ({n * 1e3 / freq:.1f} ms). Signals: {', '.join(sorted(sig))}")
 
     if all(s in sig for s in ("CS", "CLK", "DATA")):
         cs, clk, data = sig["CS"], sig["CLK"], sig["DATA"]
         high, low, count = clock_stats(clk, cs, freq)
         print("\n## Display")
-        print(f"Repouso: /CS={cs[0]} CLK={clk[0]} DATA={data[0]}")
+        print(f"Idle: /CS={cs[0]} CLK={clk[0]} DATA={data[0]}")
         if count:
             period = (high or 0) + (low or 0)
-            print(f"Relógio: alto {high:.2f} µs, baixo {low:.2f} µs (~{1e3 / period:.0f} kHz). "
-                  f"Com a captura a {freq / 1e6:g} MHz, abaixo de ~{freq / 4e6:g} MHz de relógio a leitura é confiável.")
+            print(f"Clock: high {high:.2f} µs, low {low:.2f} µs (~{1e3 / period:.0f} kHz). "
+                  f"Captured at {freq / 1e6:g} MHz, a clock below ~{freq / 4e6:g} MHz reads reliably.")
         frs = frames(cs, clk, data, edge)
         sizes = {}
         for fr in frs:
             sizes[len(fr["bits"])] = sizes.get(len(fr["bits"]), 0) + 1
-        print(f"Quadros (/CS em 0): {len(frs)}. Bits por quadro: "
+        print(f"Frames (/CS at 0): {len(frs)}. Bits per frame: "
               + ", ".join(f"{b} bits × {c}" for b, c in sorted(sizes.items())))
         gs = groups(frs, freq)
         if len(gs) > 1:
             gaps = [(gs[i + 1][0]["start"] - gs[i][0]["start"]) * 1e3 / freq for i in range(len(gs) - 1)]
-            print(f"Grupos (silêncio > {GROUP_GAP_US} µs): {len(gs)}. Intervalo entre grupos: "
-                  f"mín {min(gaps):.1f} ms, mediana {sorted(gaps)[len(gaps) // 2]:.1f} ms, máx {max(gaps):.1f} ms")
+            print(f"Groups (silence > {GROUP_GAP_US} µs): {len(gs)}. Interval between groups: "
+                  f"min {min(gaps):.1f} ms, median {sorted(gaps)[len(gaps) // 2]:.1f} ms, max {max(gaps):.1f} ms")
         shown = 0
         for gi, g in enumerate(gs):
             if shown >= limit:
-                print(f"... (mais {len(gs) - gi} grupos; use --limit)")
+                print(f"... ({len(gs) - gi} more groups; use --limit)")
                 break
-            print(f"\nGrupo {gi + 1} em {g[0]['start'] * 1e3 / freq:.3f} ms, {len(g)} quadros")
+            print(f"\nGroup {gi + 1} at {g[0]['start'] * 1e3 / freq:.3f} ms, {len(g)} frames")
             for fr in g:
                 b = fr["bits"]
                 line = f"  {len(b):3d} bits  MSB: {hexs(to_bytes(b, True)):<24}  LSB: {hexs(to_bytes(b, False))}"
                 if len(b) % 8:
-                    line += f"  (+{len(b) % 8} bits soltos)"
+                    line += f"  (+{len(b) % 8} loose bits)"
                 print(line)
                 if show_bits:
                     print("           " + "".join(map(str, b)))
             shown += 1
         if "RST" in sig:
             rst = pulses_low(sig["RST"], freq)
-            print(f"\n/RST em 0: {len(rst)} vezes" + "".join(f"\n  em {t:.3f} ms por {d:.1f} µs" for t, d in rst[:10]))
+            print(f"\n/RST at 0: {len(rst)} times" + "".join(f"\n  at {t:.3f} ms for {d:.1f} µs" for t, d in rst[:10]))
 
     if "REM" in sig:
-        print("\n## Controle remoto (NEC)")
+        print("\n## Remote (NEC)")
         keys = nec(sig["REM"], freq)
         if not keys:
-            print("Nenhum código NEC.")
+            print("No NEC code.")
         for k in keys:
             if k["repeat"]:
-                print(f"  {k['at_ms']:9.1f} ms  repetição (tecla segurada)")
+                print(f"  {k['at_ms']:9.1f} ms  repeat (key held)")
             else:
-                ok = "" if k["valid"] else "  (bytes inversos não conferem)"
+                ok = "" if k["valid"] else "  (inverse bytes don't match)"
                 print(f"  {k['at_ms']:9.1f} ms  {hexs(k['bytes'])}  {k['key'] or '?'}{ok}")
 
 
@@ -257,9 +255,9 @@ def main():
     ap = argparse.ArgumentParser(description=__doc__.split("\n")[0])
     ap.add_argument("capture")
     ap.add_argument("--edge", choices=("rising", "falling"), default="rising",
-                    help="borda do relógio em que o dado é lido (padrão: subida)")
-    ap.add_argument("--bits", action="store_true", help="mostra os bits crus de cada quadro")
-    ap.add_argument("--limit", type=int, default=40, help="quantos grupos mostrar (padrão 40)")
+                    help="clock edge the data is read on (default: rising)")
+    ap.add_argument("--bits", action="store_true", help="show each frame's raw bits")
+    ap.add_argument("--limit", type=int, default=40, help="how many groups to show (default 40)")
     a = ap.parse_args()
     report(a.capture, a.edge, a.bits, a.limit)
 
