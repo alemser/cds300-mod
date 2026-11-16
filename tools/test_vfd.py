@@ -66,7 +66,19 @@ def main():
     feed(s, words([[0x63], [0x50, 0xA0]]))
     check(s.config == {"63": "", "50": "a0"}, "config kept raw: %s" % s.config)
     d = s.debug()
-    check(d["text"] == "  2    2:00 " and d["changes"][-1]["text"] == "  2    2:00 ", "debug view: %s" % d)
+    check(d["text"] == "  2    2:00 " and [c[1:] for c in d["icon_changes"]] == [["  2    1:23 ", "13.0.0"]],
+          "debug view: %s" % d)
+
+    # A long playing session: the time changes every second, the icons rarely; the debug view stays small.
+    s = vfd.Screen()
+    for sec in range(600):
+        icon = 1 if sec % 100 < 50 else 2
+        feed(s, words([[0x10] + list(("  3   %2d:%02d " % (sec // 60, sec % 60)).encode()), [0x1C, 0, 1],
+                       [0x20] + [0] * 5 + [icon, 0, 0, 0, 0]]))
+    import json
+    size = len(json.dumps(s.debug()))
+    check(size < 1024 and len(s.icon_changes) == 12 and len(s.changes) == vfd.CHANGES_KEPT,
+          "debug view small: %d bytes, %d icon changes" % (size, len(s.icon_changes)))
 
     print("all good" if not failures else "%d failure(s)" % len(failures))
     sys.exit(1 if failures else 0)

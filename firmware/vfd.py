@@ -21,7 +21,8 @@ MARKER = 0xFFFFFFFF
 TEXT_LEN = 12
 ICON_POS = (12, 13)
 RAM_LEN = 16
-CHANGES_KEPT = 32
+CHANGES_KEPT = 4                # text changes every second while playing: keep only the latest
+ICON_CHANGES_KEPT = 16          # icon changes are rare: enough for a mapping session (docs/descobertas-protocolo.md)
 
 
 def byte_of(word):
@@ -41,6 +42,7 @@ class Screen:
         self.frames = 0
         self.bad = 0                                # words that were neither a marker nor a byte
         self.changes = []                           # [(ms, text, icons hex)], newest last
+        self.icon_changes = []                      # [(ms, text, lit dots)] when the icons change, newest last
         self._frame = None
         self._last = (self.text(), self.icons().hex())     # a blank screen is not a change
 
@@ -107,6 +109,10 @@ class Screen:
         now = (self.text(), self.icons().hex())
         if now == self._last:
             return False
+        if now[1] != self._last[1]:
+            self.icon_changes.append((now_ms, now[0], self.lit()))
+            if len(self.icon_changes) > ICON_CHANGES_KEPT:
+                self.icon_changes.pop(0)
         self._last = now
         self.changes.append((now_ms, now[0], now[1]))
         if len(self.changes) > CHANGES_KEPT:
@@ -114,8 +120,7 @@ class Screen:
         return True
 
     def debug(self):
-        """GET /display: everything known, for mapping the icons and checking the reader."""
-        return {"text": self.text(), "icons": self.icons().hex(), "lit": self.lit(),
-                "ram": bytes(self.ram).hex(), "custom": {str(k): v.hex() for k, v in self.custom.items()},
-                "config": self.config, "frames": self.frames, "bad": self.bad,
-                "changes": [{"ms": ms, "text": t, "icons": i} for ms, t, i in self.changes]}
+        """GET /display: the reader's view, kept under ~1 KB (large replies choke the Pico's Wi-Fi)."""
+        return {"text": self.text(), "lit": self.lit(), "config": self.config,
+                "frames": self.frames, "bad": self.bad,
+                "icon_changes": [[ms, t, " ".join(l)] for ms, t, l in self.icon_changes]}
