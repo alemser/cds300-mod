@@ -100,8 +100,13 @@ baixo com o Pico**, como numa saída de receptor comum. Dois caminhos, a decidir
 
 ### Os códigos (página 56)
 
-Código de cliente **`79`** em todas as teclas. O formato não está escrito no manual; a Yamaha usa NEC, a confirmar
-na captura.
+Código de cliente **`79`** em todas as teclas. O formato não está escrito no manual, mas é **NEC, endereço 79/86**:
+o `groove-rig` já tem o modelo (`internal/catalog/models/yamaha_cd_s300.yaml`), e seis teclas aprendidas no oceano em
+2026-09-24 com este aparelho (abrir/fechar, play, stop, pause, anterior, próxima) decodificam para os mesmos códigos.
+
+O manual fecha as duas dúvidas anotadas no `groove-rig`: a tecla **A/B é `09`** (acrescentada lá em 2026-11-16) e o **DIMMER é `54`**. O
+`power_toggle` (`60`) que o `groove-rig` traz vem de outros modelos da família: o controle do CD-S300 não tem essa
+tecla e o aparelho não tem standby, então não deve fazer nada aqui.
 
 | Tecla | Código | Tecla | Código | Tecla | Código |
 |---|---|---|---|---|---|
