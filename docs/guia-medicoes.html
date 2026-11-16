@@ -230,16 +230,22 @@ textarea.notes { width: 100%; min-height: 70px; box-sizing: border-box; font-siz
   }
 
   function drawFlat() {
-    let b = `<rect x="40" y="40" width="380" height="70" class="s-flat"/><rect x="40" y="40" width="60" height="70" class="s-flatblue"/>`;
-    for (let i = 0; i < 15; i++) b += `<rect x="46" y="${44 + i * 4.3}" width="50" height="2.2" class="s-metal"/>`;
-    b += `<rect x="110" y="40" width="40" height="70" class="s-box"/>`;
-    for (let i = 0; i <= 20; i++) { const yy = 44 + i * 3.1; b += `<line x1="150" y1="${yy}" x2="${i % 5 ? 143 : 136}" y2="${yy}" class="s-wire"/>`; }
-    b += `<line x1="96" y1="45" x2="170" y2="45" class="s-ext"/><line x1="96" y1="105.4" x2="170" y2="105.4" class="s-ext"/>`;
-    b += `<line x1="180" y1="45" x2="180" y2="105.4" class="s-dim" marker-start="url(#ar)" marker-end="url(#ar)"/>`;
-    b += t(188, 80, "A", "s-big");
-    b += t(200, 62, "do meio do 1º contato", "s-lab"); b += t(200, 76, "ao meio do último (15º)", "s-lab");
-    b += t(240, 130, "ponta do flat, reforço azul, contatos à mostra", "s-hint", "middle");
-    return svg(440, 140, b, "Ponta do flat de 15 vias com a régua");
+    // the CB304 seen from the front, flat still plugged in: 15 windows with the contacts showing
+    const x0 = 40, step = 26, y = 70;
+    let b = `<rect x="${x0 - 4}" y="10" width="${step * 14 + 8}" height="${y - 6}" class="s-flat"/>`;
+    b += `<rect x="${x0 - 22}" y="${y - 8}" width="${step * 14 + 44}" height="62" rx="3" class="s-plastic"/>`;
+    for (let i = 0; i < 15; i++) {
+      const x = x0 + i * step;
+      b += `<rect x="${x - 8}" y="${y}" width="16" height="20" rx="2" class="s-win"/><rect x="${x - 4}" y="${y + 6}" width="8" height="9" rx="2" class="s-metal"/>`;
+    }
+    const xl = x0 + 14 * step;
+    b += `<path d="M${xl + 14},${y + 30} l8,-5 l0,10 z" class="s-arrow"/>`;
+    b += t(xl + 26, y + 34, "via 1", "s-lab");
+    b += `<line x1="${x0}" y1="${y + 22}" x2="${x0}" y2="${y + 76}" class="s-ext"/><line x1="${xl}" y1="${y + 22}" x2="${xl}" y2="${y + 76}" class="s-ext"/>`;
+    b += `<line x1="${x0}" y1="${y + 70}" x2="${xl}" y2="${y + 70}" class="s-dim" marker-start="url(#ar)" marker-end="url(#ar)"/>`;
+    b += t((x0 + xl) / 2, y + 64, "A: meio do 1º contato ao meio do 15º", "s-big", "middle");
+    b += t((x0 + xl) / 2, y + 96, "CB304 visto de frente, com o flat no lugar", "s-hint", "middle");
+    return svg(xl + 70, y + 104, b, "Conector CB304 de frente, com a medida A entre o primeiro e o último contato");
   }
 
   function drawU701() {
@@ -283,9 +289,9 @@ textarea.notes { width: 100%; min-height: 70px; box-sizing: border-box; font-siz
   const CARDS = [
     { g: "g1", id: "1", title: "O passo do flat de 15 vias",
       fig: drawFlat(),
-      steps: ["Solte o flat do lado da placa frontal (ou meça no lugar, se der).", "Meça <b>A</b>: do meio do primeiro contato ao meio do último. O passo sai de A ÷ 14.", "Com paquímetro é melhor; com régua, anote a melhor leitura."],
+      steps: ["<b>Não tire o flat.</b> O <code>CB304</code> (placa principal) mostra os 15 contatos pelas janelas.", "Meça <b>A</b>: do meio do primeiro contato visível ao meio do último. O passo sai de A ÷ 14.", "Com paquímetro: as pontas finas de cima, sem forçar dentro das janelas. Com régua, anote a melhor leitura."],
       body: `<div class="fields">${fld("flat_a", "A · 1º ao 15º (mm)", inp("flat_a"))}</div>`,
-      ref: "Esperado: perto de <b>17,5</b> (passo de 1,25 mm). É o que decide a extensão a comprar." },
+      ref: "Esperado: perto de <b>17,5</b> (passo de 1,25 mm). É o que decide a extensão a comprar. O conector não tem trava: o flat só sai puxando reto, segurando pelo reforço azul, e não é preciso tirá-lo para nada nesta etapa." },
     { g: "g1", id: "2", title: "Qual perna do receptor U701 é a saída",
       fig: drawU701(),
       steps: ["Atrás da placa frontal, levante a folha plástica perto do receptor.", "Olhando pelo lado das soldas, com o display <b>para cima</b>, chame as três pernas de <b>E</b>, <b>M</b> e <b>D</b> (esquerda, meio, direita).", "Procure a perna que bipa com <b>duas pernas vizinhas</b> do <code>IC702</code> (o chip pequeno de 5 pernas ao lado). É ali que o fio do controle remoto vai ser soldado."],

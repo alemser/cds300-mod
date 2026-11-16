@@ -14,7 +14,7 @@ se o `D+5` aguenta o Pico e qual extensão do flat comprar. Qualquer via acima d
 
 | Medida | Aparelho | Esperado | Medido | Decide |
 |---|---|---|---|---|
-| Flat: do 1º ao 15º contato (passo = ÷ 14) | Fora da tomada | 17,5 mm (passo 1,25) | | A extensão a comprar |
+| Flat: do 1º ao 15º contato, pelas janelas do `CB304`, sem tirar o flat (passo = ÷ 14) | Fora da tomada | 17,5 mm (passo 1,25) | | A extensão a comprar |
 | Perna do `U701` que bipa com duas pernas vizinhas do `IC702` | Fora da tomada | Uma só (`OUT`) | | Onde soldar o fio do IR |
 | `D+3.3V` | Ligado, parado | 3,4 V | | A placa frontal é de 3,3 V |
 | `FL_/CS` | Ligado, parado | 3,3 V | | O Pico pode escutar o display |
