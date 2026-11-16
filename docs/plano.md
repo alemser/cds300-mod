@@ -235,7 +235,7 @@ Cada fio soldado no aparelho, onde e quando. Para desfazer, dessoldar na ordem i
 | Data | Fio | Onde | Observação |
 |---|---|---|---|
 | 2026-11-16 | Preto | `CB701`, cima 5ª (`DGND`) | Conferido com o bip: sem curto |
-| 2026-11-16 | Cinza | `CB701`, cima 8ª (`FL_/CS`) | Metade da malha não pegou solda: fios soltos cortados, fio preso com fita, bip até a janela 1 do `CB304` ok. **Refazer antes da instalação definitiva** (torcer, estanhar, ponta curta) |
+| 2026-11-16 | Cinza | `CB701`, cima 8ª (`FL_/CS`) | Metade da malha não pegou solda: fios soltos cortados, fio preso com fita, bip até a janela 1 do `CB304` ok. Redone before closing the case (2026-11-16) |
 | 2026-11-16 | Laranja | `CB701`, cima 7ª (`FL_CLK`) | Idem |
 | 2026-11-16 | Verde-azulado | `CB701`, baixo 7ª (`FL_DATA`) | Idem |
 | 2026-11-16 | Amarelo | `CB701`, baixo 6ª (`FL_/RST`) | Idem |

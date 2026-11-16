@@ -56,3 +56,5 @@ As leituras na ordem em que foram feitas, com data e hora.
 - **2026-11-16, 19h:** Pico (o antigo do MR 780, chip `D85E`) com o programa da ponte, alimentado pelo `D+5` no VSYS
   (pino 39), terra pelo pino 3. Na rede de casa como `CDS300-D85E`. Linha do controle em repouso alta; o `play`
   mandado pelo Wi-Fi pôs o disco a tocar.
+- **2026-11-16, evening:** grey wire (`FL_/CS`) re-soldered properly. `IC801` heatsink fine after playing with the Pico
+  on `D+5`. Case closed: the Pico sees the home network (`conway_tv-5349`) at **-47 dBm**, and answers over Wi-Fi.
