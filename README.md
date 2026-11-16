@@ -35,6 +35,12 @@ cabo pela rede `AmpLink-CDS300-XXXX`, é achada pela app Amp Link sem IP digitad
 rodou num Pico ainda**: só os testes no computador. As teclas só chegam ao aparelho depois que o fio do IR for
 ligado.
 
+Pronto para a bancada: as tabelas das medições (`docs/medicoes.md`), a ligação e a lista das capturas
+(`docs/descobertas-protocolo.md`) e o `tools/fl_decode.py`, que lê as capturas do analisador.
+
+Decidido: ligar e desligar fica na saída A (a ponte some com o aparelho desligado), com uma tomada Wi-Fi depois se
+fizer falta; o contrato passa a se chamar **DeviceLink**, em etapas (`docs/plano.md`, "O protocolo comum").
+
 Próximo passo: conferir as tensões do flat com o multímetro e capturar o display com o analisador lógico
 (`docs/plano.md`, passos 2 e 3).
 
@@ -44,6 +50,8 @@ Próximo passo: conferir as tensões do flat com o multímetro e capturar o disp
 |---|---|
 | [`docs/plano.md`](docs/plano.md) | O plano, passo a passo, as ideias de customização e o protocolo comum |
 | [`docs/pesquisa.md`](docs/pesquisa.md) | O que o manual de serviço e as fotos dizem: display, conectores, fonte, microcontrolador, códigos do controle |
+| [`docs/medicoes.md`](docs/medicoes.md) | As medições da bancada: tabelas prontas, com o esperado do esquema |
+| [`docs/descobertas-protocolo.md`](docs/descobertas-protocolo.md) | A ligação do analisador, as capturas a fazer e o que elas mostram |
 
 O manual de serviço fica só na cópia local, em `docs/manual/` (tem direitos autorais, não vai para o GitHub).
 
@@ -86,14 +94,14 @@ O manual de serviço fica só na cópia local, em `docs/manual/` (tem direitos a
     nunca aqui.
   - `main.py` (o porteiro das atualizações) e `secrets.py` (a senha das atualizações, fora do git) só vão ao Pico
     pelo cabo; o resto vai pelo Wi-Fi com `python3 tools/enviar.py`.
-- `tools/`: os testes no computador e o `enviar.py`. O `enviar.py`, o `test_wifi.py` e o `test_listeners.py` também
+- `tools/`: os testes no computador, o `enviar.py` e o `fl_decode.py` (lê as capturas do analisador). O `enviar.py`, o `test_wifi.py` e o `test_listeners.py` também
   vêm da base.
 - `captures/`: capturas do analisador lógico (a criar).
 
 ## Testar no computador
 
 ```sh
-for t in wifi listeners device ir control; do python3 tools/test_$t.py; done
+for t in wifi listeners device ir control fl_decode; do python3 tools/test_$t.py; done
 python3 ../amp-link/firmware-base/copiar.py --conferir    # as cópias da base estão em dia?
 ```
 

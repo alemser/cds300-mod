@@ -44,8 +44,8 @@ desligado, o Pico está desligado, e nada pelo Wi-Fi o liga. Três saídas:
 | **B. Tomada inteligente** | O botão fica sempre apertado, e uma tomada Wi-Fi liga e desliga o aparelho. O hub comanda a tomada | Uma tomada; nada dentro do aparelho |
 | **C. Relé dentro do aparelho** | Uma fonte pequena de 5 V sempre ligada para o Pico e um relé no lugar da chave | Mexe nos 230 V, dentro de um aparelho sem terra |
 
-**Recomendação: começar com A e passar para B** se ligar pelo Wi-Fi fizer falta. A saída C repete o que foi
-recusado no MR 780 (fonte nova dentro do aparelho) e é a única com risco de choque. A decisão é do dono.
+**Decidido em 2026-11-16: começar com A e passar para B** se ligar pelo Wi-Fi fizer falta. A saída C repete o que foi
+recusado no MR 780 (fonte nova dentro do aparelho) e é a única com risco de choque.
 
 Para a saída B, conferir antes: o aparelho ligado pela tomada volta no modo em que estava (a EEPROM guarda o modo
 CD/USB e o PURE DIRECT) e lê o disco sozinho?
@@ -80,7 +80,7 @@ Com o aparelho ligado, contra o `DGND` (via 1 ou 9 do flat):
 Medir também o passo e a largura do flat de 15 vias (esperado: 1,25 mm), para comprar a extensão (duas, para a
 fase 2) e flats de reserva dos dois tipos, como no MR 780.
 
-Anotar em `docs/medicoes.md`.
+Anotar em `docs/medicoes.md`, que já tem as tabelas prontas, com o esperado do esquema.
 
 ## Passo 2b: teste de interferência do Wi-Fi
 
@@ -114,7 +114,10 @@ manual.
 
 Uma captura à parte, só de escuta, no `232C_TX` da porta da traseira: ver se o aparelho fala algo sozinho.
 
-Documentar em `docs/descobertas-protocolo.md`, com as capturas em `captures/`.
+Documentar em `docs/descobertas-protocolo.md` (a ligação, a lista de capturas e as perguntas já estão lá), com as
+capturas em `captures/`. O `tools/fl_decode.py` lê cada `.lac`: corta o display em quadros, mede o relógio e os
+intervalos, mostra os bytes nas duas ordens de bits e decodifica o NEC do controle. Ele não supõe nada do protocolo
+do vidro; o leitor de telas sai do que ele mostrar.
 
 ## Passo 4: o programa
 
@@ -155,8 +158,22 @@ do CD player forem conhecidos:
 `groove-rig`, no oceano) assina o `/events` de cada aparelho e aplica as regras entre eles. A app Amp Link mostra
 cada aparelho pelo `/device` dele.
 
-**O nome.** A rede de configuração `AmpLink-…` e a pergunta `AMPLINK?` continuam, mesmo com um CD player. Trocar
-custa mexer na app e nas duas pontes que já existem, sem ganho de função. A decisão é do dono.
+**O nome: DeviceLink** (decidido em 2026-11-16). Com um CD player, "AmpLink" deixa de descrever o que o contrato é.
+A troca passa pela base comum, pelas duas pontes que já existem (uma delas dentro do SP103, em uso) e pela app, então
+vai em etapas, sem nenhum momento em que a app e uma ponte deixem de se achar:
+
+1. **Base comum (`amp-link/firmware-base`)**: a descoberta responde às duas perguntas, `AMPLINK?` e `DEVICELINK?`; a
+   rede de configuração passa a `DeviceLink-<MODELO>-XXXX`. O `enviar.py` pergunta `DEVICELINK?` e, sem resposta,
+   `AMPLINK?`. Copiar para este projeto e para o `mr780-mod`.
+2. **App**: procura as redes `DeviceLink-…` e `AmpLink-…`, pergunta as duas coisas, e o nome que aparece na tela
+   muda. O pacote Android (`com.alemser.amplink`) fica: trocá-lo faz o telefone ver uma app nova, sem as pontes
+   salvas.
+3. **SP103**: entra na troca quando passar a usar a base comum (o `wifi.py` dele ainda é próprio).
+4. **Depois que todas as pontes responderem `DEVICELINK?`**: a app e a base deixam de perguntar e de responder
+   `AMPLINK?`.
+5. O repositório `amp-link` e o contrato (`docs/contrato.md`) trocam de nome junto com o `api` 2.
+
+Até a etapa 1, este projeto segue com `AmpLink-CDS300-XXXX`.
 
 ## Ideias
 
@@ -180,7 +197,5 @@ Além do básico (estado e comandos). A coluna "Depende de" diz o que precisa ex
 
 ## Perguntas em aberto
 
-- Ligar e desligar: A, B ou C?
-- O nome `AmpLink` fica?
 - A base comum do firmware vai para o `amp-link` agora ou depois deste aparelho?
 - O que mostrar no display na fase 2, se ela for feita.
