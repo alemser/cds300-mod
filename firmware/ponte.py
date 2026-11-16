@@ -1,10 +1,10 @@
-"""A ponte do CD-S300: o programa que o main.py importa ao ligar o Pico.
+"""The CD-S300 bridge: the program main.py imports when the Pico starts.
 
-Hoje (2026-11-16), sem o aparelho: Wi-Fi sem cabo (wifi.py), atualização pelo Wi-Fi (ota.py), o /device e as teclas
-do controle remoto (control.py, ir.py). O /state existe, mas com tudo desconhecido (null): ler o display vem depois
-das medições e das capturas (docs/plano.md).
+Wi-Fi without a cable (wifi.py), updates over Wi-Fi (ota.py), /device, the remote-control keys (control.py, ir.py) and,
+since 2026-11-16, the display reader (display.py, vfd.py): /state carries the 12 characters on the display and the
+raw icon bits; /display shows the reader's full view, for mapping which bit is which icon (docs/plano.md).
 
-Rodar pelo computador:  .venv/bin/mpremote run firmware/ponte.py   (ou instalar e reiniciar: ver README)
+Run from the computer:  .venv/bin/mpremote run firmware/ponte.py   (or install and reset: see README)
 """
 
 import time
@@ -19,19 +19,25 @@ from wifi import Wifi
 
 
 class State:
-    """O estado do aparelho no contrato (GET /state e /events). null = ainda não se sabe."""
+    """The device state in the contract (GET /state and /events). null = not known yet."""
 
     def __init__(self):
         self.version = 0
+        self.display = None
 
     def to_dict(self):
-        return {"power": None, "lcd": [], "updated_at": time.ticks_ms(), "version": self.version}
+        d = {"power": None, "lcd": [], "updated_at": time.ticks_ms(), "version": self.version}
+        if self.display is not None and self.display.alive():
+            d["power"] = "on"
+            d["lcd"] = [self.display.screen.text()]
+            d["icons"] = self.display.screen.icons().hex()
+        return d
 
 
 state = State()
 net = Wifi(model=device.NAME, hostname=device.NAME, prefix=device.NAME.upper(),
            label=device.MODEL, kind=device.KIND)
-control = Control(state, Remote())
+control = Control(state, Remote())      # early: until then GP6 has the RP2350's pull-down, which loads the IR line
 pub = None
 wifi_ok = False
 
@@ -43,10 +49,25 @@ def wifi_result(ok, info):
         print("Wi-Fi:", info)
 
 
+def display_changed():
+    state.version += 1
+    if pub is not None:
+        pub.changed()
+
+
+def start_display():
+    """The display reader, or None if it fails to start: the bridge must stay reachable for updates regardless."""
+    try:
+        from display import Display
+        return Display(on_change=display_changed)
+    except Exception as e:
+        print("display:", repr(e))
+        return None
+
+
 async def confirm_update():
-    """Versão nova em teste (ota.py): confirma quando ela se mostra saudável. Sem isso, o main.py volta para a versão
-    anterior. Saudável = o Wi-Fi conectou e o servidor respondeu a alguém (o tools/enviar.py pergunta a cada 2 s),
-    por 20 s seguidos."""
+    """A new version on trial (ota.py): confirm it once it proves healthy, or main.py rolls back to the previous one.
+    Healthy = Wi-Fi connected and the server answered someone (tools/enviar.py asks every 2 s), for 20 s in a row."""
     if not ota.in_trial():
         return
     start = time.ticks_ms()
@@ -59,15 +80,24 @@ async def confirm_update():
             return
 
 
+async def not_found(req, writer):
+    from web import reply
+    await reply(writer, "404 Not Found", "text/plain", b"display reader not running\n")
+
+
 async def main():
     global pub
+    state.display = start_display()
     pub = Publisher(state, routes={"/update": ota.handle, "/device": device.handle,
                                    "/control": control.handle, "/ir": control.handle,
+                                   "/display": state.display.handle if state.display else not_found,
                                    "/wifi": net.handle, "/": net.page})
     asyncio.create_task(net.task(wifi_result))
-    await asyncio.sleep(0.1)            # o Wi-Fi liga antes do servidor abrir o socket
+    await asyncio.sleep(0.1)            # Wi-Fi comes up before the server opens its socket
     await pub.serve()
     asyncio.create_task(confirm_update())
+    if state.display:
+        asyncio.create_task(state.display.task())
     while True:
         await asyncio.sleep(60)
 
