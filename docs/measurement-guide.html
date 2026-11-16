@@ -1,4 +1,4 @@
-<title>Bancada do CD-S300</title>
+<title>CD-S300 bench</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
 <style>
@@ -145,51 +145,51 @@ figure.zoomable { flex-direction: column; gap: 6px; cursor: zoom-in; }
 
 <div class="wrap">
   <header style="display:grid; gap:8px">
-    <span class="section-label">CD-S300 mod · antes de soldar</span>
-    <h1>Medições da bancada</h1>
-    <p class="lede">Tudo sobre as suas fotos do aparelho: os círculos amarelos são onde encostar, o vermelho é para não encostar. Toque numa foto para ampliar. Os campos ficam salvos neste navegador, e no fim um botão copia tudo para o chat.</p>
+    <span class="section-label">CD-S300 mod · before soldering</span>
+    <h1>Bench measurements</h1>
+    <p class="lede">Everything is on your own photos of the device: yellow circles are where to touch, red is where not to. Tap a photo to enlarge it. The fields are saved in this browser, and at the end a button copies everything for the chat.</p>
   </header>
 
   <section class="box danger">
-    <h2>Segurança</h2>
+    <h2>Safety</h2>
     <ul class="rules">
-      <li><b>230 V na placa da fonte</b> (a placa em pé à esquerda, com o transformador). Com o aparelho na tomada, as mãos ficam longe dela.</li>
-      <li><b>−27 V e o filamento do display</b> no conector de 4 pinos <code>W702</code>, na ponta esquerda da placa frontal (área vermelha nas fotos). Não encostar.</li>
-      <li><b>Uma mão só</b> com o aparelho ligado; a ponta preta presa com garra jacaré.</li>
-      <li><b>Qualquer valor acima de 3,4 V nas vias: pare</b> e me mande antes de seguir. A página pinta o campo de vermelho.</li>
-      <li>Bip (continuidade) <b>só com o aparelho fora da tomada</b>.</li>
+      <li><b>230 V on the power-supply board</b> (the upright board on the left, with the transformer). With the device plugged in, keep your hands away from it.</li>
+      <li><b>−27 V and the display filament</b> on the 4-pin <code>W702</code> connector, at the left end of the front board (red area in the photos). Don't touch.</li>
+      <li><b>One hand only</b> with the device on; the black probe held by a crocodile clip.</li>
+      <li><b>Any value above 3.4 V on the lines: stop</b> and send it before going on. The page paints the field red.</li>
+      <li>Beep (continuity) <b>only with the device unplugged</b>.</li>
     </ul>
   </section>
 
   <div id="cards" style="display:grid; gap:16px"></div>
 
   <section class="box">
-    <span class="section-label">Resultado</span>
-    <h2>Conferência</h2>
-    <p class="lede">Laranja é diferente do esperado, vermelho é para parar. O texto abaixo da tabela é o que vai para o chat.</p>
+    <span class="section-label">Result</span>
+    <h2>Check</h2>
+    <p class="lede">Orange differs from the expected value, red means stop. The text under the table is what goes to the chat.</p>
     <div class="table-wrap"><table id="res">
-      <thead><tr><th>O quê</th><th>Sua medida</th><th>Esperado</th><th>Situação</th></tr></thead>
+      <thead><tr><th>What</th><th>Your reading</th><th>Expected</th><th>Status</th></tr></thead>
       <tbody></tbody>
     </table></div>
     <div class="field" style="gap:6px">
-      <label for="f_notas">Observações (o que mais você notou)</label>
+      <label for="f_notas">Notes (anything else you noticed)</label>
       <textarea id="f_notas" class="notes" data-key="notas"></textarea>
     </div>
     <div class="actions">
-      <button id="copy" type="button">Copiar medições para o chat</button>
-      <button id="clear" type="button" class="ghost">Limpar campos</button>
+      <button id="copy" type="button">Copy the measurements for the chat</button>
+      <button id="clear" type="button" class="ghost">Clear fields</button>
       <span id="copied" role="status"></span>
     </div>
-    <textarea id="out" readonly aria-label="Texto para colar no chat"></textarea>
+    <textarea id="out" readonly aria-label="Text to paste in the chat"></textarea>
   </section>
 
   <section class="box">
-    <span class="section-label">Fica para depois</span>
-    <h2>O que não precisa agora</h2>
+    <span class="section-label">Left for later</span>
+    <h2>Not needed now</h2>
     <ul class="rules">
-      <li><b>As outras vias do flat</b> (LEDs, teclas): o Pico não se liga nelas.</li>
-      <li><b>O teste de interferência do Wi-Fi</b>: entra no primeiro teste com o Pico dentro do aparelho.</li>
-      <li><b>Como o aparelho volta depois de tirado da tomada</b>: só se a tomada Wi-Fi um dia fizer falta.</li>
+      <li><b>The flat's other lines</b> (LEDs, keys): the Pico doesn't connect to them.</li>
+      <li><b>The Wi-Fi interference test</b>: done in the first test with the Pico inside the device.</li>
+      <li><b>How the device comes back after the plug is pulled</b>: only if a Wi-Fi plug is ever wanted.</li>
     </ul>
   </section>
 </div>
@@ -197,45 +197,45 @@ figure.zoomable { flex-direction: column; gap: 6px; cursor: zoom-in; }
 <script>
 (() => {
   // ------------------------------------------------------------------ the photos (marks in a 2000 x 1500 grid)
-  const IMG = { cb301: "guia/cb301-pernas.jpg", solda: "guia/20261116_175957.jpg", soldaIR: "guia/20261116_180004.jpg", geral: "guia/20261116_111202.jpg", cb701: "guia/20261116_111519.jpg", u701: "guia/20261116_111503.jpg", cb304: "guia/20261116_084644.jpg" };
+  const IMG = { cb301: "guide/cb301-pernas.jpg", solda: "guide/20261116_175957.jpg", soldaIR: "guide/20261116_180004.jpg", geral: "guide/20261116_111202.jpg", cb701: "guide/20261116_111519.jpg", u701: "guide/20261116_111503.jpg", cb304: "guide/20261116_084644.jpg" };
 
-  // CB701 pelas soldas (foto 111519). Dedução: a serigrafia lista as vias 1 a 15 da esquerda para a direita; as ímpares
-  // na fileira de cima (8 soldas), as pares na de baixo (7). A confirmar com o bip (cartão 2).
+  // CB701 from the solder side (photo 111519). From the silkscreen: lines 1 to 15 left to right, odd ones on the top
+  // row (8 joints), even ones on the bottom row (7). Confirmed with the beep (card 2).
   const NAMES = { 1: "DGND", 2: "KEY_2", 3: "KEY_1", 4: "KEY_0", 5: "LED_/USB2", 6: "LED_/USB1", 7: "LED_PDIRECT", 8: "LED_POWER",
     9: "DGND", 10: "REM", 11: "D+3.3V", 12: "FL_/RST", 13: "FL_CLK", 14: "FL_DATA", 15: "FL_/CS" };
   const PAD = {};
   [930, 985, 1043, 1100, 1157, 1213, 1270, 1328].forEach((x, i) => PAD[2 * i + 1] = [x, 296]);
   [958, 1015, 1072, 1130, 1185, 1243, 1300].forEach((x, i) => PAD[2 * i + 2] = [x, 357]);
-  const SOLDER = [15, 14, 13, 12, 9];          // os fios de leitura: /CS, DATA, CLK, /RST, DGND
-  const W702 = `<rect x="70" y="370" width="130" height="200" rx="10" class="o-zone"/><text x="215" y="440" class="o-t hot sm">W702: não encostar</text>`;
+  const SOLDER = [15, 14, 13, 12, 9];          // the reading wires: /CS, DATA, CLK, /RST, DGND
+  const W702 = `<rect x="70" y="370" width="130" height="200" rx="10" class="o-zone"/><text x="215" y="440" class="o-t hot sm">W702: don't touch</text>`;
 
   function photo(key, inner, label) {
     return `<svg viewBox="0 0 2000 1500" role="img" aria-label="${label}"><image href="${IMG[key]}" width="2000" height="1500"/>${inner}</svg>`;
   }
 
-  function photoP(key, inner, label) {   // fotos em pé, 843 x 1125
+  function photoP(key, inner, label) {   // portrait photos, 843 x 1125
     return `<svg viewBox="0 0 843 1125" role="img" aria-label="${label}"><image href="${IMG[key]}" width="843" height="1125"/>${inner}</svg>`;
   }
   function drawSolda() {
     let b = "";
     const lab = (x, y, t, cls = "") => b += `<text x="${x}" y="${y}" class="o-t sm${cls}" style="font-size:26px;stroke-width:6px">${t}</text>`;
-    b += `<ellipse cx="250" cy="480" rx="62" ry="105" class="o-ring hot" style="stroke-width:5"/>`; lab(20, 300, "1: solda grande, sobe até a ilha de cima", " hot");
-    b += `<circle cx="600" cy="560" r="42" class="o-ring hot" style="stroke-width:5"/>`; lab(430, 790, "2: fiozinhos soltos", " hot");
+    b += `<ellipse cx="250" cy="480" rx="62" ry="105" class="o-ring hot" style="stroke-width:5"/>`; lab(20, 300, "1: large joint, reaches the pad above", " hot");
+    b += `<circle cx="600" cy="560" r="42" class="o-ring hot" style="stroke-width:5"/>`; lab(430, 790, "2: loose strands", " hot");
     b += `<circle cx="618" cy="392" r="26" class="o-ring hot" style="stroke-width:5"/>`;
-    b += `<circle cx="365" cy="520" r="34" class="o-ring gnd" style="stroke-width:4"/>`; lab(300, 470, "cima 6ª (3,3 V)", " wht");
-    return photoP("solda", b, "Os fios soldados no CB701");
+    b += `<circle cx="365" cy="520" r="34" class="o-ring gnd" style="stroke-width:4"/>`; lab(300, 470, "top 6th (3.3 V)", " wht");
+    return photoP("solda", b, "The wires soldered on CB701");
   }
   function drawSoldaIR() {
     let b = "";
     const lab = (x, y, t, cls = "") => b += `<text x="${x}" y="${y}" class="o-t sm${cls}" style="font-size:28px;stroke-width:6px">${t}</text>`;
-    b += `<circle cx="365" cy="540" r="45" class="o-ring hot" style="stroke-width:5"/>`; lab(430, 470, "3: cobre perto da perna B (terra)", " hot");
-    b += `<ellipse cx="330" cy="695" rx="110" ry="55" class="o-ring hot" style="stroke-width:5"/>`; lab(430, 760, "4: perna C e a ilha à esquerda", " hot");
+    b += `<circle cx="365" cy="540" r="45" class="o-ring hot" style="stroke-width:5"/>`; lab(430, 470, "3: copper near leg B (ground)", " hot");
+    b += `<ellipse cx="330" cy="695" rx="110" ry="55" class="o-ring hot" style="stroke-width:5"/>`; lab(430, 760, "4: leg C and the pad to its left", " hot");
     b += `<circle cx="310" cy="420" r="34" class="o-ring" style="stroke-width:4"/>`; lab(355, 395, "A");
-    return photoP("soldaIR", b, "O fio do controle na perna C do U701");
+    return photoP("soldaIR", b, "The remote wire on leg C of U701");
   }
 
   function drawPernas() {
-    // CB301 de frente: 10 pernas nuas acima do conector branco, o capacitor grande à direita.
+    // CB301 from the front: 10 bare legs above the white housing, the large capacitor on the right.
     const LEGS = [47, 213, 380, 547, 713, 873, 1040, 1200, 1367, 1533];
     let b = "";
     LEGS.forEach((x, i) => {
@@ -243,20 +243,20 @@ figure.zoomable { flex-direction: column; gap: 6px; cursor: zoom-in; }
       b += `<text x="${x}" y="800" class="o-t sm${hot ? " hot" : gnd ? " wht" : ""}" text-anchor="middle">${n}</text>`;
       if (hot || gnd) b += `<rect x="${x - 34}" y="70" width="68" height="200" rx="14" class="o-ring${hot ? " hot" : " gnd"}"/>`;
     });
-    b += `<text x="560" y="380" class="o-t hot">5ª: D+5 (solde aqui, na perna nua)</text>`;
-    b += `<text x="900" y="460" class="o-t wht sm">6ª: terra (DGND)</text>`;
-    b += `<text x="1640" y="1000" class="o-t sm">capacitor grande</text><text x="1640" y="1040" class="o-t sm">(lado direito)</text>`;
-    return photo("cb301", b, "As pernas do CB301, com o D+5 e o terra");
+    b += `<text x="560" y="380" class="o-t hot">5th: D+5 (solder here, on the bare leg)</text>`;
+    b += `<text x="900" y="460" class="o-t wht sm">6th: ground (DGND)</text>`;
+    b += `<text x="1640" y="1000" class="o-t sm">large capacitor</text><text x="1640" y="1040" class="o-t sm">(right-hand side)</text>`;
+    return photo("cb301", b, "CB301's legs, with D+5 and ground");
   }
 
   function drawGeral() {
-    let b = `<rect x="270" y="70" width="370" height="640" rx="16" class="o-zone"/><text x="300" y="60" class="o-t hot">fonte: 230 V</text>`;
-    b += `<rect x="1330" y="40" width="660" height="660" rx="16" class="o-box"/><text x="1350" y="30" class="o-t">placa principal (CB304, CB301)</text>`;
+    let b = `<rect x="270" y="70" width="370" height="640" rx="16" class="o-zone"/><text x="300" y="60" class="o-t hot">power supply: 230 V</text>`;
+    b += `<rect x="1330" y="40" width="660" height="660" rx="16" class="o-box"/><text x="1350" y="30" class="o-t">main board (CB304, CB301)</text>`;
     b += `<rect x="1680" y="690" width="250" height="110" rx="12" class="o-box"/><text x="1650" y="850" class="o-t">CB701</text>`;
-    b += `<circle cx="1385" cy="745" r="42" class="o-ring"/><text x="1180" y="660" class="o-t sm">receptor U701 por trás</text><text x="1180" y="700" class="o-t sm">(ao lado da tecla abrir)</text>`;
-    b += `<path d="M1600,330 C1650,500 1720,560 1790,690" class="o-line" stroke-dasharray="16 10"/><text x="1440" y="560" class="o-t sm">o flat</text>`;
-    b += `<text x="40" y="1460" class="o-t wht sm">placa frontal: tudo o que vamos soldar fica atrás dela</text>`;
-    return photo("geral", b, "Visão geral do aparelho aberto");
+    b += `<circle cx="1385" cy="745" r="42" class="o-ring"/><text x="1180" y="660" class="o-t sm">U701 receiver, behind</text><text x="1180" y="700" class="o-t sm">(next to the open key)</text>`;
+    b += `<path d="M1600,330 C1650,500 1720,560 1790,690" class="o-line" stroke-dasharray="16 10"/><text x="1440" y="560" class="o-t sm">the flat</text>`;
+    b += `<text x="40" y="1460" class="o-t wht sm">front board: everything to solder is behind it</text>`;
+    return photo("geral", b, "Overview of the open device");
   }
 
   function drawCB701(active) {
@@ -267,17 +267,17 @@ figure.zoomable { flex-direction: column; gap: 6px; cursor: zoom-in; }
       b += `<circle cx="${x}" cy="${y}" r="25" class="${cls}"/>`;
     }
     const tag = (n, txt, x, y) => b += `<line x1="${PAD[n][0]}" y1="${PAD[n][1] + 26}" x2="${x}" y2="${y - 40}" class="o-line"/><text x="${x}" y="${y}" class="o-t sm${n === active ? " hot" : ""}">${txt}</text>`;
-    tag(15, "cima 8ª", 1440, 160); tag(14, "baixo 7ª", 1440, 470);
-    tag(13, "cima 7ª", 1440, 225); tag(12, "baixo 6ª", 1280, 540);
-    tag(11, "cima 6ª", 1000, 160); tag(10, "baixo 5ª", 1060, 540);
-    tag(9, "cima 5ª", 760, 160);
+    tag(15, "top 8th", 1440, 160); tag(14, "bottom 7th", 1440, 470);
+    tag(13, "top 7th", 1440, 225); tag(12, "bottom 6th", 1280, 540);
+    tag(11, "top 6th", 1000, 160); tag(10, "bottom 5th", 1060, 540);
+    tag(9, "top 5th", 760, 160);
     b += `<rect x="1215" y="440" width="190" height="190" rx="10" class="o-box"/><text x="1430" y="650" class="o-t sm">R701–R704</text>`;
-    b += `<text x="60" y="1060" class="o-t wht sm">Atrás da placa frontal, com o W702 à esquerda. Conte da esquerda para a direita</text>`;
-    return photo("cb701", b, "Soldas do CB701 numeradas");
+    b += `<text x="60" y="1060" class="o-t wht sm">Behind the front board, W702 on the left. Count left to right</text>`;
+    return photo("cb701", b, "CB701 joints, numbered");
   }
 
   function drawCB304() {
-    // CB304 na placa principal (foto 084644): janelas numa coluna; a serigrafia nomeia as vias pares.
+    // CB304 on the main board (photo 084644): windows in a column; the silkscreen names the even lines.
     let b = "";
     const y = n => 1305 - (n - 2) * 40.5, X = 1772;
     for (const n of [1, 2, 6, 7]) {
@@ -285,11 +285,11 @@ figure.zoomable { flex-direction: column; gap: 6px; cursor: zoom-in; }
       b += `<text x="${X - 40}" y="${y(n) + 12}" class="o-t sm" text-anchor="end">${n}</text>`;
     }
     b += `<path d="M${X + 60},${y(1)} L${X + 60},${y(15)}" class="o-line"/>`;
-    b += `<text x="${X + 80}" y="${y(1) + 10}" class="o-t sm">1 = a ponta de baixo</text>`;
-    b += `<rect x="1020" y="620" width="460" height="230" rx="12" class="o-box"/><text x="900" y="600" class="o-t sm">conector branco com fios coloridos</text>`;
-    b += `<text x="560" y="1470" class="o-t sm">conte a partir da ponta LONGE do conector com fios coloridos</text>`;
-    b += `<text x="60" y="60" class="o-t wht sm">CB304, placa principal. Ponta fina: as janelas ficam a 1,25 mm</text>`;
-    return photo("cb304", b, "Janelas do CB304 com os nomes");
+    b += `<text x="${X + 80}" y="${y(1) + 10}" class="o-t sm">1 = the bottom end</text>`;
+    b += `<rect x="1020" y="620" width="460" height="230" rx="12" class="o-box"/><text x="900" y="600" class="o-t sm">white connector with coloured wires</text>`;
+    b += `<text x="560" y="1470" class="o-t sm">count from the end FAR from the connector with coloured wires</text>`;
+    b += `<text x="60" y="60" class="o-t wht sm">CB304, main board. Fine probe: the windows are 1.25 mm apart</text>`;
+    return photo("cb304", b, "CB304 windows with their names");
   }
 
   function drawU701(active) {
@@ -299,76 +299,76 @@ figure.zoomable { flex-direction: column; gap: 6px; cursor: zoom-in; }
       b += `<circle cx="${x}" cy="${y}" r="24" class="o-ring${k === active ? " hot" : ""}"/>`;
       b += `<text x="${x + 50}" y="${y + 16}" class="o-t${k === active ? " hot" : ""}">${k}</text>`;
     }
-    b += `<rect x="940" y="640" width="270" height="215" rx="10" class="o-box"/><text x="1230" y="900" class="o-t sm">U701 (receptor)</text>`;
-    b += `<rect x="555" y="665" width="100" height="160" rx="8" class="o-box"/><text x="470" y="900" class="o-t sm">IC702 (5 pernas)</text>`;
+    b += `<rect x="940" y="640" width="270" height="215" rx="10" class="o-box"/><text x="1230" y="900" class="o-t sm">U701 (receiver)</text>`;
+    b += `<rect x="555" y="665" width="100" height="160" rx="8" class="o-box"/><text x="470" y="900" class="o-t sm">IC702 (5 legs)</text>`;
     for (const [x, y] of [[583, 690], [628, 690], [583, 800], [605, 800], [628, 800]]) b += `<circle cx="${x}" cy="${y}" r="11" class="o-ring dim"/>`;
-    b += `<text x="40" y="1460" class="o-t wht sm">A, B e C: as três pernas do receptor, como nesta foto (A em cima)</text>`;
-    return photo("u701", b, "Pernas do receptor U701 e o IC702");
+    b += `<text x="40" y="1460" class="o-t wht sm">A, B and C: the receiver's three legs, as in this photo (A on top)</text>`;
+    return photo("u701", b, "The U701 receiver's legs and IC702");
   }
 
   function drawCB301() {
-    // CB301 na mesma foto 111519, embaixo: 10 pinos à mostra, o 10 (P-MUTE) à esquerda.
+    // CB301 in the same photo 111519, at the bottom: 10 pins showing, pin 10 (P-MUTE) on the left.
     let b = W702;
     const x = k => 985 + (10 - k) * 36.5, Y = 1185;
     for (let k = 10; k >= 1; k--) b += `<circle cx="${x(k)}" cy="${Y}" r="15" class="o-ring${k === 6 ? " hot" : k === 5 ? " gnd" : " dim"}"/>`;
-    b += `<line x1="${x(6)}" y1="${Y + 18}" x2="900" y2="1400" class="o-line"/><text x="640" y="1450" class="o-t hot">5º: D+5</text>`;
-    b += `<line x1="${x(5)}" y1="${Y + 18}" x2="1300" y2="1400" class="o-line"/><text x="1200" y="1450" class="o-t wht">6º: DGND</text>`;
+    b += `<line x1="${x(6)}" y1="${Y + 18}" x2="900" y2="1400" class="o-line"/><text x="640" y="1450" class="o-t hot">5th: D+5</text>`;
+    b += `<line x1="${x(5)}" y1="${Y + 18}" x2="1300" y2="1400" class="o-line"/><text x="1200" y="1450" class="o-t wht">6th: DGND</text>`;
     b += `<text x="870" y="1110" class="o-t sm">CB301</text>`;
-    return photo("cb701", b, "Pinos do CB301 com D+5");
+    return photo("cb701", b, "CB301 pins with D+5");
   }
 
   // ------------------------------------------------------------------ cards
   const sel = (key, opts) => `<select id="f_${key}" data-key="${key}"><option value=""></option>${opts.map(o => `<option>${o}</option>`).join("")}</select>`;
-  const inp = (key, ph = "0,00") => `<input id="f_${key}" data-key="${key}" type="text" inputmode="decimal" placeholder="${ph}" autocomplete="off">`;
+  const inp = (key, ph = "0.00") => `<input id="f_${key}" data-key="${key}" type="text" inputmode="decimal" placeholder="${ph}" autocomplete="off">`;
   const fld = (key, label, control) => `<div class="field"><label for="f_${key}">${label}</label>${control}</div>`;
-  const W = { P: "preto (terra)", C: "cinza (/CS)", L: "laranja (CLK)", V: "verde-azulado (DATA)", A: "amarelo (/RST)", R: "roxo (controle)" };
+  const W = { P: "black (ground)", C: "grey (/CS)", L: "orange (CLK)", V: "teal (DATA)", A: "yellow (/RST)", R: "purple (remote)" };
   const PAIRS = [];
   const WK = Object.keys(W);
   WK.forEach((a, i) => WK.slice(i + 1).forEach(b => PAIRS.push([W[a], W[b], "x_" + a + b])));
-  WK.forEach(a => PAIRS.push([W[a], "cima 6ª (3,3 V)", "x_" + a + "T"]));
-  const POS = { 9: "cima 5ª", 10: "baixo 5ª", 11: "cima 6ª", 12: "baixo 6ª", 13: "cima 7ª", 14: "baixo 7ª", 15: "cima 8ª" };
+  WK.forEach(a => PAIRS.push([W[a], "top 6th (3.3 V)", "x_" + a + "T"]));
+  const POS = { 9: "top 5th", 10: "bottom 5th", 11: "top 6th", 12: "bottom 6th", 13: "top 7th", 14: "bottom 7th", 15: "top 8th" };
   const VOLTS = [[11, "D+3.3V", 3.4], [15, "FL_/CS", 3.3], [12, "FL_/RST", 3.3], [10, "REM", 3.4]];
   const TOL = 0.25, LIMIT = 3.4;
 
   const CARDS = [
-    { id: "1", title: "Onde fica cada coisa", fig: drawGeral(), sec: "Aparelho fora da tomada",
-      steps: ["Tudo o que vamos soldar fica <b>atrás da placa frontal</b>, a placa preta comprida com o display. O lado de trás dela é verde e tem as soldas.", "O flat cinza liga essa placa (<code>CB701</code>) à placa principal (<code>CB304</code>), à direita.", "O receptor do controle (<code>U701</code>) fica atrás da placa frontal, perto da tecla de abrir a bandeja."],
-      body: "", ref: "Nada a medir neste cartão: é só o mapa." },
-    { id: "2", title: "Confirmar o mapa das soldas do CB701", fig: `<div id="fig_cb701map">${drawCB701(0)}</div>`, fig2: drawCB304(),
-      steps: ["<b>Soldas do <code>CB701</code></b> (foto de cima): atrás da placa frontal, com o conector de 4 pinos <code>W702</code> à sua esquerda. São duas fileiras: <b>8 soldas em cima, 7 embaixo</b>. Conte sempre da esquerda para a direita (\"cima 5ª\" = a quinta solda da fileira de cima).", "<b>Janelas do <code>CB304</code></b> (foto de baixo, placa principal): conte a partir da ponta <b>mais longe</b> do conector branco com fios coloridos. A janela dessa ponta é a 1.", "Uma ponta do multímetro na janela, a outra na solda indicada. Se as três bipam, o mapa está certo."],
-      body: `<div class="table-wrap"><table><thead><tr><th>CB304</th><th>CB701</th><th>Bipou?</th></tr></thead><tbody>
-        <tr><td>Janela <b>2</b></td><td>baixo <b>7ª</b> (a última)</td><td>${sel("map14", ["sim", "não"])}</td></tr>
-        <tr><td>Janela <b>6</b></td><td>baixo <b>5ª</b></td><td>${sel("map10", ["sim", "não"])}</td></tr>
-        <tr><td>Janela <b>1</b></td><td>cima <b>8ª</b> (a última)</td><td>${sel("map15", ["sim", "não"])}</td></tr>
+    { id: "1", title: "Where everything is", fig: drawGeral(), sec: "Device unplugged",
+      steps: ["Everything to solder is <b>behind the front board</b>, the long black board with the display. Its back is green and has the joints.", "The grey flat cable joins that board (<code>CB701</code>) to the main board (<code>CB304</code>), on the right.", "The remote receiver (<code>U701</code>) is behind the front board, near the open/close key."],
+      body: "", ref: "Nothing to measure on this card: it is just the map." },
+    { id: "2", title: "Confirm the CB701 joint map", fig: `<div id="fig_cb701map">${drawCB701(0)}</div>`, fig2: drawCB304(),
+      steps: ["<b><code>CB701</code> joints</b> (top photo): behind the front board, with the 4-pin <code>W702</code> connector on your left. Two rows: <b>8 joints on top, 7 below</b>. Always count left to right (\"top 5th\" = the fifth joint of the top row).", "<b><code>CB304</code> windows</b> (bottom photo, main board): count from the end <b>farthest</b> from the white connector with coloured wires. The window at that end is 1.", "One multimeter probe in the window, the other on the given joint. If all three beep, the map is right."],
+      body: `<div class="table-wrap"><table><thead><tr><th>CB304</th><th>CB701</th><th>Beeped?</th></tr></thead><tbody>
+        <tr><td>Window <b>2</b></td><td>bottom <b>7th</b> (the last)</td><td>${sel("map14", ["yes", "no"])}</td></tr>
+        <tr><td>Window <b>6</b></td><td>bottom <b>5th</b></td><td>${sel("map10", ["yes", "no"])}</td></tr>
+        <tr><td>Window <b>1</b></td><td>top <b>8th</b> (the last)</td><td>${sel("map15", ["yes", "no"])}</td></tr>
         </tbody></table></div>`,
-      ref: "Se alguma não bipar, procure em qual solda ela bipa e escreva nas observações (por exemplo: \"janela 2 bipou na cima 1ª\")." },
-    { id: "3", title: "Qual perna do receptor é a saída", fig: `<div id="fig_u701">${drawU701("")}</div>`,
-      steps: ["Atrás da placa frontal, perto da tecla de abrir: o receptor <code>U701</code> tem três pernas em fila (A, B, C na foto).", "Ponta numa perna, a outra nas pernas do chip pequeno <code>IC702</code>, à esquerda.", "A saída é a perna que bipa com <b>duas pernas vizinhas</b> do IC702. É nela que vai o fio do controle remoto."],
-      body: `<div class="fields">${fld("u_out_leg", "Perna que bipa com o IC702", sel("u_out_leg", ["A", "B", "C", "nenhuma", "mais de uma"]))}</div>`,
-      ref: "Esperado: uma só. Pelo esquema, a de cima (A) é a saída, mas a foto não garante a ordem." },
-    { id: "4", title: "As tensões, nas soldas do CB701", fig: `<div id="fig_cb701v">${drawCB701(11)}</div>`, sec: "Aparelho ligado, parado, sem disco",
-      steps: ["Multímetro em tensão contínua (V⎓, 20 V). <b>Ponta preta na cima 5ª</b> (terra, círculo branco tracejado), presa com garra.", "Ponta vermelha em cada solda da tabela. Ao clicar num campo, a foto pinta de vermelho a solda certa.", "Por último, a vermelha na perna de saída do receptor (cartão 3)."],
-      body: `<div class="table-wrap vias"><table><thead><tr><th>Solda</th><th>Esperado</th><th>Medido (V)</th><th></th></tr></thead><tbody>
-        ${VOLTS.map(([n, name, exp]) => `<tr data-pad="${n}"><td><b>${POS[n]}</b> <span class="ref">${name}</span></td><td class="val">${String(exp).replace(".", ",")}</td><td>${inp("v" + n)}</td><td class="val" id="st_v${n}"></td></tr>`).join("")}
-        <tr data-leg="out"><td><b>U701</b> <span class="ref">perna de saída</span></td><td class="val">3,3</td><td>${inp("u_out")}</td><td class="val" id="st_uout"></td></tr>
+      ref: "If one doesn't beep, find which joint it beeps with and write it in the notes (for example: \"window 2 beeped on top 1st\")." },
+    { id: "3", title: "Which receiver leg is the output", fig: `<div id="fig_u701">${drawU701("")}</div>`,
+      steps: ["Behind the front board, near the open key: the <code>U701</code> receiver has three legs in a row (A, B, C in the photo).", "One probe on a leg, the other on the legs of the small <code>IC702</code> chip, to the left.", "The output is the leg that beeps with <b>two neighbouring legs</b> of IC702. The remote's wire goes there."],
+      body: `<div class="fields">${fld("u_out_leg", "Leg that beeps with IC702", sel("u_out_leg", ["A", "B", "C", "none", "more than one"]))}</div>`,
+      ref: "Expected: exactly one. The schematic puts the output first (A), but the photo doesn't prove the order." },
+    { id: "4", title: "The voltages, on the CB701 joints", fig: `<div id="fig_cb701v">${drawCB701(11)}</div>`, sec: "Device on, stopped, no disc",
+      steps: ["Multimeter on DC volts (V⎓, 20 V). <b>Black probe on top 5th</b> (ground, dashed white circle), held by a clip.", "Red probe on each joint in the table. Clicking a field paints the right joint red in the photo.", "Last, the red probe on the receiver's output leg (card 3)."],
+      body: `<div class="table-wrap vias"><table><thead><tr><th>Joint</th><th>Expected</th><th>Measured (V)</th><th></th></tr></thead><tbody>
+        ${VOLTS.map(([n, name, exp]) => `<tr data-pad="${n}"><td><b>${POS[n]}</b> <span class="ref">${name}</span></td><td class="val">${String(exp)}</td><td>${inp("v" + n)}</td><td class="val" id="st_v${n}"></td></tr>`).join("")}
+        <tr data-leg="out"><td><b>U701</b> <span class="ref">output leg</span></td><td class="val">3.3</td><td>${inp("u_out")}</td><td class="val" id="st_uout"></td></tr>
         </tbody></table></div>`,
-      ref: "Na mesma fileira, as soldas ficam a 2,5 mm uma da outra: bem mais fácil que as janelas do CB304." },
-    { id: "5", title: "A alimentação do Pico: D+5", fig: drawCB301(),
-      steps: ["<b>Aparelho ligado na tomada.</b> Ponta preta presa com garra na <b>cima 5ª do CB701</b> (o terra de antes). No <code>CB301</code> o terra fica colado no D+5: uma ponta que escorrega ali faz curto.", "Na placa principal, o conector branco <code>CB301</code>, com 10 pinos à mostra. Conte a partir da ponta <b>oposta ao capacitor grande redondo com uma cruz em cima</b>: o <code>D+5</code> é o <b>5º pino</b>. Ponta vermelha nele.", "Depois de uns 30 minutos tocando, <b>desligue e tire da tomada</b>, e encoste o dedo no dissipador de metal da placa da fonte (o regulador <code>IC801</code>)."],
-      body: `<div class="fields">${fld("d5", "D+5 (V)", inp("d5"))}${fld("ic801", "Dissipador depois de 30 min", sel("ic801", ["frio", "morno", "quente, dá para segurar", "quente, não dá para segurar"]))}</div>
-        <p class="note"><b>Só se estiver quente demais para segurar:</b> meça também o 9º pino, contando do mesmo lado (<code>+B2</code>, perto de 12 V). ${inp("b2")}</p>`,
-      ref: "Esperado: D+5 entre <b>4,75 e 5,25</b>. Se der perto de −5, você está no 2º pino (A-5): conte de novo. O dissipador só diz algo depois de 30 minutos tocando." },
-    { id: "6", title: "Conferir a solda antes de ligar", fig: drawSolda(), fig2: drawSoldaIR(), sec: "Depois de soldar: aparelho fora da tomada",
-      steps: ["<b>Aparelho fora da tomada</b> e nada ligado na outra ponta dos fios. Multímetro no bip.", "Encoste as duas pontas nas <b>pontas soltas</b> de cada par de fios da tabela (é mais fácil que nas soldas).", "Um <b>bip curto que para sozinho</b> é normal: são capacitores carregando. Um <b>bip que não para</b> é curto: não ligue, me mande qual par foi.", "Os círculos vermelhos nas fotos são os lugares mais prováveis de um curto: fiozinhos soltos da malha ou solda grande demais."],
-      body: `<div class="table-wrap"><table><thead><tr><th>Entre</th><th>E</th><th>Bip</th></tr></thead><tbody>
-        ${PAIRS.map(([a, b2, k]) => `<tr><td>${a}</td><td>${b2}</td><td>${sel(k, ["não bipa", "curto e para", "sem parar"])}</td></tr>`).join("")}
+      ref: "On one row the joints are 2.5 mm apart: much easier than the CB304 windows." },
+    { id: "5", title: "The Pico's power: D+5", fig: drawCB301(),
+      steps: ["<b>Device plugged in.</b> Black probe clipped to <b>top 5th of CB701</b> (the ground used before). On <code>CB301</code> ground sits right next to D+5: a slipping probe there makes a short.", "On the main board, the white <code>CB301</code> connector, with 10 pins showing. Count from the end <b>opposite the large round capacitor with a cross on top</b>: <code>D+5</code> is the <b>5th pin</b>. Red probe on it.", "After about 30 minutes playing, <b>switch off and unplug</b>, and touch the metal heatsink on the power-supply board (the <code>IC801</code> regulator)."],
+      body: `<div class="fields">${fld("d5", "D+5 (V)", inp("d5"))}${fld("ic801", "Heatsink after 30 min", sel("ic801", ["cold", "warm", "hot, can hold it", "hot, can't hold it"]))}</div>
+        <p class="note"><b>Only if it is too hot to hold:</b> also measure the 9th pin, counting from the same end (<code>+B2</code>, about 12 V). ${inp("b2")}</p>`,
+      ref: "Expected: D+5 between <b>4.75 and 5.25</b>. If it reads about −5, you are on the 2nd pin (A-5): count again. The heatsink only tells something after 30 minutes playing." },
+    { id: "6", title: "Check the soldering before switching on", fig: drawSolda(), fig2: drawSoldaIR(), sec: "After soldering: device unplugged",
+      steps: ["<b>Device unplugged</b> and nothing on the other end of the wires. Multimeter on beep.", "Touch the probes to the <b>loose ends</b> of each pair of wires in the table (easier than on the joints).", "A <b>short beep that stops by itself</b> is normal: capacitors charging. A <b>beep that doesn't stop</b> is a short: don't switch on, send which pair it was.", "The red circles in the photos are the likeliest places for a short: loose strands or too much solder."],
+      body: `<div class="table-wrap"><table><thead><tr><th>Between</th><th>And</th><th>Beep</th></tr></thead><tbody>
+        ${PAIRS.map(([a, b2, k]) => `<tr><td>${a}</td><td>${b2}</td><td>${sel(k, ["no beep", "short and stops", "continuous"])}</td></tr>`).join("")}
         </tbody></table></div>`,
-      ref: "Cores como eu li nas fotos: preto = terra, cinza = FL_/CS (cima 8ª), laranja = FL_CLK, verde-azulado = FL_DATA, amarelo = FL_/RST, roxo = controle. Se for diferente, diga nas observações." },
-    { id: "7", title: "Soldar a alimentação do Pico", fig: drawPernas(), sec: "A alimentação: aparelho fora da tomada",
-      steps: ["<b>CD fora da tomada e Pico fora do USB.</b>", "No <code>CB301</code> (placa principal), cada pino tem uma <b>perna de metal nua</b> acima do conector branco. Conte da esquerda, com o capacitor grande à sua direita: a <b>5ª</b> é o <code>D+5</code>, a <b>6ª</b> é o terra.", "Solde um fio na <b>parte de cima da perna 5</b>, longe do plástico branco: estanhe a ponta do fio antes, encoste e esquente pouco. Faça o mesmo na perna 6 com outro fio (ou use o terra que já vai ao pino 3 do Pico e pule este).", "Bip entre os dois fios novos: um bip curto que para é normal (capacitores); um bip que não para é curto.", "No Pico: o fio do <code>D+5</code> no <b>VSYS, pino 39</b> (fileira da direita, 2º a partir do USB). O terra no <b>GND, pino 38</b> (logo abaixo, ilha quadrada)."],
-      body: `<div class="fields">${fld("p_solda", "Soldado nas pernas 5 e 6?", sel("p_solda", ["sim", "só a 5 (terra pelo pino 3)"]))}${fld("p_bip", "Bip entre os fios novos", sel("p_bip", ["não bipa", "curto e para", "sem parar"]))}</div>
-        <p class="note stop"><b>Depois de ligado o D+5:</b> nunca ponha o Pico no USB do Mac com este fio conectado. O USB alimentaria o CD por trás. A primeira instalação do programa pelo cabo se faz antes de ligar este fio; depois, tudo é pelo Wi-Fi.</p>`,
-      ref: "Você já mediu 5,05 V na perna 5 e 12,00 V na 9 (+B2): é o mesmo mapa. As pernas ficam mais afastadas que as soldas do CB701." },
+      ref: "Colours as read in the photos: black = ground, grey = FL_/CS (top 8th), orange = FL_CLK, teal = FL_DATA, yellow = FL_/RST, purple = remote. If different, say so in the notes." },
+    { id: "7", title: "Solder the Pico's power", fig: drawPernas(), sec: "Power: device unplugged",
+      steps: ["<b>CD player unplugged and Pico off USB.</b>", "On <code>CB301</code> (main board), each pin has a <b>bare metal leg</b> above the white housing. Count from the left, with the large capacitor on your right: the <b>5th</b> is <code>D+5</code>, the <b>6th</b> is ground.", "Solder a wire on the <b>top of leg 5</b>, away from the white plastic: tin the wire's end first, touch it and heat briefly. Do the same on leg 6 with another wire (or use the ground already on the Pico's pin 3 and skip this).", "Beep between the two new wires: a short beep that stops is normal (capacitors); one that doesn't stop is a short.", "On the Pico: the <code>D+5</code> wire to <b>VSYS, pin 39</b> (right-hand row, 2nd from the USB). Ground to <b>GND, pin 38</b> (just below, square pad)."],
+      body: `<div class="fields">${fld("p_solda", "Soldered on legs 5 and 6?", sel("p_solda", ["yes", "only 5 (ground through pin 3)"]))}${fld("p_bip", "Beep between the new wires", sel("p_bip", ["no beep", "short and stops", "continuous"]))}</div>
+        <p class="note stop"><b>Once D+5 is connected:</b> never plug the Pico into the Mac's USB with this wire on. USB would power the CD player from behind. The first install over USB is done before connecting this wire; after that, everything is over Wi-Fi.</p>`,
+      ref: "You measured 5.05 V on leg 5 and 12.00 V on leg 9 (+B2): the same map. The legs are further apart than the CB701 joints." },
   ];
 
   const host = document.getElementById("cards");
@@ -376,7 +376,7 @@ figure.zoomable { flex-direction: column; gap: 6px; cursor: zoom-in; }
     if (c.sec) host.insertAdjacentHTML("beforeend", `<div class="group-head"><span class="section-label">${c.sec}</span></div>`);
     const el = document.createElement("article");
     el.className = "m wide";
-    el.innerHTML = `<figure class="zoomable">${c.fig}${c.fig2 || ""}<span class="zoomhint">toque para ampliar</span></figure>
+    el.innerHTML = `<figure class="zoomable">${c.fig}${c.fig2 || ""}<span class="zoomhint">tap to enlarge</span></figure>
       <div class="body">
         <div class="title-row"><span class="tag">${c.id}</span><h3>${c.title}</h3></div>
         <ol class="steps">${c.steps.map(s => `<li>${s}</li>`).join("")}</ol>
@@ -410,13 +410,13 @@ figure.zoomable { flex-direction: column; gap: 6px; cursor: zoom-in; }
   });
 
   // ------------------------------------------------------------------ values
-  const STORE = "cds300-medicoes-v3";
+  const STORE = "cds300-measurements-v4";
   const fields = [...document.querySelectorAll("[data-key]")];
   const get = k => { const e = document.querySelector(`[data-key="${k}"]`); return e ? e.value.trim() : ""; };
   const num = s => { const t = String(s).trim().replace(",", "."); return t === "" ? NaN : Number(t); };
-  const fmt = x => Number.isFinite(x) ? x.toFixed(2).replace(".", ",") : "—";
-  const volt = (exp, x) => !Number.isFinite(x) ? ["", ""] : x > LIMIT ? ["st-stop", "PARE: acima de 3,4 V"]
-    : Math.abs(x - exp) <= TOL ? ["st-ok", "ok"] : ["st-bad", "diferente"];
+  const fmt = x => Number.isFinite(x) ? x.toFixed(2) : "—";
+  const volt = (exp, x) => !Number.isFinite(x) ? ["", ""] : x > LIMIT ? ["st-stop", "STOP: above 3.4 V"]
+    : Math.abs(x - exp) <= TOL ? ["st-ok", "ok"] : ["st-bad", "different"];
   const mark = (id, inputId, s) => {
     const c = document.getElementById(id); c.className = "val " + s[0]; c.textContent = s[1];
     const e = document.getElementById(inputId); e.classList.toggle("stop", s[0] === "st-stop"); e.classList.toggle("bad", s[0] === "st-bad");
@@ -424,15 +424,15 @@ figure.zoomable { flex-direction: column; gap: 6px; cursor: zoom-in; }
 
   const tbody = document.querySelector("#res tbody");
   function render() {
-    const rows = [], lines = [`Medições CD-S300 (${new Date().toLocaleDateString("pt-BR")}):`];
+    const rows = [], lines = [`CD-S300 measurements (${new Date().toISOString().slice(0, 10)}):`];
     const row = (what, val, exp, [cls, st]) => rows.push(`<tr><td>${what}</td><td class="val">${val}</td><td class="val">${exp}</td><td class="${cls}">${st}</td></tr>`);
 
-    const maps = [["map14", "janela 2 → baixo 7ª"], ["map10", "janela 6 → baixo 5ª"], ["map15", "janela 1 → cima 8ª"]].filter(([k]) => get(k));
-    for (const [k, n] of maps) row(n, get(k), "sim", get(k) === "sim" ? ["st-ok", "ok"] : ["st-bad", "mapa errado"]);
-    if (maps.length) lines.push("Mapa do CB701: " + maps.map(([k, n]) => `${n}: ${get(k)}`).join("; "));
+    const maps = [["map14", "window 2 → bottom 7th"], ["map10", "window 6 → bottom 5th"], ["map15", "window 1 → top 8th"]].filter(([k]) => get(k));
+    for (const [k, n] of maps) row(n, get(k), "yes", get(k) === "yes" ? ["st-ok", "ok"] : ["st-bad", "map wrong"]);
+    if (maps.length) lines.push("CB701 map: " + maps.map(([k, n]) => `${n}: ${get(k)}`).join("; "));
 
     const leg = get("u_out_leg");
-    if (leg) { row("U701: perna de saída", leg, "A, B ou C", ["A", "B", "C"].includes(leg) ? ["st-ok", "ok"] : ["st-bad", "conferir"]); lines.push(`U701 saída (A em cima, como na foto): ${leg}`); }
+    if (leg) { row("U701: output leg", leg, "A, B or C", ["A", "B", "C"].includes(leg) ? ["st-ok", "ok"] : ["st-bad", "check"]); lines.push(`U701 output (A on top, as in the photo): ${leg}`); }
 
     let stop = false; const vl = [];
     for (const [n, name, exp] of VOLTS) {
@@ -444,30 +444,30 @@ figure.zoomable { flex-direction: column; gap: 6px; cursor: zoom-in; }
     const uo = num(get("u_out")), su = volt(3.3, uo);
     mark("st_uout", "f_u_out", su);
     if (su[0] === "st-stop") stop = true;
-    if (Number.isFinite(uo)) { row("U701 saída, repouso", fmt(uo) + " V", "3,30", su); vl.push(`U701_OUT=${get("u_out")}`); }
-    if (vl.length) lines.push("Tensões (V, parado sem disco, preta na cima 5ª): " + vl.join(", "));
-    if (stop) lines.push("ATENÇÃO: valor acima de 3,4 V.");
+    if (Number.isFinite(uo)) { row("U701 output, idle", fmt(uo) + " V", "3.30", su); vl.push(`U701_OUT=${get("u_out")}`); }
+    if (vl.length) lines.push("Voltages (V, stopped, no disc, black on top 5th): " + vl.join(", "));
+    if (stop) lines.push("WARNING: a value above 3.4 V.");
 
     const d5 = num(get("d5")), b2 = num(get("b2")), ic = get("ic801"), pl = [];
-    if (Number.isFinite(d5)) { row("D+5", fmt(d5) + " V", "4,75–5,25", d5 >= 4.75 && d5 <= 5.25 ? ["st-ok", "ok"] : d5 < 0 ? ["st-bad", "pino errado (A-5?)"] : ["st-bad", "fora"]); pl.push(`D+5=${get("d5")} V`); }
-    if (ic) { row("IC801 após 30 min", ic, "morno", ic.startsWith("quente, não") ? ["st-bad", "pouca folga: medir +B2"] : ["st-ok", "ok"]); pl.push(`IC801=${ic}`); }
-    if (Number.isFinite(b2)) { row("+B2", fmt(b2) + " V", "~12", b2 > 9 && b2 < 17 ? ["st-ok", "ok"] : ["st-bad", "diferente"]); pl.push(`+B2=${get("b2")} V`); }
-    if (pl.length) lines.push("Alimentação: " + pl.join(", "));
+    if (Number.isFinite(d5)) { row("D+5", fmt(d5) + " V", "4.75–5.25", d5 >= 4.75 && d5 <= 5.25 ? ["st-ok", "ok"] : d5 < 0 ? ["st-bad", "wrong pin (A-5?)"] : ["st-bad", "out of range"]); pl.push(`D+5=${get("d5")} V`); }
+    if (ic) { row("IC801 after 30 min", ic, "warm", ic.startsWith("hot, can't") ? ["st-bad", "little headroom: measure +B2"] : ["st-ok", "ok"]); pl.push(`IC801=${ic}`); }
+    if (Number.isFinite(b2)) { row("+B2", fmt(b2) + " V", "~12", b2 > 9 && b2 < 17 ? ["st-ok", "ok"] : ["st-bad", "different"]); pl.push(`+B2=${get("b2")} V`); }
+    if (pl.length) lines.push("Power: " + pl.join(", "));
 
     const done = PAIRS.filter(([, , k]) => get(k));
     if (done.length) {
-      const bad = done.filter(([, , k]) => get(k) === "sem parar");
-      row("Conferência da solda", `${done.length} de ${PAIRS.length} pares`, "nenhum curto", bad.length ? ["st-stop", `curto em ${bad.length}`] : ["st-ok", "ok"]);
-      lines.push(`Conferência da solda: ${done.length} de ${PAIRS.length} pares, ` + (bad.length ? "CURTO (bip sem parar) em: " + bad.map(([a, b2]) => `${a} × ${b2}`).join("; ") : "nenhum curto")
-        + (done.some(([, , k]) => get(k) === "curto e para") ? ". Bip curto em: " + done.filter(([, , k]) => get(k) === "curto e para").map(([a, b2]) => `${a} × ${b2}`).join("; ") : ""));
+      const bad = done.filter(([, , k]) => get(k) === "continuous");
+      row("Soldering check", `${done.length} of ${PAIRS.length} pairs`, "no short", bad.length ? ["st-stop", `short on ${bad.length}`] : ["st-ok", "ok"]);
+      lines.push(`Soldering check: ${done.length} of ${PAIRS.length} pairs, ` + (bad.length ? "SHORT (continuous beep) on: " + bad.map(([a, b2]) => `${a} × ${b2}`).join("; ") : "no short")
+        + (done.some(([, , k]) => get(k) === "short and stops") ? ". Short beep on: " + done.filter(([, , k]) => get(k) === "short and stops").map(([a, b2]) => `${a} × ${b2}`).join("; ") : ""));
     }
     if (get("p_solda") || get("p_bip")) {
       const pb = get("p_bip");
-      row("Alimentação soldada", get("p_solda") || "—", "sem curto", pb === "sem parar" ? ["st-stop", "CURTO"] : pb ? ["st-ok", "ok"] : ["", ""]);
-      lines.push(`Alimentação: soldado=${get("p_solda") || "?"}, bip entre os fios=${pb || "?"}`);
+      row("Power soldered", get("p_solda") || "—", "no short", pb === "continuous" ? ["st-stop", "SHORT"] : pb ? ["st-ok", "ok"] : ["", ""]);
+      lines.push(`Power: soldered=${get("p_solda") || "?"}, beep between the wires=${pb || "?"}`);
     }
-    if (get("notas")) lines.push("Observações: " + get("notas"));
-    if (!rows.length) rows.push(`<tr><td colspan="4" class="ref">Nada medido ainda. As linhas aparecem aqui conforme você preenche os cartões.</td></tr>`);
+    if (get("notas")) lines.push("Notes: " + get("notas"));
+    if (!rows.length) rows.push(`<tr><td colspan="4" class="ref">Nothing measured yet. Rows appear here as you fill in the cards.</td></tr>`);
     tbody.innerHTML = rows.join("");
     document.getElementById("out").value = lines.join("\n");
   }
@@ -478,14 +478,14 @@ figure.zoomable { flex-direction: column; gap: 6px; cursor: zoom-in; }
 
   document.getElementById("copy").addEventListener("click", () => {
     const tx = document.getElementById("out"), msg = document.getElementById("copied");
-    const fallback = () => { tx.focus(); tx.select(); msg.textContent = "Texto selecionado: use Copiar do sistema."; };
-    try { navigator.clipboard.writeText(tx.value).then(() => { msg.textContent = "Copiado. Cole no chat."; }, fallback); } catch (e) { fallback(); }
+    const fallback = () => { tx.focus(); tx.select(); msg.textContent = "Text selected: use the system's Copy."; };
+    try { navigator.clipboard.writeText(tx.value).then(() => { msg.textContent = "Copied. Paste it in the chat."; }, fallback); } catch (e) { fallback(); }
   });
   let armed = false;
   document.getElementById("clear").addEventListener("click", e => {
-    if (!armed) { armed = true; e.target.textContent = "Clique de novo para limpar"; setTimeout(() => { armed = false; e.target.textContent = "Limpar campos"; }, 3000); return; }
+    if (!armed) { armed = true; e.target.textContent = "Click again to clear"; setTimeout(() => { armed = false; e.target.textContent = "Clear fields"; }, 3000); return; }
     for (const f of fields) f.value = "";
-    save(); render(); armed = false; e.target.textContent = "Limpar campos";
+    save(); render(); armed = false; e.target.textContent = "Clear fields";
   });
   render();
 })();
