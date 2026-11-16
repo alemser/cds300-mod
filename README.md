@@ -1,6 +1,6 @@
 # CD-S300 mod
 
-The third modified device, after the SP103 (`sp103-display-proxy`) and the MR 780 (`mr780-mod`): the **Yamaha CD-S300**
+The third modified device, after the SP103 (`sp103-mod`) and the MR 780 (`mr780-mod`): the **Yamaha CD-S300**
 CD player. A Raspberry Pi Pico 2 W inside it reads what its display shows, publishes the state on the network, and
 controls it over Wi-Fi by sending the remote's codes down a wire.
 
