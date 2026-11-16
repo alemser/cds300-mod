@@ -1,120 +1,109 @@
 # CD-S300 mod
 
-O terceiro aparelho modificado, depois do SP103 (`sp103-display-proxy`) e do MR 780 (`mr780-mod`): o CD player
-**Yamaha CD-S300**. Um Raspberry Pi Pico 2 W dentro do aparelho, que lê o que ele mostra no display, publica o estado
-na rede e o comanda pelo Wi-Fi, com os códigos do controle remoto mandados por fio.
+The third modified device, after the SP103 (`sp103-display-proxy`) and the MR 780 (`mr780-mod`): the **Yamaha CD-S300**
+CD player. A Raspberry Pi Pico 2 W inside it reads what its display shows, publishes the state on the network, and
+controls it over Wi-Fi by sending the remote's codes down a wire.
 
-É o primeiro aparelho que não é amplificador. Por isso o contrato do `amp-link` deixa de ser só de amps: os aparelhos
-são achados na rede e cada um diz o que é e o que sabe fazer (`docs/plano.md`, "O protocolo comum").
+It is the first device that is not an amplifier, so it is also the first on the **DeviceLink contract** (`api` 2,
+`amp-link/docs/contract-v2.md`): it is found on the network, describes itself, and the DeviceLink app builds its screen
+from that description.
 
-## Situação (2026-11-16)
+## Status (2026-11-16)
 
-Início. Nada medido, nada soldado. O que existe:
+**Working on the device**, case closed, on the home Wi-Fi:
 
-- Vinte e quatro fotos do aparelho aberto (`docs/images/`), oito delas sem a frente do gabinete.
-- O **manual de serviço** (57 páginas, com esquema), na cópia local em `docs/manual/`. Ele respondeu quase tudo o que
-  no MR 780 precisou de multímetro: a pinagem do cabo do display, as tensões, a fonte e os códigos do controle remoto
-  (`docs/pesquisa.md`).
-
-O que o manual já decidiu:
-
-| Assunto | O que se sabe |
+| Requirement | Status |
 |---|---|
-| Display | VFD com o controlador dentro do vidro, comandado por 4 fios (`FL_/CS`, `FL_CLK`, `FL_DATA`, `FL_/RST`), em **3,3 V** |
-| Onde ligar | No cabo flat de **15 vias** entre a placa principal (`CB304`) e a placa frontal (`CB701`). Todas as vias são de lógica, 0 a 3,3 V |
-| Controle remoto | Código de cliente `79`, 29 teclas, todas com o código no manual. O sinal do receptor passa pela via `REM` |
-| Alimentação do Pico | `D+5` (regulador 7805 da fonte). Falta medir a folga |
-| Ligar e desligar | **Não há standby.** O botão da frente é uma chave na entrada dos 230 V, e o controle remoto não tem tecla de ligar |
+| Know the exact state | The display reader (`firmware/display.py`, `vfd.py`) publishes `transport` (playing, paused, stopped, loading, open), the track and elapsed time, and the disc's track count and total time |
+| Remote control over Wi-Fi | `POST /control?target=key&name=play` (30 keys), sent as NEC IR down a wire to the receiver's output |
+| Easy to undo | Six wires soldered on top of existing joints; nothing removed |
+| DeviceLink | Discovered by the app, screen built from `/device`, firmware updates from the GitHub release |
 
-O último item muda o projeto: com o aparelho desligado, o Pico também está desligado. As saídas possíveis estão em
-`docs/plano.md`, "Ligar e desligar".
+What is still open is in `docs/plan.md` ("Open questions") and `docs/protocol.md` (icons still to map: repeat, random,
+A-B, program, USB mode, Pure Direct, dimmer).
 
-Sem o aparelho na bancada, começou o firmware: a **base da ponte** (`firmware/ponte.py`), que configura o Wi-Fi sem
-cabo pela rede `AmpLink-CDS300-XXXX`, é achada pela app Amp Link sem IP digitado, se atualiza pelo Wi-Fi e manda as
-30 teclas do controle remoto (`POST /control?target=key&name=play`). O `/state` ainda vem todo `null`. **Nada disso
-rodou num Pico ainda**: só os testes no computador. As teclas só chegam ao aparelho depois que o fio do IR for
-ligado.
+## How it works
 
-Pronto para a bancada: as tabelas das medições (`docs/medicoes.md`), a ligação e a lista das capturas
-(`docs/descobertas-protocolo.md`) e o `tools/fl_decode.py`, que lê as capturas do analisador.
+- **The display:** a VFD with its controller inside the glass, driven by 4 lines (`FL_/CS`, `FL_CLK`, `FL_DATA`,
+  `FL_/RST`) at 3.3 V on the 15-way flat cable between the main board (`CB304`) and the front board (`CB701`). The
+  microcontroller sends the 12 characters as ASCII and draws the icons as two custom characters (`docs/protocol.md`).
+  The Pico listens with the PIO, never driving the lines.
+- **The remote:** NEC, address 79/86, every key in the service manual (`docs/research.md`). The Pico pulls the
+  receiver's output (`U701`, leg C) low, as the SP103 does.
+- **Power:** the Pico runs from `D+5` (pin 5 of `CB301`), so it is on whenever the CD player is. The player has no
+  standby: its front button switches the 230 V (`docs/plan.md`, "Power on and off").
 
-Decidido: o Pico só lê o display (não escreve nele) e manda as teclas do controle; a ligação é por fios soldados em
-paralelo, por cima de soldas que já existem, sem tirar nada do lugar (`docs/plano.md`, "A ligação"). Ligar e desligar
-fica na saída A (a ponte some com o aparelho desligado), com uma tomada Wi-Fi depois se
-fizer falta; o contrato passa a se chamar **DeviceLink**, em etapas (`docs/plano.md`, "O protocolo comum").
+## Documents
 
-Próximo passo: conferir as tensões do flat com o multímetro e capturar o display com o analisador lógico
-(`docs/plano.md`, passos 2 e 3).
-
-## Documentos
-
-| Documento | Conteúdo |
+| Document | Contents |
 |---|---|
-| [`docs/plano.md`](docs/plano.md) | O plano, passo a passo, as ideias de customização e o protocolo comum |
-| [`docs/pesquisa.md`](docs/pesquisa.md) | O que o manual de serviço e as fotos dizem: display, conectores, fonte, microcontrolador, códigos do controle |
-| [`docs/medicoes.md`](docs/medicoes.md) | As medições da bancada: tabelas prontas, com o esperado do esquema |
-| [`docs/descobertas-protocolo.md`](docs/descobertas-protocolo.md) | A ligação do analisador, as capturas a fazer e o que elas mostram |
+| [`docs/plan.md`](docs/plan.md) | The plan, the wiring, the decisions, the ideas and the common protocol |
+| [`docs/research.md`](docs/research.md) | What the service manual and the photos say: display, connectors, power supply, microcontroller, remote codes |
+| [`docs/measurements.md`](docs/measurements.md) | The bench measurements and the log of what was done |
+| [`docs/protocol.md`](docs/protocol.md) | The display bus as captured with the logic analyzer, and the icon map |
+| [`docs/measurement-guide.html`](docs/measurement-guide.html) | The illustrated bench guide (published as an artifact), with photos in `docs/guide/` |
 
-O manual de serviço fica só na cópia local, em `docs/manual/` (tem direitos autorais, não vai para o GitHub).
+The service manual stays in the local copy only, in `docs/manual/` (copyrighted, not on GitHub).
 
-## Fotos (`docs/images/`, 2026-11-16)
+## Photos (`docs/images/`, 2026-11-16)
 
-| Foto | O que mostra |
+| Photo | Shows |
 |---|---|
-| `20261116_082804.jpg` | A placa frontal por trás, com a serigrafia das vias do flat ao lado do `CB701`, e parte da fonte |
-| `20261116_082821.jpg` | Canto da fonte, com o `CB807` (4 fios para a placa frontal: filamento do VFD e −27 V) |
-| `20261116_082833.jpg` | A fonte: retificadores, capacitores e o conector do transformador |
-| `20261116_082851.jpg` | Traseira: saída analógica, coaxial e óptica |
-| `20261116_082858.jpg` | Traseira: etiqueta (230 V, 50 Hz, 13 W) e a entrada de força de 2 pinos |
-| `20261116_082908.jpg` | Frente, lado esquerdo: botão de ligar, USB, CD/USB, PURE DIRECT |
-| `20261116_082914.jpg` | Frente, centro: bandeja e o display |
-| `20261116_082918.jpg` | Frente, lado direito: as teclas de transporte |
-| `20261116_083847.jpg` | O `CB304` na placa principal, de perto: uma janela por via, com o contato à mostra |
-| `20261116_083859.jpg` | O `CB304` pelo outro lado, com o reforço azul do flat e as soldas do conector |
-| `20261116_084546.jpg` | As 15 soldas do `CB701` atrás da placa frontal, e os resistores em série do display |
-| `20261116_084556.jpg` | A serigrafia com o nome das 15 vias na placa frontal, e o `W702` (filamento e −27 V) |
-| `20261116_084609.jpg` | Atrás da placa frontal, na região do `IC702`, com a folha de plástico isolante |
-| `20261116_084629.jpg` | Placa principal: o `IC2` (LC786922) e o conector do leitor óptico |
-| `20261116_084644.jpg` | Placa principal: o conector da fonte `CB301` com os nomes, o `IC7`, o `IC303` e o `CB304` com os nomes das vias |
-| `20261116_084657.jpg` | A placa de saída analógica (os dois NJM2068) |
-| `20261116_111148.jpg` | O display aceso, sem a frente do gabinete: os 12 caracteres, os ícones e as pernas do vidro |
-| `20261116_111152.jpg` | As plaquinhas do USB e do PURE DIRECT, com os LEDs e as teclas |
-| `20261116_111202.jpg` | Visão geral sem a frente do gabinete (carimbo 18 AUG 2017 no chassi) |
-| `20261116_111455.jpg` | Atrás da plaquinha do PURE DIRECT: `W701A`, `W703`, `D702` |
-| `20261116_111459.jpg` | Atrás do display: as trilhas que saem do vidro |
-| `20261116_111503.jpg` | Atrás do receptor de IR: as 3 pernas do `U701`, a porta `IC702` |
-| `20261116_111509.jpg` | Atrás do `CB701`: os resistores do display `R701` a `R704` |
-| `20261116_111519.jpg` | Atrás do `CB701` com as legendas, o `W702` (tensão alta) ao lado, e o `CB301` da placa principal |
+| `20261116_082804.jpg` | The front board from behind, with the flat cable's silkscreen next to `CB701`, and part of the power supply |
+| `20261116_082821.jpg` | Corner of the power supply, with `CB807` (4 wires to the front board: VFD filament and −27 V) |
+| `20261116_082833.jpg` | The power supply: rectifiers, capacitors and the transformer connector |
+| `20261116_082851.jpg` | Rear: analogue, coaxial and optical outputs |
+| `20261116_082858.jpg` | Rear: label (230 V, 50 Hz, 13 W) and the 2-pin power inlet |
+| `20261116_082908.jpg` | Front, left: power button, USB, CD/USB, PURE DIRECT |
+| `20261116_082914.jpg` | Front, centre: tray and display |
+| `20261116_082918.jpg` | Front, right: the transport keys |
+| `20261116_083847.jpg` | `CB304` on the main board, close up: one window per line, contact visible |
+| `20261116_083859.jpg` | `CB304` from the other side, with the flat's blue stiffener and the connector's joints |
+| `20261116_084546.jpg` | The 15 joints of `CB701` behind the front board, and the display's series resistors |
+| `20261116_084556.jpg` | The silkscreen naming the 15 lines on the front board, and `W702` (filament and −27 V) |
+| `20261116_084609.jpg` | Behind the front board, around `IC702`, with the insulating plastic sheet |
+| `20261116_084629.jpg` | Main board: `IC2` (LC786922) and the optical pickup connector |
+| `20261116_084644.jpg` | Main board: power connector `CB301` with its names, `IC7`, `IC303`, and `CB304` with the line names |
+| `20261116_084657.jpg` | The analogue output board (the two NJM2068) |
+| `20261116_111148.jpg` | The display lit, without the front panel: the 12 characters, the icons and the glass's pins |
+| `20261116_111152.jpg` | The USB and PURE DIRECT boards, with their LEDs and keys |
+| `20261116_111202.jpg` | Overview without the front panel (chassis stamped 18 AUG 2017) |
+| `20261116_111455.jpg` | Behind the PURE DIRECT board: `W701A`, `W703`, `D702` |
+| `20261116_111459.jpg` | Behind the display: the traces from the glass |
+| `20261116_111503.jpg` | Behind the IR receiver: the 3 legs of `U701` and the `IC702` gate |
+| `20261116_111509.jpg` | Behind `CB701`: the display resistors `R701` to `R704` |
+| `20261116_111519.jpg` | Behind `CB701` with the labels, `W702` (high voltage) next to it, and `CB301` on the main board |
 
-## Pastas
+## Folders
 
-- `firmware/`: o programa do Pico (MicroPython).
-  - Deste projeto: `ponte.py` (o programa), `device.py` (o `/device`), `ir_codes.py` (os códigos do controle),
-    `ir.py` (a linha do IR) e `control.py` (as rotas `/control` e `/ir`).
-  - **Cópias da base comum** (repositório `amp-link`, pasta `firmware-base/`): `wifi.py`, `web.py`, `ota.py`,
-    `udp.py`, `listeners.py` e `main.py`. Mudar lá e copiar com `python3 ../amp-link/firmware-base/copiar.py`,
-    nunca aqui.
-  - `main.py` (o porteiro das atualizações) e `secrets.py` (a senha das atualizações, fora do git) só vão ao Pico
-    pelo cabo; o resto vai pelo Wi-Fi com `python3 tools/enviar.py`.
-- `tools/`: os testes no computador, o `enviar.py` e o `fl_decode.py` (lê as capturas do analisador). O `enviar.py`, o `test_wifi.py` e o `test_listeners.py` também
-  vêm da base.
-- `captures/`: capturas do analisador lógico (a criar).
+- `firmware/`: the Pico's program (MicroPython).
+  - This project's: `ponte.py` (the program), `device.py` (`/device`), `display.py` (the PIO sniffer), `vfd.py`
+    (the display parser and the player state), `ir_codes.py` (the remote codes), `ir.py` (the IR line) and
+    `control.py` (the `/control` and `/ir` routes).
+  - **Copies of the shared base** (repository `amp-link`, folder `firmware-base/`): `wifi.py`, `web.py`, `ota.py`,
+    `udp.py`, `listeners.py` and `main.py`. Change them there and copy with
+    `python3 ../amp-link/firmware-base/copiar.py`, never here.
+  - `main.py` (the update gatekeeper) only goes to the Pico by USB; everything else goes over Wi-Fi.
+- `tools/`: the tests on the computer, `enviar.py` (update over Wi-Fi; `--publish` makes the GitHub release the app
+  updates from) and `fl_decode.py` (reads logic-analyzer captures). `enviar.py`, `test_wifi.py` and
+  `test_listeners.py` come from the base.
+- `captures/`: logic-analyzer captures.
 
-## Testar no computador
+## Test on the computer
 
 ```sh
-for t in wifi listeners device ir control fl_decode; do python3 tools/test_$t.py; done
-python3 ../amp-link/firmware-base/copiar.py --conferir    # as cópias da base estão em dia?
+for t in wifi listeners device ir control vfd fl_decode; do python3 tools/test_$t.py; done
+python3 ../amp-link/firmware-base/copiar.py --conferir    # are the base copies up to date?
 ```
 
-O `test_ir.py` compara os códigos com o modelo do `groove-rig` (`~/Projects/groove-rig`).
+`test_ir.py` compares the codes with the `groove-rig` model (`~/Projects/groove-rig`).
 
-## Instalar no Pico (pelo cabo, uma vez)
+## Install on the Pico (by USB, once)
 
 ```sh
-cp firmware/secrets.example.py firmware/secrets.py    # e preencher UPDATE_PASSWORD
 mpremote fs cp firmware/*.py : + reset
 ```
 
-Sem rede salva, o Pico abre a rede `AmpLink-CDS300-XXXX`: na app Amp Link, "Set up the amp's Wi-Fi". Daí em diante,
-atualizações só pelo Wi-Fi: `python3 tools/enviar.py`.
+With no saved network, the Pico opens the `AmpLink-CDS300-XXXX` network (key `amplink-setup`): in the DeviceLink app,
+"Set up a new device's Wi-Fi". From then on, updates go over Wi-Fi: `python3 tools/enviar.py`, or from the app once a
+release is published (`python3 tools/enviar.py --publish`).
