@@ -275,8 +275,8 @@ figure.zoomable { flex-direction: column; gap: 6px; cursor: zoom-in; }
     let b = W702;
     const x = k => 985 + (10 - k) * 36.5, Y = 1185;
     for (let k = 10; k >= 1; k--) b += `<circle cx="${x(k)}" cy="${Y}" r="15" class="o-ring${k === 6 ? " hot" : k === 5 ? " gnd" : " dim"}"/>`;
-    b += `<line x1="${x(6)}" y1="${Y + 18}" x2="900" y2="1400" class="o-line"/><text x="640" y="1450" class="o-t hot">6º da esquerda: D+5</text>`;
-    b += `<line x1="${x(5)}" y1="${Y + 18}" x2="1300" y2="1400" class="o-line"/><text x="1200" y="1450" class="o-t wht">5º: DGND</text>`;
+    b += `<line x1="${x(6)}" y1="${Y + 18}" x2="900" y2="1400" class="o-line"/><text x="640" y="1450" class="o-t hot">5º: D+5</text>`;
+    b += `<line x1="${x(5)}" y1="${Y + 18}" x2="1300" y2="1400" class="o-line"/><text x="1200" y="1450" class="o-t wht">6º: DGND</text>`;
     b += `<text x="870" y="1110" class="o-t sm">CB301</text>`;
     return photo("cb701", b, "Pinos do CB301 com D+5");
   }
@@ -313,10 +313,10 @@ figure.zoomable { flex-direction: column; gap: 6px; cursor: zoom-in; }
         </tbody></table></div>`,
       ref: "Na mesma fileira, as soldas ficam a 2,5 mm uma da outra: bem mais fácil que as janelas do CB304." },
     { id: "5", title: "A alimentação do Pico: D+5", fig: drawCB301(),
-      steps: ["Na mesma foto, embaixo: o conector branco <code>CB301</code> da placa principal, com 10 pinos à mostra. O da esquerda é o 10 (<code>P-MUTE</code>).", "Ponta vermelha no <b>6º pino da esquerda</b> (<code>D+5</code>), preta no 5º (<code>DGND</code>) ou na cima 5ª do CB701.", "Depois de uns 30 minutos tocando, <b>desligue e tire da tomada</b>, e encoste o dedo no dissipador de metal da placa da fonte (o regulador <code>IC801</code>)."],
+      steps: ["<b>Aparelho ligado na tomada.</b> Ponta preta presa com garra na <b>cima 5ª do CB701</b> (o terra de antes). No <code>CB301</code> o terra fica colado no D+5: uma ponta que escorrega ali faz curto.", "Na placa principal, o conector branco <code>CB301</code>, com 10 pinos à mostra. Conte a partir da ponta <b>oposta ao capacitor grande redondo com uma cruz em cima</b>: o <code>D+5</code> é o <b>5º pino</b>. Ponta vermelha nele.", "Depois de uns 30 minutos tocando, <b>desligue e tire da tomada</b>, e encoste o dedo no dissipador de metal da placa da fonte (o regulador <code>IC801</code>)."],
       body: `<div class="fields">${fld("d5", "D+5 (V)", inp("d5"))}${fld("ic801", "Dissipador depois de 30 min", sel("ic801", ["frio", "morno", "quente, dá para segurar", "quente, não dá para segurar"]))}</div>
-        <p class="note"><b>Só se estiver quente demais para segurar:</b> meça também o 9º pino da esquerda (<code>+B2</code>, perto de 12 V). ${inp("b2")}</p>`,
-      ref: "Esperado: D+5 entre <b>4,75 e 5,25</b>. Se der perto de −5, você está no 2º pino (A-5): conte de novo." },
+        <p class="note"><b>Só se estiver quente demais para segurar:</b> meça também o 9º pino, contando do mesmo lado (<code>+B2</code>, perto de 12 V). ${inp("b2")}</p>`,
+      ref: "Esperado: D+5 entre <b>4,75 e 5,25</b>. Se der perto de −5, você está no 2º pino (A-5): conte de novo. O dissipador só diz algo depois de 30 minutos tocando." },
   ];
 
   const host = document.getElementById("cards");

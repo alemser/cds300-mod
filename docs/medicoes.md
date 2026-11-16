@@ -42,3 +42,11 @@ As leituras na ordem em que foram feitas, com data e hora.
   `20261116_160859.jpg` e `20261116_160947.jpg`, fora do repositório): do 1º ao 15º contato, 17,4 e 18,1 mm, ou seja
   passo de **1,25 mm** (com 1,0 mm seriam 14 mm). Confere com os conectores `52044`/`52045` do esquema. O cabo de
   câmera do Raspberry Pi (15 vias, 1,0 mm) não serve.
+- **2026-11-16, tarde** (página guiada):
+  - Mapa do `CB701` confirmado com três bips: janela 2 do `CB304` → baixo 7ª, janela 6 → baixo 5ª, janela 1 → cima
+    8ª. As posições do plano valem.
+  - Saída do `U701`: **perna C** (a de baixo, na foto `20261116_111503.jpg`).
+  - Ligado, parado, sem disco, preta na cima 5ª (`DGND`): `D+3.3V` 3,28 V, `FL_/CS` 2,92 V (média: cai a 0 a cada
+    escrita do display), `FL_/RST` 3,27 V, `REM` 3,28 V, saída do `U701` 3,0 V. Nada acima de 3,4 V.
+  - Dissipador do `IC801`: frio (falta confirmar que foi depois de 30 min tocando). `D+5` ainda não medido.
+
