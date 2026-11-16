@@ -17,9 +17,8 @@ Escrito em 2026-11-16, antes de qualquer medição.
 - A porta de gravação da traseira (`CB902`) tem sinais que apagam o firmware do aparelho. Só escutar o `232C_TX`.
 - No modo de fábrica, a tecla CLEAR apaga a EEPROM. Não mandar `CLEAR` por engano com o aparelho nesse modo.
 - Fios do Pico só em soldas de furo passante que já existem (as do `CB701`, as pernas do `U701`, o `CB301`), nunca em
-  ilhas de componentes SMD. Cada fio preso à placa com cola quente ou fita kapton, para não puxar a solda.
-- Tudo o que sair do lugar é anotado em "Registro do que saiu do lugar" (no fim deste plano) e guardado num saquinho
-  com etiqueta.
+  ilhas de componentes SMD. Cada fio preso à placa com cola quente ou fita kapton, para não puxar a solda. Nada sai
+  do lugar: para desfazer, basta dessoldar os fios.
 
 ## Objetivos
 
@@ -28,29 +27,18 @@ Os requisitos do dono (2026-11-16), em ordem:
 1. **Saber o estado exato**: tocando, pausado ou parado, faixa, tempo, disco presente, bandeja, modo CD ou USB, PURE
    DIRECT.
 2. **Controle remoto pelo Wi-Fi**, com os códigos do controle mandados por fio.
-3. **Mudar o texto do display.** Não é crítico.
-4. **Fácil de desfazer**: o que sair do lugar volta sem trabalho.
+3. **Fácil de desfazer**: nada sai do lugar.
 
-Junto com os dois primeiros: compartilhar o estado com os outros aparelhos, pelo mesmo contrato dos amps.
+Junto com os dois: compartilhar o estado com os outros aparelhos, pelo mesmo contrato dos amps.
 
-## Fases
+**Fora do escopo: escrever no display** (decidido em 2026-11-16). O display do CD-S300 é simples (12 caracteres e
+os ícones) e não há mais o que mostrar nele. O Pico só lê o display; nunca escreve.
 
-**Fase 1: ler e comandar** (requisitos 1 e 2). O Pico escuta as quatro vias do display, sem cortar nada, e manda os
-códigos do controle remoto por um fio na saída do receptor.
+## A ligação: fios soldados em paralelo (decidido em 2026-11-16)
 
-**Fase 2: escrever no display** (requisito 3). O Pico no meio de `FL_/CS`, `FL_CLK` e `FL_DATA`. Depois das capturas,
-quando se souber o protocolo e se o microcontrolador manda letras ou pontos.
-
-## A ligação: solda na placa frontal (decidido em 2026-11-16)
-
-Sem extensão do flat. Comparadas as duas formas, a extensão só ganha na fase 2 (nada se altera na placa e a via
-`REM` pode ser interceptada sem solda), mas pede uma placa própria com dois conectores de 1,25 mm sem trava e espaço
-no gabinete. Com solda, a fase 1 é imediata e a fase 2 continua reversível por um plugue (abaixo). O que não muda
-nos dois casos: escrever exige o Pico no meio das três vias, porque o microcontrolador segura as linhas o tempo todo;
-e a alimentação vem do `CB301`, porque o `D+5` não passa pelo flat.
-
-**Fase 1: nada sai do lugar.** Os fios vão por cima de soldas que já existem e terminam num conector só, onde se
-encaixa o Pico ou o analisador lógico (as capturas usam os mesmos fios, sem garras).
+O Pico só escuta o display e só puxa a linha do receptor para 0, então nada precisa ser cortado nem tirado: os fios
+vão por cima de soldas que já existem e terminam num conector só, onde se encaixa o Pico ou o analisador lógico (as
+capturas usam os mesmos fios, sem garras).
 
 | Fio | Onde | Para quê |
 |---|---|---|
@@ -59,19 +47,19 @@ encaixa o Pico ou o analisador lógico (as capturas usam os mesmos fios, sem gar
 | `FL_CLK` | Solda do `CB701` | Ler o display |
 | `FL_DATA` | Solda do `CB701` | Ler o display |
 | `FL_/RST` | Solda do `CB701` | Saber quando o display é reiniciado |
-| `IR` | Perna `OUT` do `U701` | Mandar as teclas (o Pico só puxa para 0) |
+| `IR` | Perna `OUT` do `U701` | Mandar as teclas. O Pico só puxa para 0, contra o resistor interno do receptor, como no SP103: sem resistor em série |
 | `D+5` e `DGND` | `CB301`, placa principal | Alimentar o Pico. Só quando o Pico for instalado |
 
-Qual solda do `CB701` é qual via se confirma com o bip, da janela do `CB304` (que tem os nomes) até a solda, e se
-marca com caneta antes de soldar. Desfazer: dessoldar os fios.
+Qual solda do `CB701` é qual via: a serigrafia atrás da placa frontal dá o mapa (as vias ímpares na fileira de cima,
+as pares na de baixo, da esquerda para a direita), e três bips desde as janelas do `CB304` o confirmam
+(`docs/guia-medicoes.html`). Marcar com caneta antes de soldar. Desfazer: dessoldar os fios.
 
-**Fase 2: três resistores saem, e um plugue os substitui.** Os resistores em série do display (`R701` a `R704`) de
-`FL_/CS`, `FL_CLK` e `FL_DATA` saem da placa. As duas ilhas de cada um, o lado do microcontrolador e o lado do
-vidro, vão por fio a um conector de 6 vias. Encaixa-se ali a placa do Pico (que lê de um lado e escreve do outro) ou
-um **plugue de volta**, com os três resistores originais ligando cada par: com ele, o aparelho fica como de fábrica,
-sem solda. O `FL_/RST` não sai. As ilhas SMD são pequenas: fio 30 AWG, preso com cola logo ao lado. Uma chave
-automática para quando o Pico não estiver pronto (tipo 74LVC1G3157 por via) entra na placa do Pico, se as capturas
-mostrarem que vale.
+O que comprar: fio fino (30 AWG, tipo kynar), uma barra de pinos de 2,54 mm para o conector, solda fina e fluxo.
+
+**Descartado: a ponte no flat.** Uma placa entre as duas pontas do flat (dois conectores de 1,25 mm sem trava, um
+flat novo e um resistor de 1 kΩ na via `REM`, que sai de uma porta lógica e não pode ser puxada direto) só se
+justificava para escrever no display sem tocar na placa da Yamaha. Sem escrita, ela custa mais e não ganha nada. O
+passo do flat foi medido mesmo assim: 1,25 mm (`docs/medicoes.md`).
 
 ## Ligar e desligar
 
@@ -80,7 +68,7 @@ desligado, o Pico está desligado, e nada pelo Wi-Fi o liga. Três saídas:
 
 | Saída | O que muda | Custo |
 |---|---|---|
-| **A. Aceitar** | O Pico vive enquanto o aparelho está ligado. A ponte some da rede quando ele desliga, e o hub entende isso como "desligado" | Nenhum |
+| **A. Aceitar** | O Pico vive enquanto o aparelho está ligado. Ele some da rede quando o aparelho desliga, e o hub entende isso como "desligado" | Nenhum |
 | **B. Tomada inteligente** | O botão fica sempre apertado, e uma tomada Wi-Fi liga e desliga o aparelho. O hub comanda a tomada | Uma tomada; nada dentro do aparelho |
 | **C. Relé dentro do aparelho** | Uma fonte pequena de 5 V sempre ligada para o Pico e um relé no lugar da chave | Mexe nos 230 V, dentro de um aparelho sem terra |
 
@@ -107,16 +95,17 @@ Fotos que ainda ajudam:
 
 Com o aparelho ligado, contra o `DGND` (via 1 ou 9 do flat):
 
-1. As 15 vias do flat, conferindo com a tabela de `docs/pesquisa.md`. Qualquer via acima de 3,4 V para tudo. Medir
-   nas janelas do `CB304`, na placa principal, que deixam o contato de cada via à mostra. Guiar-se pelos nomes da
-   serigrafia: os números das vias se invertem entre as duas placas.
-2. A saída do receptor `U701`, em repouso (esperado: 3,3 V).
+1. O mapa das soldas do `CB701` (três bips) e a perna `OUT` do `U701` (a que bipa com o `IC702`), com o aparelho
+   fora da tomada.
+2. As vias que o Pico usa (`D+3.3V`, `FL_/CS`, `FL_/RST`, `REM`) e a saída do `U701` em repouso. Qualquer valor
+   acima de 3,4 V para tudo.
 3. O `D+5` no `CB301` da placa principal, ao lado do flat: a tensão, e a temperatura do dissipador do `IC801` (na
    fonte) depois de meia hora tocando. O Pico vai pedir mais uns 50 a 100 mA dessa linha.
 4. O `+B2`, no mesmo conector: alternativa para alimentar o Pico por um regulador próprio, se o `D+5` não tiver
    folga.
 
-Anotar em `docs/medicoes.md`, que já tem as tabelas prontas, com o esperado do esquema.
+A página guiada (`docs/guia-medicoes.html`, https://claude.ai/artifact/1Gud8oKmZ5HQ2eygCHr3Kf) mostra cada ponto
+sobre as fotos do aparelho e copia o resultado para o chat. Anotar em `docs/medicoes.md`.
 
 ## Passo 2b: teste de interferência do Wi-Fi
 
@@ -127,7 +116,8 @@ ruído: ver se o disco pula). Anotar também o RSSI com a tampa fechada.
 
 ## Passo 3: analisador lógico
 
-Com o LogicAnalyzer do SP103 (`logicanalyzer-sp103`), nas vias `FL_/CS`, `FL_CLK`, `FL_DATA`, `FL_/RST` e `REM`.
+Com o LogicAnalyzer do SP103 (`logicanalyzer-sp103`), encaixado no conector dos fios já soldados: `FL_/CS`,
+`FL_CLK`, `FL_DATA`, `FL_/RST` e o `IR`.
 
 Display:
 
@@ -136,12 +126,13 @@ Display:
 - A tecla DISPLAY (tempo da faixa, restante, total) e o DIMMER.
 - REPEAT, RANDOM, PROGRAM, A/B, PURE DIRECT.
 - Abrir e fechar a bandeja.
-- Um CD com CD-Text e um pendrive com MP3 (nomes de arquivo e de pasta, FOLDER).
+- Depois, se a ideia do texto do disco for feita: um CD com CD-Text e um pendrive com MP3.
 
 O que as capturas precisam responder:
 
 - O protocolo do vidro: velocidade, ordem dos bits, comandos.
-- **O microcontrolador manda letras ou pontos?** Decide como é o leitor de telas.
+- **O microcontrolador manda letras ou pontos?** Decide como é o leitor de telas (com pontos, ele precisa de uma
+  tabela da fonte do vidro para reconhecer as letras).
 - Como os ícones (grades 13 e 14) são acesos: é deles que saem play, pause e os modos.
 - De quanto em quanto tempo o display é reescrito (o tempo corre de segundo em segundo).
 
@@ -162,7 +153,7 @@ do vidro; o leitor de telas sai do que ele mostrar.
 2. O `/device` do CD-S300. **Escrito em 2026-11-16**, com `kind` e `keys`, que são a proposta do `api` 2.
 3. O envio dos códigos do controle remoto, e o `/control`. **Escrito em 2026-11-16**: as 30 teclas da tabela do
    manual, em NEC 79/86, conferidas bit a bit com o modelo do `groove-rig`. O PIO que move a linha é o do SP103.
-   Falta: rodar num Pico, ligar o fio na saída do receptor e ver o aparelho obedecer. Os tempos são os do padrão
+   Falta: rodar num Pico, com o fio na saída do receptor, e ver o aparelho obedecer. Os tempos são os do padrão
    NEC, não medidos neste aparelho.
 4. O sniffer do display (PIO) e o leitor das telas, testados no Mac com as capturas reais.
 
@@ -213,32 +204,30 @@ Até a etapa 1, este projeto segue com `AmpLink-CDS300-XXXX`.
 
 ## Ideias
 
-Além do básico (estado e comandos). A coluna "Depende de" diz o que precisa existir antes.
+Além do básico (estado e comandos). A coluna "Depende de" diz o que precisa existir além disso. As ideias que
+escreviam no display (o título da faixa, um relógio com o aparelho parado) saíram junto com a escrita no display.
 
 | Ideia | O que é | Depende de |
 |---|---|---|
-| Ligar o amp junto | Play no CD liga o amp e escolhe a entrada CD; outra entrada no amp ou standby pausa o CD | Fase 1 e o ponto central |
-| Reconhecer o disco | Ao carregar, o aparelho mostra o número de faixas e o tempo total. O par serve de chave na coleção (`groove-catalog`): o disco é nomeado uma vez e reconhecido sempre | Fase 1 |
-| Título no display | O nome da faixa, vindo do catálogo, rolando nos 12 caracteres, para discos sem CD-Text | Fase 2 e a ideia anterior |
-| "Tocando agora" e histórico | O `groove-display` mostra o disco e a faixa; o groove guarda o que foi tocado | Fase 1 |
-| Texto do disco e do pendrive | CD-Text e nomes de arquivo e de pasta, remontados da rolagem do display | Fase 1 |
-| Faixa direta, programa, A-B | Pela app, com as teclas numéricas do controle, sem o controle na mão | Fase 1 |
-| Timer de desligar e despertador | Parar depois de N minutos; tocar numa hora marcada | Fase 1 (o despertador depende de "Ligar e desligar") |
-| Horas de uso | Tempo total tocando, guardado no Pico: a idade do laser | Fase 1 |
+| Ligar o amp junto | Play no CD liga o amp e escolhe a entrada CD; outra entrada no amp ou standby pausa o CD | O ponto central |
+| Reconhecer o disco | Ao carregar, o aparelho mostra o número de faixas e o tempo total. O par serve de chave na coleção (`groove-catalog`): o disco é nomeado uma vez e reconhecido sempre | — |
+| "Tocando agora" e histórico | O `groove-display` mostra o disco e a faixa; o groove guarda o que foi tocado | — |
+| Texto do disco e do pendrive | CD-Text e nomes de arquivo e de pasta, remontados da rolagem do display | — |
+| Faixa direta, programa, A-B | Pela app, com as teclas numéricas do controle, sem o controle na mão | — |
+| Timer de desligar e despertador | Parar depois de N minutos; tocar numa hora marcada | — (o despertador depende de "Ligar e desligar") |
+| Horas de uso | Tempo total tocando, guardado no Pico: a idade do laser | — |
 | Saúde do disco | Contar os erros de leitura (`C2_Flag`, pino 31 do `IC305`): disco riscado ou laser fraco | Um fio a mais na placa principal |
 | Bandeja | Saber se está aberta (`OPSW`, `CLSW`) sem depender do display | Dois fios a mais, só se o display não bastar |
 | Fonte do VU dos amps | O Pico lê o S/PDIF (3,3 V, na entrada do `IC4`) e publica o nível do áudio. O CD player vira a fonte do VU do SP103 e do MR 780, no lugar do relay | A estudar: não foi verificado se o Pico dá conta de ler S/PDIF junto com o resto |
 | Volume na saída | O DAC PCM1780 tem atenuador digital, comandado por três fios. O Pico poderia ajustar o nível | A estudar: disputa os três fios com o microcontrolador e mexe no caminho do som |
-| Relógio com o aparelho parado | O display mostra a hora em vez de `NO DISC` | Fase 2 |
 
 ## Perguntas em aberto
 
 - A base comum do firmware vai para o `amp-link` agora ou depois deste aparelho?
-- O que mostrar no display na fase 2, se ela for feita.
 
-## Registro do que saiu do lugar
+## Registro dos fios
 
-O que foi tirado do aparelho, quando, onde está guardado e como volta. Vazio até agora.
+Cada fio soldado no aparelho, onde e quando. Para desfazer, dessoldar na ordem inversa. Vazio até agora.
 
-| Data | O quê | Valor | Guardado em | Como volta |
-|---|---|---|---|---|
+| Data | Fio | Onde | Observação |
+|---|---|---|---|

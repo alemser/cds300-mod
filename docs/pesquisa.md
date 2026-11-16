@@ -58,8 +58,8 @@ Entre o conector e o vidro, cada via do display tem um resistor em série (10 a 
   principal, ao lado do `CB304`, estão escritas só algumas (`KEY-2`, `KEY-0`, `LED-/USB1`, `LED-POWER`, `REM`,
   `FL-/RST`, `FL-DATA`), na mesma ordem (`20261116_084644.jpg`).
 - **Os conectores:** o esquema os marca como `52044` (frontal) e `52045` (principal), que na Molex são conectores de
-  flat de **passo 1,25 mm**. Conferir com a régua antes de comprar a extensão: 15 vias devem dar uns 17,5 mm entre a
-  primeira e a última. O flat tem reforço azul nas duas pontas e a marca `AWM 20624 80C 60V VW-1`.
+  flat de **passo 1,25 mm**, confirmado por foto com fita métrica (`docs/medicoes.md`): uns 17,5 mm entre a primeira
+  e a última via. O flat tem reforço azul nas duas pontas e a marca `AWM 20624 80C 60V VW-1`.
 - **Dá para medir sem soldar.** O `CB304` fica em pé na placa principal e tem uma janela por via, com o contato de
   metal à mostra (`20261116_083847.jpg`): a ponta do multímetro alcança cada via. Na placa frontal, as 15 soldas do
   `CB701` ficam viradas para dentro do aparelho, em duas fileiras (`20261116_084546.jpg`).
@@ -118,9 +118,9 @@ Consequência: a via `REM` é empurrada para 3,3 V e para 0 V por uma saída for
 baixo com o Pico**, como numa saída de receptor comum. Dois caminhos, a decidir na bancada:
 
 - Ligar o Pico na **saída do `U701`** (antes da porta), que é fraca e aceita ser puxada para baixo. O receptor
-  continua funcionando.
-- Ou passar a via `REM` por dentro do Pico (ele recebe da placa frontal e entrega à principal), se o flat for
-  cortado de qualquer jeito na fase 2.
+  continua funcionando. **É o caminho escolhido** (`docs/plano.md`, "A ligação").
+- Ou, numa placa entre as pontas do flat, um resistor de 1 kΩ em série na via `REM`, com o Pico do lado do
+  microcontrolador. Descartado junto com a ponte.
 
 ### Os códigos (página 56)
 

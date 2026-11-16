@@ -7,7 +7,7 @@ Para medir, usar a página guiada (`docs/guia-medicoes.html`, publicada em
 https://claude.ai/artifact/1Gud8oKmZ5HQ2eygCHr3Kf): um cartão por medição, com desenho, e um botão que copia tudo para
 o chat. A tabela abaixo recebe o resultado.
 
-## O que decide a fase 1
+## O que decide antes de soldar
 
 Só o que muda uma decisão agora: se o Pico pode se ligar às vias que vai usar, onde soldar o fio do controle remoto,
 se o `D+5` aguenta o Pico e em qual solda do `CB701` vai cada fio (`docs/plano.md`, "A ligação"). Qualquer via acima de **3,4 V** para tudo.
@@ -26,7 +26,7 @@ se o `D+5` aguenta o Pico e em qual solda do `CB701` vai cada fio (`docs/plano.m
 
 ## Fica para depois
 
-- **As outras 11 vias do flat** (LEDs, teclas, `FL_DATA`, `FL_CLK`): o Pico não se liga nelas na fase 1. A média do
+- **As outras 11 vias do flat** (LEDs, teclas, `FL_DATA`, `FL_CLK`): o Pico não se liga nelas. A média do
   multímetro em `FL_DATA` e `FL_CLK` não mostra o pico da tensão; o analisador lógico mostra o display melhor.
 - **Teste de interferência do Wi-Fi** (passo 2b do plano): precisa de um Pico transmitindo. Entra no primeiro teste
   da ponte dentro do aparelho, junto com o RSSI com a tampa fechada.

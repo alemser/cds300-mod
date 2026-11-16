@@ -8,18 +8,17 @@ nome do arquivo em `captures/` que as prova.
 
 Analisador: o Pico 2 W com o LogicAnalyzer (`logicanalyzer-sp103`). Canal N = GPIO(N+1).
 
-| Canal | GPIO | Pino físico | Via do flat | Onde pegar |
+| Canal | GPIO | Pino físico | Sinal | Onde |
 |---|---|---|---|---|
-| 1 | GP2 | 4 | `FL_/CS` | Resistor do display (`R701` a `R704`), lado do `CB701` |
+| 1 | GP2 | 4 | `FL_/CS` | Conector dos fios soldados no `CB701` (`docs/plano.md`, "A ligação") |
 | 2 | GP3 | 5 | `FL_CLK` | Idem |
 | 3 | GP4 | 6 | `FL_DATA` | Idem |
-| 4 | GP5 | 7 | `FL_/RST` | Idem (o de 10 Ω, código `100`) |
-| 5 | GP6 | 9 | `REM` | Perna `OUT` do `U701` ou a via `REM` |
-| — | GND | 3 | `DGND` | Via 1 ou 9 |
+| 4 | GP5 | 7 | `FL_/RST` | Idem |
+| 5 | GP6 | 9 | `IR` | Idem: o fio da perna `OUT` do `U701` |
+| — | GND | 3 | `DGND` | Idem |
 
 Dar aos canais os nomes `CS`, `CLK`, `DATA`, `RST` e `REM` no programa: o `tools/fl_decode.py` usa os nomes antes dos
-números. Qual resistor é de qual via se confirma com o multímetro (continuidade até a via no `CB701`): anotar em
-`docs/medicoes.md`.
+números.
 
 Tudo é de 3,3 V: sem o cuidado dos 5 V do SP103. O Mac **na bateria** (o aparelho não tem terra).
 
@@ -34,7 +33,7 @@ Um arquivo por cena, em `captures/`, com o número na frente. Ler cada uma com:
 python3 tools/fl_decode.py captures/01-liga.lac
 ```
 
-Cinco capturas bastam para o leitor de telas da fase 1 (o estado: tocando, pausado, parado, faixa, tempo, disco,
+Cinco capturas bastam para o leitor de telas (o estado: tocando, pausado, parado, faixa, tempo, disco,
 bandeja, modos). O controle remoto vai junto, no canal 5, em todas.
 
 | Arquivo | Cena | Feita? |

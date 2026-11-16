@@ -38,7 +38,9 @@ ligado.
 Pronto para a bancada: as tabelas das medições (`docs/medicoes.md`), a ligação e a lista das capturas
 (`docs/descobertas-protocolo.md`) e o `tools/fl_decode.py`, que lê as capturas do analisador.
 
-Decidido: ligar e desligar fica na saída A (a ponte some com o aparelho desligado), com uma tomada Wi-Fi depois se
+Decidido: o Pico só lê o display (não escreve nele) e manda as teclas do controle; a ligação é por fios soldados em
+paralelo, por cima de soldas que já existem, sem tirar nada do lugar (`docs/plano.md`, "A ligação"). Ligar e desligar
+fica na saída A (a ponte some com o aparelho desligado), com uma tomada Wi-Fi depois se
 fizer falta; o contrato passa a se chamar **DeviceLink**, em etapas (`docs/plano.md`, "O protocolo comum").
 
 Próximo passo: conferir as tensões do flat com o multímetro e capturar o display com o analisador lógico
