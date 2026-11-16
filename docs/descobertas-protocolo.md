@@ -31,24 +31,22 @@ Frequência de captura: começar com 10 MHz e baixar se a captura ficar curta de
 Um arquivo por cena, em `captures/`, com o número na frente. Ler cada uma com:
 
 ```sh
-python3 tools/fl_decode.py captures/01-liga-sem-disco.lac
+python3 tools/fl_decode.py captures/01-liga.lac
 ```
+
+Cinco capturas bastam para o leitor de telas da fase 1 (o estado: tocando, pausado, parado, faixa, tempo, disco,
+bandeja, modos). O controle remoto vai junto, no canal 5, em todas.
 
 | Arquivo | Cena | Feita? |
 |---|---|---|
-| `01-liga-sem-disco` | Ligar sem disco (`NO DISC`); trigger na descida do `FL_/RST` ou do `FL_/CS` | |
-| `02-liga-com-disco` | Ligar com disco: `LOADING`, depois faixas e tempo total | |
-| `03-tocando` | Play e uns segundos tocando: o tempo correndo | |
-| `04-transporte` | Pause, stop, próxima, anterior, avançar e voltar | |
-| `05-display` | A tecla DISPLAY (faixa, restante, total) | |
-| `06-dimmer` | DIMMER nos níveis todos | |
-| `07-modos` | REPEAT, RANDOM, PROGRAM, A/B | |
-| `08-pure-direct` | PURE DIRECT liga e desliga (o display apaga?) | |
-| `09-bandeja` | Abrir e fechar a bandeja | |
-| `10-cd-text` | Um CD com CD-Text | |
-| `11-usb` | Pendrive com MP3: nomes de arquivo e de pasta, FOLDER | |
-| `12-controle` | Uma tecla do controle, para conferir NEC 79/86 e os tempos | |
-| `13-rs232` | Só o `232C_TX` da porta `CB902`, com o aparelho ligado e tocando. Nada mais dessa porta | |
+| `01-liga` | Ligar com disco: `LOADING`, depois faixas e tempo total. Trigger na descida do `FL_/RST` ou do `FL_/CS` | |
+| `02-tocando` | Play pelo controle e uns segundos tocando (o tempo correndo); depois pause, próxima e stop | |
+| `03-display` | A tecla DISPLAY (faixa, restante, total) e o DIMMER | |
+| `04-modos` | REPEAT, RANDOM, PROGRAM, A/B e PURE DIRECT: os ícones | |
+| `05-bandeja` | Abrir e fechar a bandeja, terminando em `NO DISC` | |
+
+Para depois, só se a ideia correspondente for feita: um CD com CD-Text e um pendrive com MP3 (texto do disco), e a
+escuta do `232C_TX` da porta `CB902` (nada mais dessa porta).
 
 ## Perguntas
 

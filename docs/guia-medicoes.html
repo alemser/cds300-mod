@@ -121,7 +121,7 @@ textarea.notes { width: 100%; min-height: 70px; box-sizing: border-box; font-siz
   <header style="display:grid; gap:8px">
     <span class="section-label">CD-S300 mod · passo 2 do plano</span>
     <h1>Medições da bancada</h1>
-    <p class="lede">Cada cartão mostra onde encostar as pontas do multímetro, o que ler e onde anotar. Os campos são salvos neste navegador enquanto você mede. No fim, um botão copia tudo, e você cola no chat.</p>
+    <p class="lede">Só o que decide algo agora: se o Pico pode encostar nas vias que vai usar, onde soldar o fio do controle remoto, se o <code>D+5</code> aguenta o Pico e qual extensão do flat comprar. São oito valores. Cada cartão mostra onde encostar as pontas; os campos ficam salvos neste navegador, e no fim um botão copia tudo para o chat.</p>
   </header>
 
   <section class="box danger">
@@ -129,9 +129,9 @@ textarea.notes { width: 100%; min-height: 70px; box-sizing: border-box; font-siz
     <ul class="rules">
       <li><b>230 V na placa marrom da fonte</b> (entrada de força, fusível, o botão de ligar e o transformador). Com o aparelho na tomada, as mãos ficam longe dela.</li>
       <li><b>−27 V e o filamento do display</b> chegam à placa frontal pelo cabo de 4 fios <code>W702</code>, à esquerda do conector do flat. Não encostar ali.</li>
-      <li><b>Uma mão só</b> com o aparelho ligado: a outra fora do aparelho. A ponta preta pode ficar presa com garra jacaré.</li>
-      <li><b>As vias do flat ficam a 1,25 mm uma da outra.</b> Uma ponta escorregando faz curto entre duas vias. Use pontas finas, encoste devagar, de frente para a janela do conector.</li>
-      <li><b>Qualquer via acima de 3,4 V: pare</b> e me mande o valor antes de qualquer outra coisa. A página pinta o campo de vermelho.</li>
+      <li><b>Uma mão só</b> com o aparelho ligado. A ponta preta fica presa com garra jacaré.</li>
+      <li><b>As vias do flat ficam a 1,25 mm uma da outra.</b> Uma ponta escorregando faz curto entre duas vias. Pontas finas, devagar, de frente para a janela do conector.</li>
+      <li><b>Qualquer valor acima de 3,4 V nas vias: pare</b> e me mande antes de seguir. A página pinta o campo de vermelho.</li>
       <li>Continuidade (bip) <b>só com o aparelho fora da tomada</b>.</li>
     </ul>
     <div class="legend">
@@ -145,29 +145,21 @@ textarea.notes { width: 100%; min-height: 70px; box-sizing: border-box; font-siz
 
   <div class="group-head">
     <span class="section-label">Grupo 1 · aparelho fora da tomada</span>
-    <h2>Fotos, o flat e a continuidade</h2>
-    <p class="lede">Tudo sem energia. O multímetro na escala de continuidade (o símbolo do som).</p>
+    <h2>O flat e o receptor</h2>
   </div>
   <div id="g1" style="display:grid; gap:16px"></div>
 
   <div class="group-head">
     <span class="section-label">Grupo 2 · aparelho ligado</span>
     <h2>As tensões</h2>
-    <p class="lede">Multímetro em tensão contínua (V⎓, escala de 20 V). Ponta preta sempre no terra digital: a via <code>DGND</code> do flat (há duas) ou o <code>DGND</code> do conector da fonte.</p>
+    <p class="lede">Multímetro em tensão contínua (V⎓, escala de 20 V). Ponta preta no terra digital: uma das vias <code>DGND</code> do flat ou o <code>DGND</code> do conector da fonte.</p>
   </div>
   <div id="g2" style="display:grid; gap:16px"></div>
-
-  <div class="group-head">
-    <span class="section-label">Grupo 3 · opcional, se der tempo</span>
-    <h2>Wi-Fi e a tomada inteligente</h2>
-    <p class="lede">Dois testes rápidos que decidem coisas do plano. Pode deixar em branco e fazer outro dia.</p>
-  </div>
-  <div id="g3" style="display:grid; gap:16px"></div>
 
   <section class="box">
     <span class="section-label">Resultado</span>
     <h2>Conferência</h2>
-    <p class="lede">Cada linha compara a sua medida com o que o esquema diz. Laranja é diferente do esperado, vermelho é para parar. O texto abaixo da tabela é o que vai para o chat.</p>
+    <p class="lede">Cada linha compara a sua medida com o esquema. Laranja é diferente do esperado, vermelho é para parar. O texto abaixo da tabela é o que vai para o chat.</p>
     <div class="table-wrap"><table id="res">
       <thead><tr><th>O quê</th><th>Sua medida</th><th>Esperado</th><th>Situação</th></tr></thead>
       <tbody></tbody>
@@ -183,104 +175,85 @@ textarea.notes { width: 100%; min-height: 70px; box-sizing: border-box; font-siz
     </div>
     <textarea id="out" readonly aria-label="Texto para colar no chat"></textarea>
   </section>
+
+  <section class="box">
+    <span class="section-label">Fica para depois</span>
+    <h2>O que não precisa agora</h2>
+    <ul class="rules">
+      <li><b>As outras 11 vias do flat</b> (LEDs, teclas, dados e relógio do display): o Pico não se liga nelas na fase 1, e o analisador lógico mostra o display melhor que a média do multímetro.</li>
+      <li><b>O teste de interferência do Wi-Fi</b>: precisa de um Pico transmitindo. Entra no primeiro teste da ponte dentro do aparelho.</li>
+      <li><b>Como o aparelho volta depois de tirado da tomada</b>: só importa se a tomada Wi-Fi (saída B) um dia fizer falta.</li>
+      <li><b>As fotos da traseira e do <code>IC305</code></b>: servem a ideias para mais tarde (a porta RS-232, os erros de leitura, o S/PDIF).</li>
+    </ul>
+  </section>
 </div>
 
 <script>
 (() => {
-  // ---------------------------------------------------------------- data
-  // As 15 vias, na ordem do CB701 (placa frontal), com o esperado do esquema (docs/pesquisa.md).
-  const VIAS = [
-    [15, "FL_/CS", 3.3, "seleção do display"],
-    [14, "FL_DATA", null, "dados do display (muda o tempo todo: média)"],
-    [13, "FL_CLK", null, "relógio do display (média)"],
-    [12, "FL_/RST", 3.3, "reset do display"],
-    [11, "D+3.3V", 3.4, "alimentação da placa frontal"],
-    [10, "REM", 3.4, "receptor do controle"],
-    [9, "DGND", 0, "terra"],
-    [8, "LED_POWER", 3.3, "LED de ligado"],
-    [7, "LED_PDIRECT", 0, "LED do PURE DIRECT (apagado)"],
-    [6, "LED_/USB1", 3.4, "LED do USB, laranja (apagado)"],
-    [5, "LED_/USB2", 3.4, "LED do USB, verde (apagado)"],
-    [4, "KEY_0", 3.4, "STOP, PAUSE, abrir"],
-    [3, "KEY_1", 3.4, "PLAY, próxima, anterior"],
-    [2, "KEY_2", 3.4, "PURE DIRECT, CD/USB"],
-    [1, "DGND", 0, "terra"],
-  ];
+  // As 15 vias na ordem do CB304 (placa principal): via 1 = FL_/CS ... via 15 = DGND, o inverso do CB701.
+  // [nome, número no CB701, esperado (V), o que é]; só as com esperado são medidas aqui.
+  const CB304 = [["FL_/CS", 15, 3.3, "seleção do display, em repouso alta"], ["FL_DATA", 14], ["FL_CLK", 13],
+    ["FL_/RST", 12, 3.3, "reset do display, em repouso alto"], ["D+3.3V", 11, 3.4, "alimentação da lógica da placa frontal"],
+    ["REM", 10, 3.4, "receptor do controle, em repouso alto"], ["DGND", 9], ["LED_POWER", 8], ["LED_PDIRECT", 7],
+    ["LED_/USB1", 6], ["LED_/USB2", 5], ["KEY_0", 4], ["KEY_1", 3], ["KEY_2", 2], ["DGND", 1]];
+  const VIAS = [4, 0, 3, 5].map(i => CB304[i]);   // D+3.3V primeiro: se ela estiver certa, as outras tendem a estar
   const TOL = 0.25, LIMIT = 3.4;
 
   // ---------------------------------------------------------------- svg helpers
-  const NS = "http://www.w3.org/2000/svg";
   const svg = (w, h, body, label) =>
     `<svg viewBox="0 0 ${w} ${h}" role="img" aria-label="${label}"><defs><marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,1 L10,5 L0,9 z" class="s-arrow"/></marker></defs>${body}</svg>`;
   const t = (x, y, s, cls = "s-lab", a = "start", extra = "") => `<text x="${x}" y="${y}" class="${cls}" text-anchor="${a}" ${extra}>${s}</text>`;
-  const probe = (x, y, color, len = 70) => {
-    // a probe coming from above-right down to (x, y)
-    const cls = color === "red" ? "s-red" : "s-blk", tip = color === "red" ? "s-redtip" : "s-blktip";
-    return `<g class="probe-${color}"><path d="M${x + len * .55},${y - len} L${x + 3},${y - 8}" class="${cls}" stroke-width="7"/><path d="M${x + 3},${y - 8} L${x},${y}" class="${cls}"/><circle cx="${x}" cy="${y}" r="2.6" class="${tip}"/></g>`;
-  };
+  const probe = (x, y, len = 70) =>
+    `<path d="M${x + len * .55},${y - len} L${x + 3},${y - 8}" class="s-red" stroke-width="7"/><path d="M${x + 3},${y - 8} L${x},${y}" class="s-red"/><circle cx="${x}" cy="${y}" r="2.6" class="s-redtip"/>`;
 
-  // CB304 (placa principal): a janela de cada via. Ordem do CB304: via 1 = FL_/CS ... via 15 = DGND (o inverso do CB701).
   function drawCB304(active) {
-    const order = VIAS.map(v => v[1]); // FL_/CS primeiro: é a via 1 do CB304
-    const x0 = 40, step = 34, y = 150;
-    let b = "";
-    b += `<rect x="10" y="${y + 40}" width="${x0 + step * 15 + 10}" height="40" class="s-pcb"/>`;
+    const x0 = 40, step = 34, y = 150, measured = VIAS.map(v => v[0]);
+    let b = `<rect x="10" y="${y + 40}" width="${x0 + step * 15 + 10}" height="40" class="s-pcb"/>`;
     b += `<rect x="10" y="${y + 40}" width="${x0 + step * 15 + 10}" height="4" class="s-pcbtop"/>`;
     b += `<rect x="${x0 - 22}" y="${y - 14}" width="${step * 15 + 10}" height="54" rx="3" class="s-plastic"/>`;
-    order.forEach((name, i) => {
+    CB304.forEach(([name], i) => {
       const x = x0 + i * step;
       const cls = name === "DGND" ? "s-win gnd" : "s-win" + (name === active ? " on" : "");
-      b += `<rect x="${x - 8}" y="${y - 4}" width="16" height="22" rx="2" class="${cls}" data-win="${i}"/>`;
+      b += `<rect x="${x - 8}" y="${y - 4}" width="16" height="22" rx="2" class="${cls}"/>`;
       b += `<rect x="${x - 3}" y="${y + 2}" width="6" height="12" class="s-metal"/>`;
       b += t(x, y + 32, String(i + 1), "s-pin", "middle");
-      b += t(x + 4, y - 22, name, name === active ? "s-redlab" : "s-lab", "start", `transform="rotate(-55 ${x + 4} ${y - 22})"`);
+      const lc = name === active ? "s-redlab" : measured.includes(name) || name === "DGND" ? "s-ink" : "s-lab";
+      b += t(x + 4, y - 22, name, lc, "start", `transform="rotate(-55 ${x + 4} ${y - 22})"`);
     });
-    const ai = Math.max(0, order.indexOf(active));
-    b += `<g id="redprobe">${probe(x0 + ai * step, y + 6, "red", 80)}</g>`;
+    const ai = CB304.findIndex(v => v[0] === active);
+    b += probe(x0 + ai * step, y + 6, 80);
     b += `<circle cx="${x0 + 6 * step}" cy="${y + 6}" r="4" class="s-blktip"/>`;
     b += `<path d="M${x0 + 6 * step},${y + 6} C${x0 + 6 * step - 20},${y + 120} ${x0 - 40},${y + 110} ${x0 - 20},${y + 140}" class="s-blk" stroke-width="2"/>`;
     b += t(x0 - 14, y + 155, "garra preta no DGND", "s-ink");
-    b += t(x0 + step * 14 + 8, y + 72, "placa principal, CB304 (desenho, fora de escala)", "s-hint", "end");
+    b += t(x0 + step * 14 + 8, y + 72, "placa principal, CB304. Nomes em negrito: as vias medidas aqui", "s-hint", "end");
     return svg(x0 + step * 15 + 30, y + 165, b, "Conector CB304 com as 15 janelas e as pontas do multímetro");
   }
 
   function drawFlat() {
-    let b = "";
-    b += `<rect x="40" y="40" width="380" height="70" class="s-flat"/>`;
-    b += `<rect x="40" y="40" width="60" height="70" class="s-flatblue"/>`;
+    let b = `<rect x="40" y="40" width="380" height="70" class="s-flat"/><rect x="40" y="40" width="60" height="70" class="s-flatblue"/>`;
     for (let i = 0; i < 15; i++) b += `<rect x="46" y="${44 + i * 4.3}" width="50" height="2.2" class="s-metal"/>`;
-    // ruler
     b += `<rect x="110" y="40" width="40" height="70" class="s-box"/>`;
     for (let i = 0; i <= 20; i++) { const yy = 44 + i * 3.1; b += `<line x1="150" y1="${yy}" x2="${i % 5 ? 143 : 136}" y2="${yy}" class="s-wire"/>`; }
     b += `<line x1="96" y1="45" x2="170" y2="45" class="s-ext"/><line x1="96" y1="105.4" x2="170" y2="105.4" class="s-ext"/>`;
     b += `<line x1="180" y1="45" x2="180" y2="105.4" class="s-dim" marker-start="url(#ar)" marker-end="url(#ar)"/>`;
     b += t(188, 80, "A", "s-big");
     b += t(200, 62, "do meio do 1º contato", "s-lab"); b += t(200, 76, "ao meio do último (15º)", "s-lab");
-    b += `<line x1="30" y1="40" x2="30" y2="110" class="s-dim" marker-start="url(#ar)" marker-end="url(#ar)"/>`;
-    b += t(22, 80, "B", "s-big", "end");
     b += t(240, 130, "ponta do flat, reforço azul, contatos à mostra", "s-hint", "middle");
     return svg(440, 140, b, "Ponta do flat de 15 vias com a régua");
   }
 
   function drawU701() {
-    let b = "";
-    b += `<rect x="10" y="20" width="440" height="190" class="s-pcb" rx="4"/>`;
-    // U701 three legs (solder side view)
-    const legs = [["E", 120], ["M", 160], ["D", 200]];
+    let b = `<rect x="10" y="20" width="440" height="190" class="s-pcb" rx="4"/>`;
     b += `<rect x="95" y="60" width="130" height="34" rx="6" class="s-box" opacity=".35"/>`;
     b += t(160, 54, "U701 (receptor), visto pelas soldas", "s-ink", "middle");
-    legs.forEach(([n, x]) => { b += `<circle cx="${x}" cy="77" r="9" class="s-metal"/><circle cx="${x}" cy="77" r="2.5" class="s-chip"/>`; b += t(x, 112, n, "s-big", "middle"); });
-    // IC702 SOT-23-5
+    [["E", 120], ["M", 160], ["D", 200]].forEach(([n, x]) => { b += `<circle cx="${x}" cy="77" r="9" class="s-metal"/><circle cx="${x}" cy="77" r="2.5" class="s-chip"/>`; b += t(x, 112, n, "s-big", "middle"); });
     b += `<rect x="300" y="65" width="60" height="34" rx="2" class="s-chip"/>`;
     b += t(330, 54, "IC702 (5 pernas)", "s-ink", "middle");
-    [[310, 104], [330, 104], [350, 104]].forEach(([x, y]) => b += `<rect x="${x - 4}" y="${y - 5}" width="8" height="12" class="s-metal"/>`);
-    [[312, 60], [348, 60]].forEach(([x, y]) => b += `<rect x="${x - 4}" y="${y - 7}" width="8" height="12" class="s-metal"/>`);
+    [310, 330, 350].forEach(x => b += `<rect x="${x - 4}" y="99" width="8" height="12" class="s-metal"/>`);
+    [312, 348].forEach(x => b += `<rect x="${x - 4}" y="53" width="8" height="12" class="s-metal"/>`);
     b += t(330, 128, "lado de 3 pernas", "s-lab", "middle");
-    // beep line from E leg to two IC702 adjacent pins
-    b += `<path d="M120,86 C140,170 280,170 308,112" class="s-beep"/>`;
-    b += `<path d="M120,86 C150,190 300,190 328,112" class="s-beep"/>`;
+    b += `<path d="M120,86 C140,170 280,170 308,112" class="s-beep"/><path d="M120,86 C150,190 300,190 328,112" class="s-beep"/>`;
     b += t(215, 192, "bip com duas pernas vizinhas = OUT", "s-big", "middle");
-    // W702 high voltage hint
     b += `<rect x="18" y="140" width="56" height="60" class="s-hv" rx="4"/>`;
     b += t(46, 168, "W702", "s-hvlab", "middle"); b += t(46, 182, "não!", "s-hvlab", "middle");
     b += t(440, 205, "desenho, fora de escala", "s-hint", "end");
@@ -293,46 +266,13 @@ textarea.notes { width: 100%; min-height: 70px; box-sizing: border-box; font-siz
     let b = `<rect x="10" y="${y + 30}" width="${x0 + step * 10}" height="36" class="s-pcb"/>`;
     b += `<rect x="${x0 - 22}" y="${y - 10}" width="${step * 10 + 6}" height="40" rx="3" class="s-plastic"/>`;
     names.forEach((n, i) => {
-      const x = x0 + i * step, hot = n === "D+5" || n === "+B2", gnd = n === "DGND";
+      const x = x0 + i * step, hot = n === "D+5", gnd = n === "DGND";
       b += `<rect x="${x - 7}" y="${y - 2}" width="14" height="22" rx="2" class="s-win${hot ? " on" : ""}${gnd ? " gnd" : ""}"/>`;
       b += t(x + 4, y - 18, n, hot ? "s-redlab" : gnd ? "s-ink" : "s-lab", "start", `transform="rotate(-55 ${x + 4} ${y - 18})"`);
     });
-    b += probe(x0 + 5 * step, y + 8, "red", 60);
+    b += probe(x0 + 5 * step, y + 8, 60);
     b += t(x0 + step * 10 - 10, y + 88, "CB301 na placa principal, ao lado do flat. Guie-se pelos nomes na serigrafia.", "s-hint", "end");
-    // heatsink icon
     return svg(x0 + step * 10 + 20, y + 100, b, "Conector de força CB301");
-  }
-
-  function drawKeys() {
-    let b = "";
-    b += t(20, 24, "3,3 V", "s-ink");
-    b += `<line x1="60" y1="20" x2="110" y2="20" class="s-wire"/><rect x="110" y="13" width="44" height="14" class="s-box"/>`;
-    b += t(132, 46, "10 kΩ", "s-lab", "middle");
-    b += `<line x1="154" y1="20" x2="200" y2="20" class="s-wire"/><circle cx="200" cy="20" r="4" class="s-redtip"/>`;
-    b += t(208, 16, "KEY_x (onde a ponta mede)", "s-redlab");
-    const keys = [["820 Ω", "0,2–0,3 V", 230], ["3,3 kΩ", "0,9–1,0 V", 330], ["12 kΩ", "2,0–2,1 V", 430]];
-    b += `<line x1="200" y1="20" x2="430" y2="20" class="s-wire"/>`;
-    keys.forEach(([r, v, x]) => {
-      b += `<line x1="${x}" y1="20" x2="${x}" y2="50" class="s-wire"/>`;
-      b += `<line x1="${x}" y1="50" x2="${x + 14}" y2="62" class="s-wire"/><line x1="${x}" y1="66" x2="${x}" y2="80" class="s-wire"/>`;
-      b += t(x + 18, 60, "tecla", "s-lab");
-      b += `<rect x="${x - 7}" y="80" width="14" height="36" class="s-box"/>`;
-      b += t(x + 12, 102, r, "s-lab");
-      b += `<line x1="${x}" y1="116" x2="${x}" y2="136" class="s-wire"/><line x1="${x - 10}" y1="136" x2="${x + 10}" y2="136" class="s-wire"/><line x1="${x - 5}" y1="141" x2="${x + 5}" y2="141" class="s-wire"/>`;
-      b += t(x, 160, "apertada: " + v, "s-big", "middle");
-    });
-    return svg(500, 172, b, "Escada de resistores das teclas");
-  }
-
-  function drawTop() {
-    let b = `<rect x="10" y="10" width="440" height="230" rx="6" class="s-box"/>`;
-    b += t(230, 252, "frente do aparelho (display)", "s-hint", "middle");
-    b += t(230, 26, "traseira", "s-hint", "middle");
-    const z = [["fonte (230 V!)", 20, 40, 110, 120, "hv"], ["placa principal: DAC, leitor", 150, 40, 200, 120, "z"],
-               ["saída analógica", 360, 40, 80, 70, "z"], ["leitor óptico / bandeja", 170, 130, 140, 80, "z"],
-               ["placa frontal: onde o Pico fica", 20, 215, 420, 20, "z"]];
-    z.forEach(([n, x, y, w, h, k]) => { b += `<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="4" class="${k === "hv" ? "s-hv" : "s-zone"}"/>`; b += t(x + w / 2, y + h / 2 + 4, n, k === "hv" ? "s-hvlab" : "s-lab", "middle"); });
-    return svg(460, 262, b, "Aparelho visto de cima, com as regiões do teste de Wi-Fi");
   }
 
   // ---------------------------------------------------------------- cards
@@ -341,85 +281,36 @@ textarea.notes { width: 100%; min-height: 70px; box-sizing: border-box; font-siz
   const fld = (key, label, control) => `<div class="field"><label for="f_${key}">${label}</label>${control}</div>`;
 
   const CARDS = [
-    { g: "g1", id: "1", title: "As três fotos que faltam",
-      fig: drawTop(),
-      steps: ["A traseira inteira, de frente, mostrando a porta de 9 vias de gravação (<code>CB902</code>).", "A placa principal na região do microcontrolador (<code>IC305</code>, o maior chip, 80 pernas) e do <code>IC4</code> (perto das saídas digitais).", "O flat de 15 vias com uma régua ao lado (pode ser a mesma foto do cartão 2)."],
-      body: `<div class="checks">
-        <label><input type="checkbox" id="f_foto_cb902" data-key="foto_cb902"> traseira com o CB902</label>
-        <label><input type="checkbox" id="f_foto_ic305" data-key="foto_ic305"> IC305 e IC4</label>
-        <label><input type="checkbox" id="f_foto_regua" data-key="foto_regua"> flat com régua</label></div>`,
-      ref: "As fotos vão para <code>docs/images/</code> como as outras; aqui é só para marcar." },
-    { g: "g1", id: "2", title: "O passo do flat de 15 vias",
+    { g: "g1", id: "1", title: "O passo do flat de 15 vias",
       fig: drawFlat(),
-      steps: ["Solte o flat de um lado (o da placa frontal é mais fácil) ou meça ele no lugar, se der.", "<b>A</b>: do meio do primeiro contato ao meio do último. O passo sai de A ÷ 14.", "<b>B</b>: a largura do flat inteiro.", "Com paquímetro é melhor; com régua, anote a melhor leitura."],
-      body: `<div class="fields">${fld("flat_a", "A · 1º ao 15º (mm)", inp("flat_a"))}${fld("flat_b", "B · largura (mm)", inp("flat_b"))}</div>`,
-      ref: "Esperado: A perto de <b>17,5</b> (passo 1,25 mm) e B perto de 20. É o que decide a extensão a comprar." },
-    { g: "g1", id: "3", title: "Qual perna do receptor U701 é a saída",
+      steps: ["Solte o flat do lado da placa frontal (ou meça no lugar, se der).", "Meça <b>A</b>: do meio do primeiro contato ao meio do último. O passo sai de A ÷ 14.", "Com paquímetro é melhor; com régua, anote a melhor leitura."],
+      body: `<div class="fields">${fld("flat_a", "A · 1º ao 15º (mm)", inp("flat_a"))}</div>`,
+      ref: "Esperado: perto de <b>17,5</b> (passo de 1,25 mm). É o que decide a extensão a comprar." },
+    { g: "g1", id: "2", title: "Qual perna do receptor U701 é a saída",
       fig: drawU701(),
-      steps: ["Atrás da placa frontal, levante a folha plástica perto do receptor.", "Olhando pelo lado das soldas, chame as três pernas de <b>E</b>, <b>M</b> e <b>D</b> (esquerda, meio, direita), com o display <b>para cima</b>.", "Para cada perna: ela bipa com <b>duas pernas vizinhas</b> do <code>IC702</code> (o chip pequeno de 5 pernas ao lado)? Ela bipa com o <code>DGND</code> do flat?", "A perna que bipa com o IC702 é a saída, onde o Pico vai mandar as teclas."],
-      body: `<div class="table-wrap"><table><thead><tr><th>Perna</th><th>Bip com o IC702?</th><th>Bip com DGND?</th></tr></thead><tbody>
-        ${["E", "M", "D"].map(l => `<tr><td class="mono">${l}</td><td>${sel("u_" + l + "_ic", ["sim", "não"])}</td><td>${sel("u_" + l + "_gnd", ["sim", "não"])}</td></tr>`).join("")}
+      steps: ["Atrás da placa frontal, levante a folha plástica perto do receptor.", "Olhando pelo lado das soldas, com o display <b>para cima</b>, chame as três pernas de <b>E</b>, <b>M</b> e <b>D</b> (esquerda, meio, direita).", "Procure a perna que bipa com <b>duas pernas vizinhas</b> do <code>IC702</code> (o chip pequeno de 5 pernas ao lado). É ali que o fio do controle remoto vai ser soldado."],
+      body: `<div class="fields">${fld("u_out_leg", "Perna que bipa com o IC702", sel("u_out_leg", ["E", "M", "D", "nenhuma", "mais de uma"]))}</div>`,
+      ref: "O esquema põe as pernas na ordem <b>OUT, G, VCC</b>. Se nenhuma ou mais de uma bipar, me avise antes de seguir." },
+    { g: "g2", id: "3", title: "As vias que o Pico vai usar", wide: true,
+      fig: `<div id="cb304fig" style="width:100%">${drawCB304(VIAS[0][0])}</div>`,
+      steps: ["Aparelho ligado, parado, sem disco.", "Meça pelas janelas do <code>CB304</code> (placa principal). <b>Guie-se pelos nomes</b> na serigrafia: o desenho segue o esquema, e o lado real pode estar espelhado.", "Ao clicar num campo, a ponta vermelha do desenho vai para a via certa.", "Depois, ponta vermelha na perna de saída do <code>U701</code> achada no cartão 2."],
+      body: `<div class="table-wrap vias"><table><thead><tr><th>Via</th><th>O que é</th><th>Esperado</th><th>Medido (V)</th><th></th></tr></thead><tbody>
+        ${VIAS.map(([name, n, exp, what]) => `<tr data-via="${name}"><td class="mono">${name}</td><td class="ref">${what}</td><td class="val">${String(exp).replace(".", ",")}</td><td>${inp("v" + n)}</td><td class="val" id="st_v${n}"></td></tr>`).join("")}
+        <tr><td class="mono">U701 OUT</td><td class="ref">saída do receptor, em repouso</td><td class="val">3,3</td><td>${inp("u_out")}</td><td class="val" id="st_uout"></td></tr>
         </tbody></table></div>`,
-      ref: "O esquema põe as pernas na ordem <b>OUT, G, VCC</b>: uma bipa com o IC702, outra com o terra, a terceira com nenhum." },
-    { g: "g1", id: "4", title: "Os dois terras são o mesmo",
-      fig: null,
-      steps: ["Via 1 e via 9 do flat (as duas <code>DGND</code>): bipam entre si?", "<code>DGND</code> do flat e o <code>DGND</code> do conector da fonte (<code>CB301</code>, cartão 7): bipam?"],
-      body: `<div class="fields">${fld("gnd_19", "Via 1 ↔ via 9", sel("gnd_19", ["bip", "sem bip"]))}${fld("gnd_cb301", "Flat ↔ CB301", sel("gnd_cb301", ["bip", "sem bip"]))}</div>`,
-      ref: "Esperado: <b>bip</b> nos dois. Assim a garra preta pode ficar em qualquer um deles." },
-
-    { g: "g2", id: "5", title: "As 15 vias do flat", wide: true,
-      fig: `<div id="cb304fig" style="width:100%">${drawCB304("FL_/CS")}</div>`,
-      steps: ["Aparelho ligado. <b>Parado, sem disco</b>: meça todas as vias e preencha a coluna do meio.", "Depois ponha um disco, aperte PLAY e meça de novo, na coluna <b>tocando</b>. Só as que mudarem já ajudam; as outras pode repetir.", "Meça pelas janelas do <code>CB304</code> (placa principal). <b>Guie-se pelos nomes</b> na serigrafia: o desenho segue o esquema, e o lado real pode estar espelhado.", "Ao clicar num campo, a ponta vermelha do desenho vai para a via certa."],
-      body: `<div class="table-wrap vias"><table><thead><tr><th>Via (CB701)</th><th>Nome</th><th>Esperado</th><th>Parado</th><th>Tocando</th><th></th></tr></thead><tbody>
-        ${VIAS.map(([n, name, exp, what]) => `<tr data-via="${name}" data-n="${n}"><td class="mono">${n}</td><td><span class="mono">${name}</span><br><span class="ref">${what}</span></td><td class="val">${exp == null ? "média" : String(exp).replace(".", ",")}</td><td>${inp("v" + n + "_p")}</td><td>${inp("v" + n + "_t")}</td><td class="val" id="st_v${n}"></td></tr>`).join("")}
-        </tbody></table></div>`,
-      ref: "<code>FL_DATA</code> e <code>FL_CLK</code> trocam milhares de vezes por segundo: o multímetro mostra uma média, e qualquer valor entre 0 e 3,3 está bom." },
-    { g: "g2", id: "6", title: "As teclas do painel nas vias KEY",
-      fig: drawKeys(),
-      steps: ["Ponta vermelha na via indicada, aparelho parado.", "Segure a tecla do painel apertada e leia.", "É assim que o Pico poderia apertar as teclas por fio, se um dia precisar."],
-      body: `<div class="table-wrap"><table><thead><tr><th>Via</th><th>Tecla</th><th>Esperado</th><th>Medido (V)</th></tr></thead><tbody>
-        ${[["KEY_0", "STOP", "0,2–0,3", "k0_stop"], ["KEY_0", "PAUSE", "0,9–1,0", "k0_pause"], ["KEY_0", "abrir/fechar", "2,0–2,1", "k0_open"],
-           ["KEY_1", "PLAY", "0,2–0,3", "k1_play"], ["KEY_1", "próxima", "0,9–1,0", "k1_next"], ["KEY_1", "anterior", "2,0–2,1", "k1_prev"],
-           ["KEY_2", "PURE DIRECT", "~0,03", "k2_pd"], ["KEY_2", "CD/USB", "0,9–1,0", "k2_cdusb"]]
-          .map(([v, k, e, key]) => `<tr><td class="mono">${v}</td><td>${k}</td><td class="val">${e}</td><td>${inp(key)}</td></tr>`).join("")}
-        </tbody></table></div>
-        <p class="note"><b>Cuidado:</b> apertar abrir/fechar abre a bandeja, e PURE DIRECT apaga o display. Aperte de novo para voltar.</p>`,
-      ref: "Os valores vêm do manual (página 30): 10 kΩ para 3,3 V, e cada tecla liga a via ao terra por um resistor." },
-    { g: "g2", id: "7", title: "A alimentação do Pico: D+5 e +B2",
+      ref: "Se a <code>D+3.3V</code> der 3,3 a 3,4, a lógica da placa frontal é mesmo de 3,3 V e o Pico pode se ligar nela." },
+    { g: "g2", id: "4", title: "A alimentação do Pico: D+5",
       fig: drawCB301(),
-      steps: ["No conector <code>CB301</code> da placa principal, a poucos centímetros do flat.", "Ponta vermelha em <code>D+5</code>, depois em <code>+B2</code>. Ponta preta em <code>DGND</code>.", "<b>Não encoste em A-5 nem P_MUTE</b> com a vermelha esperando 5 V: são negativos, o valor vai sair com sinal de menos, e está tudo bem.", "Depois de uns 30 minutos tocando, encoste o dedo no dissipador do regulador <code>IC801</code> (na placa da fonte, com o aparelho <b>desligado</b> e fora da tomada)."],
-      body: `<div class="fields">${fld("d5", "D+5 (V)", inp("d5"))}${fld("b2", "+B2 (V)", inp("b2"))}${fld("ic801", "IC801 depois de 30 min", sel("ic801", ["frio", "morno", "quente, dá para segurar", "quente, não dá para segurar"]))}</div>`,
-      ref: "Esperado: D+5 entre <b>4,75 e 5,25</b>. +B2 perto de 12, sem regulador (varia com a rede). O Pico vai pedir mais 50 a 100 mA do D+5." },
-    { g: "g2", id: "8", title: "O receptor U701 ligado",
-      fig: null,
-      steps: ["Com a perna de saída achada no cartão 3: ponta vermelha nela, em repouso.", "Aperte e segure uma tecla do controle remoto apontado para o aparelho: a leitura deve cair e tremer.", "Ponta vermelha na perna que não bipou com nada (a alimentação do receptor)."],
-      body: `<div class="fields">${fld("u_out", "Saída, repouso (V)", inp("u_out"))}${fld("u_out_ir", "Saída, com o controle", sel("u_out_ir", ["caiu e tremeu", "não mudou"]))}${fld("u_vcc", "Alimentação (V)", inp("u_vcc"))}</div>`,
-      ref: "Esperado: saída em repouso <b>3,3</b>, alimentação <b>3,3</b>." },
-
-    { g: "g3", id: "9", title: "Teste de interferência do Wi-Fi",
-      fig: drawTop(),
-      steps: ["Um Pico W num saquinho plástico, no power bank, rodando algo que transmite sem parar.", "Disco em <b>pausa</b>, volume do amp alto (sem nada tocando).", "Encoste o saquinho em cada região do desenho por uns 20 segundos. Ouça o ruído; depois dê PLAY e veja se o disco pula.", "RSSI só se o Pico estiver com o firmware da ponte e a tampa fechada (o <code>/wifi</code> mostra)."],
-      body: `<div class="table-wrap"><table><thead><tr><th>Perto de</th><th>Ruído?</th><th>Disco pula?</th></tr></thead><tbody>
-        ${[["saida", "saída analógica"], ["dac", "placa principal (DAC)"], ["leitor", "leitor óptico"], ["frontal", "placa frontal"]]
-          .map(([k, n]) => `<tr><td>${n}</td><td>${sel("wifi_" + k + "_ruido", ["nenhum", "pouco", "claro"])}</td><td>${sel("wifi_" + k + "_pula", ["não", "sim"])}</td></tr>`).join("")}
-        </tbody></table></div>
-        <div class="fields">${fld("rssi", "RSSI com a tampa fechada (dBm)", inp("rssi", "-60"))}</div>`,
-      ref: "No MR 780 este teste decidiu onde o Pico ficaria. Aqui o lugar previsto é a placa frontal." },
-    { g: "g3", id: "10", title: "Como ele volta depois de cortar a tomada",
-      fig: null,
-      steps: ["Aparelho em modo <b>USB</b> e com o PURE DIRECT <b>ligado</b>, com um disco dentro.", "Com o botão da frente apertado (ligado), tire o cabo da tomada.", "Espere 10 segundos e ponha de volta."],
-      body: `<div class="fields">
-        ${fld("b_liga", "Liga sozinho?", sel("b_liga", ["sim", "não"]))}
-        ${fld("b_modo", "Volta em USB?", sel("b_modo", ["sim", "não, volta em CD"]))}
-        ${fld("b_pd", "PURE DIRECT volta ligado?", sel("b_pd", ["sim", "não"]))}
-        ${fld("b_disco", "Ao voltar para CD, lê o disco sozinho?", sel("b_disco", ["sim", "não"]))}</div>`,
-      ref: "Decide se uma tomada Wi-Fi basta para ligar o aparelho pela rede (saída B do plano)." },
+      steps: ["No conector <code>CB301</code> da placa principal, a poucos centímetros do flat: ponta vermelha em <code>D+5</code>, preta em <code>DGND</code>.", "Deixe o aparelho tocando uns 30 minutos (pode ser com a tampa aberta).", "<b>Desligue e tire da tomada</b>, e encoste o dedo no dissipador do regulador <code>IC801</code>, na placa da fonte."],
+      body: `<div class="fields">${fld("d5", "D+5 (V)", inp("d5"))}${fld("ic801", "IC801 depois de 30 min", sel("ic801", ["frio", "morno", "quente, dá para segurar", "quente, não dá para segurar"]))}</div>
+        <p class="note"><b>Só se o IC801 estiver quente demais para segurar:</b> meça também o <code>+B2</code>, duas posições à esquerda no mesmo conector (perto de 12 V). É a alternativa para alimentar o Pico. ${inp("b2")}</p>`,
+      ref: "Esperado: D+5 entre <b>4,75 e 5,25</b>. O Pico vai pedir mais 50 a 100 mA dessa linha." },
   ];
 
   for (const c of CARDS) {
     const el = document.createElement("article");
-    el.className = "m" + (c.fig ? "" : " wide") + (c.wide ? " wide" : "");
-    el.innerHTML = `${c.fig ? `<figure>${c.fig}</figure>` : ""}
+    el.className = "m" + (c.wide ? " wide" : "");
+    el.innerHTML = `<figure>${c.fig}</figure>
       <div class="body">
         <div class="title-row"><span class="tag">${c.id}</span><h3>${c.title}</h3></div>
         <ol class="steps">${c.steps.map(s => `<li>${s}</li>`).join("")}</ol>
@@ -429,130 +320,84 @@ textarea.notes { width: 100%; min-height: 70px; box-sizing: border-box; font-siz
     document.getElementById(c.g).appendChild(el);
   }
 
-  // ---------------------------------------------------------------- live probe on the CB304 drawing
   const fig = document.getElementById("cb304fig");
   document.querySelectorAll("tr[data-via] input").forEach(i => i.addEventListener("focus", () => {
-    const tr = i.closest("tr");
     document.querySelectorAll("tr.focus").forEach(r => r.classList.remove("focus"));
-    tr.classList.add("focus");
+    const tr = i.closest("tr"); tr.classList.add("focus");
     fig.innerHTML = drawCB304(tr.dataset.via);
   }));
 
   // ---------------------------------------------------------------- values
-  const STORE = "cds300-medicoes-v1";
+  const STORE = "cds300-medicoes-v2";
   const fields = [...document.querySelectorAll("[data-key]")];
-  const get = k => { const e = document.querySelector(`[data-key="${k}"]`); return !e ? "" : e.type === "checkbox" ? (e.checked ? "sim" : "") : e.value.trim(); };
+  const get = k => { const e = document.querySelector(`[data-key="${k}"]`); return e ? e.value.trim() : ""; };
   const num = s => { const t = String(s).trim().replace(",", "."); return t === "" ? NaN : Number(t); };
   const fmt = x => Number.isFinite(x) ? x.toFixed(2).replace(".", ",") : "—";
-
-  function viaStatus(exp, x) {
-    if (!Number.isFinite(x)) return ["", ""];
-    if (x > LIMIT) return ["st-stop", "PARE: acima de 3,4 V"];
-    if (exp == null) return x >= -0.05 ? ["st-ok", "ok"] : ["st-bad", "negativo?"];
-    return Math.abs(x - exp) <= TOL ? ["st-ok", "ok"] : ["st-bad", "diferente"];
-  }
+  const volt = (exp, x) => !Number.isFinite(x) ? ["", ""] : x > LIMIT ? ["st-stop", "PARE: acima de 3,4 V"]
+    : Math.abs(x - exp) <= TOL ? ["st-ok", "ok"] : ["st-bad", "diferente"];
+  const mark = (id, inputId, s) => {
+    const c = document.getElementById(id); c.className = "val " + s[0]; c.textContent = s[1];
+    const e = document.getElementById(inputId); e.classList.toggle("stop", s[0] === "st-stop"); e.classList.toggle("bad", s[0] === "st-bad");
+  };
 
   const tbody = document.querySelector("#res tbody");
   function render() {
     const rows = [], lines = [`Medições CD-S300 (${new Date().toLocaleDateString("pt-BR")}):`];
     const row = (what, val, exp, [cls, st]) => rows.push(`<tr><td>${what}</td><td class="val">${val}</td><td class="val">${exp}</td><td class="${cls}">${st}</td></tr>`);
 
-    // fotos
-    const fotos = ["foto_cb902", "foto_ic305", "foto_regua"].filter(k => get(k));
-    if (fotos.length) lines.push("Fotos feitas: " + fotos.map(f => f.replace("foto_", "")).join(", "));
-
-    // flat
-    const A = num(get("flat_a")), B = num(get("flat_b"));
+    const A = num(get("flat_a"));
     if (Number.isFinite(A)) {
       const p = A / 14;
       row("Passo do flat (A ÷ 14)", fmt(p) + " mm", "1,25 mm", Math.abs(p - 1.25) < 0.08 ? ["st-ok", "ok"] : Math.abs(p - 1.0) < 0.08 ? ["st-bad", "parece 1,0 mm"] : ["st-bad", "diferente"]);
-      lines.push(`Flat: A=${get("flat_a")} mm, B=${get("flat_b") || "—"} mm, passo=${fmt(p)} mm`);
-    } else if (Number.isFinite(B)) lines.push(`Flat: B=${get("flat_b")} mm`);
-
-    // U701
-    const legs = ["E", "M", "D"].map(l => [l, get("u_" + l + "_ic"), get("u_" + l + "_gnd")]);
-    if (legs.some(l => l[1] || l[2])) {
-      const out = legs.filter(l => l[1] === "sim").map(l => l[0]), g = legs.filter(l => l[2] === "sim").map(l => l[0]);
-      const ok = out.length === 1 && g.length === 1 && out[0] !== g[0];
-      row("U701: perna de saída", out.join(", ") || "—", "uma só", ok ? ["st-ok", "ok"] : ["st-bad", "conferir"]);
-      lines.push("U701 (pelas soldas, display para cima): " + legs.map(([l, i, gg]) => `${l} ic702=${i || "?"} dgnd=${gg || "?"}`).join("; ") + (ok ? ` => OUT=${out[0]}, G=${g[0]}` : ""));
+      lines.push(`Flat: A=${get("flat_a")} mm, passo=${fmt(p)} mm`);
     }
-    for (const [k, n] of [["gnd_19", "DGND via 1 ↔ 9"], ["gnd_cb301", "DGND flat ↔ CB301"]]) {
-      const v = get(k); if (v) { row(n, v, "bip", v === "bip" ? ["st-ok", "ok"] : ["st-bad", "diferente"]); lines.push(`${n}: ${v}`); }
+    const leg = get("u_out_leg");
+    if (leg) {
+      row("U701: perna de saída", leg, "E, M ou D", ["E", "M", "D"].includes(leg) ? ["st-ok", "ok"] : ["st-bad", "conferir"]);
+      lines.push(`U701 OUT (pelas soldas, display para cima): ${leg}`);
     }
 
-    // vias
-    const vl = [];
     let stop = false;
-    for (const [n, name, exp] of VIAS) {
-      const p = num(get(`v${n}_p`)), tt = num(get(`v${n}_t`));
-      const sp = viaStatus(exp, p), stt = viaStatus(exp, tt);
-      const worst = [sp, stt].find(s => s[0] === "st-stop") || [sp, stt].find(s => s[0] === "st-bad") || (sp[0] ? sp : stt);
-      const cell = document.getElementById("st_v" + n);
-      cell.className = "val " + worst[0]; cell.textContent = worst[1];
-      for (const [suf, s] of [["_p", sp], ["_t", stt]]) {
-        const e = document.getElementById(`f_v${n}${suf}`);
-        e.classList.toggle("stop", s[0] === "st-stop"); e.classList.toggle("bad", s[0] === "st-bad");
-      }
-      if (worst[0] === "st-stop") stop = true;
-      if (Number.isFinite(p) || Number.isFinite(tt)) {
-        row(`Via ${n} ${name}`, `${fmt(p)} / ${fmt(tt)}`, exp == null ? "média" : fmt(exp), worst);
-        vl.push(`${n} ${name}: parado=${get(`v${n}_p`) || "—"} tocando=${get(`v${n}_t`) || "—"}${worst[0] === "st-ok" ? "" : "  [" + worst[1] + "]"}`);
-      }
+    const vl = [];
+    for (const [name, n, exp] of VIAS) {
+      const x = num(get("v" + n)), s = volt(exp, x);
+      mark("st_v" + n, "f_v" + n, s);
+      if (s[0] === "st-stop") stop = true;
+      if (Number.isFinite(x)) { row(name, fmt(x) + " V", fmt(exp), s); vl.push(`${name}=${get("v" + n)}`); }
     }
-    if (vl.length) lines.push("", "Vias do flat (numeração CB701, V):", ...vl);
-    if (stop) lines.push("ATENÇÃO: via acima de 3,4 V.");
+    const uo = num(get("u_out")), su = volt(3.3, uo);
+    mark("st_uout", "f_u_out", su);
+    if (su[0] === "st-stop") stop = true;
+    if (Number.isFinite(uo)) { row("U701 OUT, repouso", fmt(uo) + " V", "3,30", su); vl.push(`U701_OUT=${get("u_out")}`); }
+    if (vl.length) lines.push("Vias (V, parado sem disco): " + vl.join(", "));
+    if (stop) lines.push("ATENÇÃO: valor acima de 3,4 V.");
 
-    // keys
-    const KEYS = [["k0_stop", "KEY_0 STOP", .2, .3], ["k0_pause", "KEY_0 PAUSE", .9, 1.0], ["k0_open", "KEY_0 abrir", 2.0, 2.1],
-                  ["k1_play", "KEY_1 PLAY", .2, .3], ["k1_next", "KEY_1 próxima", .9, 1.0], ["k1_prev", "KEY_1 anterior", 2.0, 2.1],
-                  ["k2_pd", "KEY_2 PURE DIRECT", 0, .1], ["k2_cdusb", "KEY_2 CD/USB", .9, 1.0]];
-    const kl = [];
-    for (const [k, n, lo, hi] of KEYS) {
-      const x = num(get(k)); if (!Number.isFinite(x)) continue;
-      row(n + " apertada", fmt(x) + " V", `${fmt(lo)}–${fmt(hi)}`, x >= lo - .1 && x <= hi + .1 ? ["st-ok", "ok"] : ["st-bad", "diferente"]);
-      kl.push(`${n}=${get(k)}`);
-    }
-    if (kl.length) lines.push("", "Teclas apertadas (V): " + kl.join(", "));
-
-    // power
-    const d5 = num(get("d5")), b2 = num(get("b2"));
+    const d5 = num(get("d5")), b2 = num(get("b2")), ic = get("ic801");
     const pl = [];
-    if (Number.isFinite(d5)) { row("D+5", fmt(d5) + " V", "4,75–5,25", d5 >= 4.75 && d5 <= 5.25 ? ["st-ok", "ok"] : ["st-bad", "fora"]); pl.push(`D+5=${get("d5")}`); }
-    if (Number.isFinite(b2)) { row("+B2", fmt(b2) + " V", "~12", b2 > 9 && b2 < 17 ? ["st-ok", "ok"] : ["st-bad", "diferente"]); pl.push(`+B2=${get("b2")}`); }
-    if (get("ic801")) { row("IC801 após 30 min", get("ic801"), "morno", get("ic801").startsWith("quente, não") ? ["st-bad", "pouca folga"] : ["st-ok", "ok"]); pl.push(`IC801=${get("ic801")}`); }
-    const uo = num(get("u_out")), uv = num(get("u_vcc"));
-    if (Number.isFinite(uo)) { row("U701 saída, repouso", fmt(uo) + " V", "3,3", viaStatus(3.3, uo)); pl.push(`U701 OUT=${get("u_out")}`); }
-    if (get("u_out_ir")) pl.push(`U701 com controle: ${get("u_out_ir")}`);
-    if (Number.isFinite(uv)) { row("U701 alimentação", fmt(uv) + " V", "3,3", viaStatus(3.3, uv)); pl.push(`U701 VCC=${get("u_vcc")}`); }
-    if (pl.length) lines.push("", "Alimentação e receptor (V): " + pl.join(", "));
+    if (Number.isFinite(d5)) { row("D+5", fmt(d5) + " V", "4,75–5,25", d5 >= 4.75 && d5 <= 5.25 ? ["st-ok", "ok"] : ["st-bad", "fora"]); pl.push(`D+5=${get("d5")} V`); }
+    if (ic) { row("IC801 após 30 min", ic, "morno", ic.startsWith("quente, não") ? ["st-bad", "pouca folga: medir +B2"] : ["st-ok", "ok"]); pl.push(`IC801=${ic}`); }
+    if (Number.isFinite(b2)) { row("+B2", fmt(b2) + " V", "~12", b2 > 9 && b2 < 17 ? ["st-ok", "ok"] : ["st-bad", "diferente"]); pl.push(`+B2=${get("b2")} V`); }
+    if (pl.length) lines.push("Alimentação: " + pl.join(", "));
 
-    // wifi
-    const wl = ["saida", "dac", "leitor", "frontal"].map(k => [k, get(`wifi_${k}_ruido`), get(`wifi_${k}_pula`)]).filter(w => w[1] || w[2]);
-    if (wl.length || get("rssi")) lines.push("", "Wi-Fi: " + wl.map(([k, r, p]) => `${k} ruído=${r || "?"} pula=${p || "?"}`).join("; ") + (get("rssi") ? `; RSSI=${get("rssi")} dBm` : ""));
-    const bl = [["b_liga", "liga sozinho"], ["b_modo", "volta em USB"], ["b_pd", "PURE DIRECT volta"], ["b_disco", "lê o disco"]].filter(([k]) => get(k));
-    if (bl.length) lines.push("", "Tomada: " + bl.map(([k, n]) => `${n}=${get(k)}`).join(", "));
-
-    if (get("notas")) lines.push("", "Observações: " + get("notas"));
+    if (get("notas")) lines.push("Observações: " + get("notas"));
     if (!rows.length) rows.push(`<tr><td colspan="4" class="ref">Nada medido ainda. As linhas aparecem aqui conforme você preenche os cartões.</td></tr>`);
     tbody.innerHTML = rows.join("");
     document.getElementById("out").value = lines.join("\n");
   }
 
-  function save() { try { const o = {}; for (const e of fields) o[e.dataset.key] = e.type === "checkbox" ? e.checked : e.value; localStorage.setItem(STORE, JSON.stringify(o)); } catch (e) {} }
-  try { const o = JSON.parse(localStorage.getItem(STORE) || "{}"); for (const e of fields) if (o[e.dataset.key] != null) { if (e.type === "checkbox") e.checked = !!o[e.dataset.key]; else e.value = o[e.dataset.key]; } } catch (e) {}
+  function save() { try { const o = {}; for (const e of fields) o[e.dataset.key] = e.value; localStorage.setItem(STORE, JSON.stringify(o)); } catch (e) {} }
+  try { const o = JSON.parse(localStorage.getItem(STORE) || "{}"); for (const e of fields) if (o[e.dataset.key] != null) e.value = o[e.dataset.key]; } catch (e) {}
   for (const e of fields) { e.addEventListener("input", () => { save(); render(); }); e.addEventListener("change", () => { save(); render(); }); }
 
   document.getElementById("copy").addEventListener("click", () => {
     const tx = document.getElementById("out"), msg = document.getElementById("copied");
-    const done = () => { msg.textContent = "Copiado. Cole no chat."; };
     const fallback = () => { tx.focus(); tx.select(); msg.textContent = "Texto selecionado: use Copiar do sistema."; };
-    try { navigator.clipboard.writeText(tx.value).then(done, fallback); } catch (e) { fallback(); }
+    try { navigator.clipboard.writeText(tx.value).then(() => { msg.textContent = "Copiado. Cole no chat."; }, fallback); } catch (e) { fallback(); }
   });
   let armed = false;
   document.getElementById("clear").addEventListener("click", e => {
     if (!armed) { armed = true; e.target.textContent = "Clique de novo para limpar"; setTimeout(() => { armed = false; e.target.textContent = "Limpar campos"; }, 3000); return; }
-    for (const f of fields) { if (f.type === "checkbox") f.checked = false; else f.value = ""; }
+    for (const f of fields) f.value = "";
     save(); render(); armed = false; e.target.textContent = "Limpar campos";
   });
   render();
