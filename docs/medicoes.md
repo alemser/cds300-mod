@@ -10,11 +10,11 @@ o chat. A tabela abaixo recebe o resultado.
 ## O que decide a fase 1
 
 Só o que muda uma decisão agora: se o Pico pode se ligar às vias que vai usar, onde soldar o fio do controle remoto,
-se o `D+5` aguenta o Pico e qual extensão do flat comprar. Qualquer via acima de **3,4 V** para tudo.
+se o `D+5` aguenta o Pico e em qual solda do `CB701` vai cada fio (`docs/plano.md`, "A ligação"). Qualquer via acima de **3,4 V** para tudo.
 
 | Medida | Aparelho | Esperado | Medido | Decide |
 |---|---|---|---|---|
-| Flat: do 1º ao 15º contato, pelas janelas do `CB304`, sem tirar o flat (passo = ÷ 14) | Fora da tomada | 17,5 mm (passo 1,25) | | A extensão a comprar |
+| Soldas do `CB701` de `DGND`, `FL_/CS`, `FL_CLK`, `FL_DATA` e `FL_/RST`: bip desde a janela do `CB304`, marcadas com caneta | Fora da tomada | Uma solda por via | | Onde soldar os fios de leitura |
 | Perna do `U701` que bipa com duas pernas vizinhas do `IC702` | Fora da tomada | Uma só (`OUT`) | | Onde soldar o fio do IR |
 | `D+3.3V` | Ligado, parado | 3,4 V | | A placa frontal é de 3,3 V |
 | `FL_/CS` | Ligado, parado | 3,3 V | | O Pico pode escutar o display |

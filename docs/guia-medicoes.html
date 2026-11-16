@@ -121,7 +121,7 @@ textarea.notes { width: 100%; min-height: 70px; box-sizing: border-box; font-siz
   <header style="display:grid; gap:8px">
     <span class="section-label">CD-S300 mod · passo 2 do plano</span>
     <h1>Medições da bancada</h1>
-    <p class="lede">Só o que decide algo agora: se o Pico pode encostar nas vias que vai usar, onde soldar o fio do controle remoto, se o <code>D+5</code> aguenta o Pico e qual extensão do flat comprar. São oito valores. Cada cartão mostra onde encostar as pontas; os campos ficam salvos neste navegador, e no fim um botão copia tudo para o chat.</p>
+    <p class="lede">Só o que decide algo antes de soldar: em qual solda do <code>CB701</code> vai cada fio, onde vai o fio do controle remoto, se o Pico pode encostar nessas vias e se o <code>D+5</code> aguenta o Pico. Cada cartão mostra onde encostar as pontas; os campos ficam salvos neste navegador, e no fim um botão copia tudo para o chat.</p>
   </header>
 
   <section class="box danger">
@@ -145,7 +145,7 @@ textarea.notes { width: 100%; min-height: 70px; box-sizing: border-box; font-siz
 
   <div class="group-head">
     <span class="section-label">Grupo 1 · aparelho fora da tomada</span>
-    <h2>O flat e o receptor</h2>
+    <h2>Onde soldar</h2>
   </div>
   <div id="g1" style="display:grid; gap:16px"></div>
 
@@ -229,23 +229,25 @@ textarea.notes { width: 100%; min-height: 70px; box-sizing: border-box; font-siz
     return svg(x0 + step * 15 + 30, y + 165, b, "Conector CB304 com as 15 janelas e as pontas do multímetro");
   }
 
-  function drawFlat() {
-    // the CB304 seen from the front, flat still plugged in: 15 windows with the contacts showing
-    const x0 = 40, step = 26, y = 70;
-    let b = `<rect x="${x0 - 4}" y="10" width="${step * 14 + 8}" height="${y - 6}" class="s-flat"/>`;
-    b += `<rect x="${x0 - 22}" y="${y - 8}" width="${step * 14 + 44}" height="62" rx="3" class="s-plastic"/>`;
+  function drawJoints() {
+    // left: a CB304 window (named on the silkscreen); right: the CB701 joints on the front board, two staggered rows
+    let b = `<rect x="10" y="40" width="150" height="150" rx="4" class="s-pcb"/>`;
+    b += t(85, 30, "placa principal: CB304", "s-ink", "middle");
+    b += `<rect x="30" y="90" width="110" height="40" rx="3" class="s-plastic"/>`;
+    [50, 72, 94, 116].forEach((x, i) => b += `<rect x="${x - 7}" y="98" width="14" height="22" rx="2" class="s-win${i === 1 ? " on" : ""}"/>`);
+    b += t(72, 150, "FL_CLK", "s-redlab", "middle");
+    b += t(85, 178, "nome na serigrafia", "s-hint", "middle");
+    b += `<rect x="250" y="20" width="200" height="200" rx="4" class="s-pcb"/>`;
+    b += t(350, 14, "placa frontal: CB701, pelas soldas", "s-ink", "middle");
     for (let i = 0; i < 15; i++) {
-      const x = x0 + i * step;
-      b += `<rect x="${x - 8}" y="${y}" width="16" height="20" rx="2" class="s-win"/><rect x="${x - 4}" y="${y + 6}" width="8" height="9" rx="2" class="s-metal"/>`;
+      const x = i % 2 ? 380 : 330, y = 34 + i * 12;
+      b += `<circle cx="${x}" cy="${y}" r="7" class="s-metal"/><circle cx="${x}" cy="${y}" r="2" class="s-chip"/>`;
     }
-    const xl = x0 + 14 * step;
-    b += `<path d="M${xl + 14},${y + 30} l8,-5 l0,10 z" class="s-arrow"/>`;
-    b += t(xl + 26, y + 34, "via 1", "s-lab");
-    b += `<line x1="${x0}" y1="${y + 22}" x2="${x0}" y2="${y + 76}" class="s-ext"/><line x1="${xl}" y1="${y + 22}" x2="${xl}" y2="${y + 76}" class="s-ext"/>`;
-    b += `<line x1="${x0}" y1="${y + 70}" x2="${xl}" y2="${y + 70}" class="s-dim" marker-start="url(#ar)" marker-end="url(#ar)"/>`;
-    b += t((x0 + xl) / 2, y + 64, "A: meio do 1º contato ao meio do 15º", "s-big", "middle");
-    b += t((x0 + xl) / 2, y + 96, "CB304 visto de frente, com o flat no lugar", "s-hint", "middle");
-    return svg(xl + 70, y + 104, b, "Conector CB304 de frente, com a medida A entre o primeiro e o último contato");
+    b += `<circle cx="380" cy="94" r="10" class="s-ext"/>`;
+    b += `<path d="M78,106 C160,20 300,30 372,92" class="s-beep"/>`;
+    b += t(215, 205, "bip = esta solda é a FL_CLK", "s-big", "middle");
+    b += t(430, 160, "marque", "s-lab", "end"); b += t(430, 173, "com caneta", "s-lab", "end");
+    return svg(460, 226, b, "Bip da janela do CB304 até a solda certa do CB701");
   }
 
   function drawU701() {
@@ -287,11 +289,16 @@ textarea.notes { width: 100%; min-height: 70px; box-sizing: border-box; font-siz
   const fld = (key, label, control) => `<div class="field"><label for="f_${key}">${label}</label>${control}</div>`;
 
   const CARDS = [
-    { g: "g1", id: "1", title: "O passo do flat de 15 vias",
-      fig: drawFlat(),
-      steps: ["<b>Não tire o flat.</b> O <code>CB304</code> (placa principal) mostra os 15 contatos pelas janelas.", "Meça <b>A</b>: do meio do primeiro contato visível ao meio do último. O passo sai de A ÷ 14.", "Com paquímetro: as pontas finas de cima, sem forçar dentro das janelas. Com régua, anote a melhor leitura."],
-      body: `<div class="fields">${fld("flat_a", "A · 1º ao 15º (mm)", inp("flat_a"))}</div>`,
-      ref: "Esperado: perto de <b>17,5</b> (passo de 1,25 mm). É o que decide a extensão a comprar. O conector não tem trava: o flat só sai puxando reto, segurando pelo reforço azul, e não é preciso tirá-lo para nada nesta etapa." },
+    { g: "g1", id: "1", title: "Em qual solda do CB701 vai cada fio",
+      fig: drawJoints(),
+      steps: ["Uma ponta do multímetro na janela do <code>CB304</code> com o nome da via (a placa principal tem os nomes; o triângulo ◄ marca a via 1, <code>FL_/CS</code>).", "A outra ponta passeia pelas 15 soldas do <code>CB701</code>, atrás da placa frontal, até bipar.", "Marque a solda com caneta (uma letra basta: S, K, D, R, G). Faça para as cinco vias abaixo.", "Anote a posição: fileira (a mais perto da borda da placa ou a de dentro) e quantas soldas de cima para baixo, contando só aquela fileira."],
+      body: `<div class="table-wrap"><table><thead><tr><th>Via</th><th>Marca</th><th>Fileira</th><th>Posição</th></tr></thead><tbody>
+        ${[["FL_/CS", "S"], ["FL_CLK", "K"], ["FL_DATA", "D"], ["FL_/RST", "R"], ["DGND", "G"]].map(([v, m]) => {
+          const k = "j_" + m;
+          return `<tr><td class="mono">${v}</td><td class="mono">${m}</td><td>${sel(k + "_row", ["borda", "dentro"])}</td><td>${sel(k + "_pos", ["1", "2", "3", "4", "5", "6", "7", "8"])}</td></tr>`;
+        }).join("")}
+        </tbody></table></div>`,
+      ref: "Uma solda por via. A <code>DGND</code> tem duas no conector (vias 1 e 9): qualquer uma serve. É nessas soldas que os fios de leitura vão, por cima da solda que já existe." },
     { g: "g1", id: "2", title: "Qual perna do receptor U701 é a saída",
       fig: drawU701(),
       steps: ["Atrás da placa frontal, levante a folha plástica perto do receptor.", "Olhando pelo lado das soldas, com o display <b>para cima</b>, chame as três pernas de <b>E</b>, <b>M</b> e <b>D</b> (esquerda, meio, direita).", "Procure a perna que bipa com <b>duas pernas vizinhas</b> do <code>IC702</code> (o chip pequeno de 5 pernas ao lado). É ali que o fio do controle remoto vai ser soldado."],
@@ -351,11 +358,13 @@ textarea.notes { width: 100%; min-height: 70px; box-sizing: border-box; font-siz
     const rows = [], lines = [`Medições CD-S300 (${new Date().toLocaleDateString("pt-BR")}):`];
     const row = (what, val, exp, [cls, st]) => rows.push(`<tr><td>${what}</td><td class="val">${val}</td><td class="val">${exp}</td><td class="${cls}">${st}</td></tr>`);
 
-    const A = num(get("flat_a"));
-    if (Number.isFinite(A)) {
-      const p = A / 14;
-      row("Passo do flat (A ÷ 14)", fmt(p) + " mm", "1,25 mm", Math.abs(p - 1.25) < 0.08 ? ["st-ok", "ok"] : Math.abs(p - 1.0) < 0.08 ? ["st-bad", "parece 1,0 mm"] : ["st-bad", "diferente"]);
-      lines.push(`Flat: A=${get("flat_a")} mm, passo=${fmt(p)} mm`);
+    const joints = [["FL_/CS", "S"], ["FL_CLK", "K"], ["FL_DATA", "D"], ["FL_/RST", "R"], ["DGND", "G"]]
+      .map(([v, m]) => [v, m, get(`j_${m}_row`), get(`j_${m}_pos`)]).filter(j => j[2] || j[3]);
+    if (joints.length) {
+      const seen = new Set(), dup = joints.some(([, , r, p]) => r && p && (seen.has(r + p) || !seen.add(r + p)));
+      for (const [v, m, r, p] of joints)
+        row(`Solda do CB701: ${v}`, `${r || "?"} ${p || "?"}`, "uma por via", r && p ? (dup ? ["st-bad", "posição repetida"] : ["st-ok", "ok"]) : ["st-bad", "incompleto"]);
+      lines.push("Soldas do CB701 (fileira, posição de cima para baixo): " + joints.map(([v, m, r, p]) => `${v}(${m})=${r || "?"} ${p || "?"}`).join(", "));
     }
     const leg = get("u_out_leg");
     if (leg) {

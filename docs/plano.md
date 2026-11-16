@@ -16,22 +16,62 @@ Escrito em 2026-11-16, antes de qualquer medição.
   caminho de terra pelo carregador.
 - A porta de gravação da traseira (`CB902`) tem sinais que apagam o firmware do aparelho. Só escutar o `232C_TX`.
 - No modo de fábrica, a tecla CLEAR apaga a EEPROM. Não mandar `CLEAR` por engano com o aparelho nesse modo.
-- Fios do Pico soldados numa extensão do flat, nunca na placa da Yamaha.
+- Fios do Pico só em soldas de furo passante que já existem (as do `CB701`, as pernas do `U701`, o `CB301`), nunca em
+  ilhas de componentes SMD. Cada fio preso à placa com cola quente ou fita kapton, para não puxar a solda.
+- Tudo o que sair do lugar é anotado em "Registro do que saiu do lugar" (no fim deste plano) e guardado num saquinho
+  com etiqueta.
 
 ## Objetivos
 
-1. **Saber o estado**: tocando, pausado ou parado, faixa, tempo, disco presente, bandeja, modo CD ou USB, PURE DIRECT.
-2. **Comandar pelo Wi-Fi**, com os códigos do controle remoto por fio.
-3. **Compartilhar o estado** com os outros aparelhos, pelo mesmo contrato dos amps.
-4. Depois: escrever no display e o que mais valer a pena da lista de ideias.
+Os requisitos do dono (2026-11-16), em ordem:
+
+1. **Saber o estado exato**: tocando, pausado ou parado, faixa, tempo, disco presente, bandeja, modo CD ou USB, PURE
+   DIRECT.
+2. **Controle remoto pelo Wi-Fi**, com os códigos do controle mandados por fio.
+3. **Mudar o texto do display.** Não é crítico.
+4. **Fácil de desfazer**: o que sair do lugar volta sem trabalho.
+
+Junto com os dois primeiros: compartilhar o estado com os outros aparelhos, pelo mesmo contrato dos amps.
 
 ## Fases
 
-**Fase 1: ler e comandar.** O Pico escuta as quatro vias do display, sem cortar nada, e manda os códigos do controle
-remoto. Diferente dos amps, o comando já entra na fase 1: os códigos estão no manual e a ligação é um fio só.
+**Fase 1: ler e comandar** (requisitos 1 e 2). O Pico escuta as quatro vias do display, sem cortar nada, e manda os
+códigos do controle remoto por um fio na saída do receptor.
 
-**Fase 2: escrever no display.** O Pico no meio da via `FL_DATA` (e das outras três, se for preciso), entre duas
-extensões do flat. Só vale a pena se a fase 1 mostrar o que há para ganhar (ver "Ideias").
+**Fase 2: escrever no display** (requisito 3). O Pico no meio de `FL_/CS`, `FL_CLK` e `FL_DATA`. Depois das capturas,
+quando se souber o protocolo e se o microcontrolador manda letras ou pontos.
+
+## A ligação: solda na placa frontal (decidido em 2026-11-16)
+
+Sem extensão do flat. Comparadas as duas formas, a extensão só ganha na fase 2 (nada se altera na placa e a via
+`REM` pode ser interceptada sem solda), mas pede uma placa própria com dois conectores de 1,25 mm sem trava e espaço
+no gabinete. Com solda, a fase 1 é imediata e a fase 2 continua reversível por um plugue (abaixo). O que não muda
+nos dois casos: escrever exige o Pico no meio das três vias, porque o microcontrolador segura as linhas o tempo todo;
+e a alimentação vem do `CB301`, porque o `D+5` não passa pelo flat.
+
+**Fase 1: nada sai do lugar.** Os fios vão por cima de soldas que já existem e terminam num conector só, onde se
+encaixa o Pico ou o analisador lógico (as capturas usam os mesmos fios, sem garras).
+
+| Fio | Onde | Para quê |
+|---|---|---|
+| `DGND` | Solda do `CB701` (via 1 ou 9) | Terra comum |
+| `FL_/CS` | Solda do `CB701` | Ler o display |
+| `FL_CLK` | Solda do `CB701` | Ler o display |
+| `FL_DATA` | Solda do `CB701` | Ler o display |
+| `FL_/RST` | Solda do `CB701` | Saber quando o display é reiniciado |
+| `IR` | Perna `OUT` do `U701` | Mandar as teclas (o Pico só puxa para 0) |
+| `D+5` e `DGND` | `CB301`, placa principal | Alimentar o Pico. Só quando o Pico for instalado |
+
+Qual solda do `CB701` é qual via se confirma com o bip, da janela do `CB304` (que tem os nomes) até a solda, e se
+marca com caneta antes de soldar. Desfazer: dessoldar os fios.
+
+**Fase 2: três resistores saem, e um plugue os substitui.** Os resistores em série do display (`R701` a `R704`) de
+`FL_/CS`, `FL_CLK` e `FL_DATA` saem da placa. As duas ilhas de cada um, o lado do microcontrolador e o lado do
+vidro, vão por fio a um conector de 6 vias. Encaixa-se ali a placa do Pico (que lê de um lado e escreve do outro) ou
+um **plugue de volta**, com os três resistores originais ligando cada par: com ele, o aparelho fica como de fábrica,
+sem solda. O `FL_/RST` não sai. As ilhas SMD são pequenas: fio 30 AWG, preso com cola logo ao lado. Uma chave
+automática para quando o Pico não estiver pronto (tipo 74LVC1G3157 por via) entra na placa do Pico, se as capturas
+mostrarem que vale.
 
 ## Ligar e desligar
 
@@ -62,7 +102,6 @@ Fotos que ainda ajudam:
 
 - A traseira inteira, para achar a porta de gravação `CB902`.
 - A placa principal na região do `IC305` e do `IC4` (S/PDIF).
-- O flat com uma régua ao lado, para confirmar o passo de 1,25 mm.
 
 ## Passo 2: multímetro
 
@@ -76,9 +115,6 @@ Com o aparelho ligado, contra o `DGND` (via 1 ou 9 do flat):
    fonte) depois de meia hora tocando. O Pico vai pedir mais uns 50 a 100 mA dessa linha.
 4. O `+B2`, no mesmo conector: alternativa para alimentar o Pico por um regulador próprio, se o `D+5` não tiver
    folga.
-
-Medir também o passo e a largura do flat de 15 vias (esperado: 1,25 mm), para comprar a extensão (duas, para a
-fase 2) e flats de reserva dos dois tipos, como no MR 780.
 
 Anotar em `docs/medicoes.md`, que já tem as tabelas prontas, com o esperado do esquema.
 
@@ -199,3 +235,10 @@ Além do básico (estado e comandos). A coluna "Depende de" diz o que precisa ex
 
 - A base comum do firmware vai para o `amp-link` agora ou depois deste aparelho?
 - O que mostrar no display na fase 2, se ela for feita.
+
+## Registro do que saiu do lugar
+
+O que foi tirado do aparelho, quando, onde está guardado e como volta. Vazio até agora.
+
+| Data | O quê | Valor | Guardado em | Como volta |
+|---|---|---|---|---|
