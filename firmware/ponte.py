@@ -28,7 +28,7 @@ class State:
         self.player = Player()
 
     def to_dict(self):
-        """api 2 proposal (amp-link docs/contract-v2.md): transport, media and disc groups."""
+        """api 2 proposal (device-link docs/contract-v2.md): transport, media and disc groups."""
         d = {"power": None, "lcd": [], "updated_at": time.ticks_ms(), "version": self.version}
         if self.display is not None and self.display.alive():
             p = self.player.state

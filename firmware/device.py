@@ -1,4 +1,4 @@
-"""GET /device: who this bridge is and what it can do, in the DeviceLink contract api 2 (amp-link docs/contract-v2.md).
+"""GET /device: who this bridge is and what it can do, in the DeviceLink contract api 2 (device-link docs/contract-v2.md).
 
 The app builds the CD-S300's screen from this: the state fields to show, the remote in groups, and the settings (none
 here). Nothing changes while the bridge runs, so the JSON is built once, on the first request, and served as stored

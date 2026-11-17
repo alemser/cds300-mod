@@ -111,20 +111,20 @@ with the Pico inside the device, logging each change while the keys were pressed
 ## Step 4: the program
 
 1. **The bridge base**: cable-free Wi-Fi setup (`AmpLink-CDS300-XXXX`), discovery, updates over Wi-Fi.
-2. **`/device`** on the DeviceLink contract `api` 2 (`amp-link/docs/contract-v2.md`): state fields, the remote in
+2. **`/device`** on the DeviceLink contract `api` 2 (`device-link/docs/contract-v2.md`): state fields, the remote in
    groups, the firmware repository.
 3. **The remote keys and `/control`**: the 30 keys of the manual's table, NEC 79/86, checked bit for bit against the
    `groove-rig` model. **Working on the device 2026-11-16**: `play` over Wi-Fi started the disc.
 4. **The display reader**: the PIO sniffer (`display.py`) and the parser and player state (`vfd.py`), checked against
    the real capture and on the device. `/state` carries `transport`, `media`, `disc` and the display's text.
 
-The Wi-Fi, server and update files live in one place, the **shared base** (`amp-link`, `firmware-base/`), copied into
+The Wi-Fi, server and update files live in one place, the **shared base** (`device-link`, `firmware-base/`), copied into
 each project by `copiar.py`. The SP103's lessons still hold: no web page on the Pico, no large answers (a `/display`
 view over 1 KB stopped answering, 2026-11-16), one `/events` connection per client.
 
 ## The common protocol
 
-Written up as the **DeviceLink contract, `api` 2** (`amp-link/docs/contract-v2.md`): discovery says the `kind` and
+Written up as the **DeviceLink contract, `api` 2** (`device-link/docs/contract-v2.md`): discovery says the `kind` and
 `api`, `/device` describes the state fields, the remote and the settings, and the DeviceLink app (the renamed Amp Link)
 builds each device's screen from it, with firmware updates from each device's GitHub release. Decided 2026-11-16:
 updates take no password, and the SP103 moves to `api` 2 (its `/names` became `/settings` on 2026-11-17, when `api` 1

@@ -5,7 +5,7 @@ CD player. A Raspberry Pi Pico 2 W inside it reads what its display shows, publi
 controls it over Wi-Fi by sending the remote's codes down a wire.
 
 It is the first device that is not an amplifier, so it is also the first on the **DeviceLink contract** (`api` 2,
-`amp-link/docs/contract-v2.md`): it is found on the network, describes itself, and the DeviceLink app builds its screen
+`device-link/docs/contract-v2.md`): it is found on the network, describes itself, and the DeviceLink app builds its screen
 from that description.
 
 ## Status (2026-11-16)
@@ -80,9 +80,9 @@ The service manual stays in the local copy only, in `docs/manual/` (copyrighted,
   - This project's: `ponte.py` (the program), `device.py` (`/device`), `display.py` (the PIO sniffer), `vfd.py`
     (the display parser and the player state), `ir_codes.py` (the remote codes), `ir.py` (the IR line) and
     `control.py` (the `/control` and `/ir` routes).
-  - **Copies of the shared base** (repository `amp-link`, folder `firmware-base/`): `wifi.py`, `web.py`, `ota.py`,
+  - **Copies of the shared base** (repository `device-link`, folder `firmware-base/`): `wifi.py`, `web.py`, `ota.py`,
     `udp.py`, `listeners.py` and `main.py`. Change them there and copy with
-    `python3 ../amp-link/firmware-base/copiar.py`, never here.
+    `python3 ../device-link/firmware-base/copiar.py`, never here.
   - `main.py` (the update gatekeeper) only goes to the Pico by USB; everything else goes over Wi-Fi.
 - `tools/`: the tests on the computer, `enviar.py` (update over Wi-Fi; `--publish` makes the GitHub release the app
   updates from) and `fl_decode.py` (reads logic-analyzer captures). `enviar.py`, `test_wifi.py` and
@@ -93,7 +93,7 @@ The service manual stays in the local copy only, in `docs/manual/` (copyrighted,
 
 ```sh
 for t in wifi listeners device ir control vfd fl_decode; do python3 tools/test_$t.py; done
-python3 ../amp-link/firmware-base/copiar.py --conferir    # are the base copies up to date?
+python3 ../device-link/firmware-base/copiar.py --conferir    # are the base copies up to date?
 ```
 
 `test_ir.py` compares the codes with the `groove-rig` model (`~/Projects/groove-rig`).
