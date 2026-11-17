@@ -127,14 +127,15 @@ view over 1 KB stopped answering, 2026-11-16), one `/events` connection per clie
 Written up as the **DeviceLink contract, `api` 2** (`amp-link/docs/contract-v2.md`): discovery says the `kind` and
 `api`, `/device` describes the state fields, the remote and the settings, and the DeviceLink app (the renamed Amp Link)
 builds each device's screen from it, with firmware updates from each device's GitHub release. Decided 2026-11-16:
-updates take no password, and the SP103 moves to `api` 2 (its `/names` becomes `/settings`).
+updates take no password, and the SP103 moves to `api` 2 (its `/names` became `/settings` on 2026-11-17, when `api` 1
+was removed everywhere).
 
 **Shared state.** Bridges don't talk to each other: a Pico handles few connections. A central point (`groove-rig` on
 oceano) can subscribe to each device's `/events` and apply rules between them; that is a later step, outside this
 project.
 
 **The name.** The contract and the app are DeviceLink. The setup networks are still `AmpLink-…` (key
-`amplink-setup`) and bridges answer both `AMPLINK?` and `DEVICELINK?`, so the old app and the new one both find them.
+`amplink-setup`); discovery is `DEVICELINK?` only since 2026-11-17.
 
 ## Ideas
 
