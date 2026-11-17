@@ -125,10 +125,13 @@ view over 1 KB stopped answering, 2026-11-16), one `/events` connection per clie
 ## The common protocol
 
 Written up as the **DeviceLink contract, `api` 2** (`device-link/docs/contract-v2.md`): discovery says the `kind` and
-`api`, `/device` describes the state fields, the remote and the settings, and the DeviceLink app (the renamed Amp Link)
+`api`, `/device` describes the device, its state fields and its remote, and the DeviceLink app (the renamed Amp Link)
 builds each device's screen from it, with firmware updates from each device's GitHub release. Decided 2026-11-16:
-updates take no password, and the SP103 moves to `api` 2 (its `/names` became `/settings` on 2026-11-17, when `api` 1
-was removed everywhere).
+updates take no password, and the SP103 moves to `api` 2 (`api` 1 was removed everywhere on 2026-11-17).
+
+Decided 2026-11-17: **this CD player's interface is the standard one** (device information, state and IR remote) and
+every device follows it, the SP103 included. A device's own extras (the SP103's display texts, VU and info screens)
+stay out of the contract, on a web page the bridge serves itself.
 
 **Shared state.** Bridges don't talk to each other: a Pico handles few connections. A central point (`groove-rig` on
 oceano) can subscribe to each device's `/events` and apply rules between them; that is a later step, outside this

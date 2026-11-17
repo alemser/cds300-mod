@@ -23,7 +23,7 @@ assert [s["id"] for s in d["state"]] == ["transport", "media.track", "media.elap
                                          "lcd"]
 assert [c["group"] for c in d["controls"]] == ["transport", "modes", "numbers", "source"]
 assert d["controls"][0]["keys"][:3] == ["previous", "rewind", "play"]
-assert d["settings"] == []
+assert "settings" not in d, "the contract: device, state and remote only"
 # The remote holds exactly the keys the IR sender can send: none missing, none unknown.
 assert device.check() == ([], []), device.check()
 # Small enough to serve from a Pico in one go (contract: under 1.5 KB).
